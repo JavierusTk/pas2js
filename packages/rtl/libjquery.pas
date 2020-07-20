@@ -1,6 +1,5 @@
 unit libjquery;
 
-{$mode objfpc}
 {$modeswitch externalclass}
 
 interface
@@ -19,24 +18,24 @@ Type
 
   TCallbacks = class external name 'Callbacks'
   Public
-    function add(aCallBack : TCallBack) : TCallbacks;
-    function add(aCallBack : Array of TCallBack) : TCallbacks;
-    function add(aCallBack : TCallBackEvent) : TCallbacks;
-    function add(aCallBack : Array of TCallBackEvent) : TCallbacks;
-    function disable : TCallBacks;
-    function disabled : Boolean;
+    function add(aCallBack : TCallBack) : TCallbacks; overload;
+    function add(aCallBack : Array of TCallBack) : TCallbacks; overload;
+    function add(aCallBack : TCallBackEvent) : TCallbacks; overload;
+    function add(aCallBack : Array of TCallBackEvent) : TCallbacks; overload;
+    function disable : TCallBacks; overload;
+    function disabled : Boolean; overload;
     function empty : TCallBacks;
     function fire(arguments : JSValue) : TCallbacks; varargs;
     function fired : Boolean;
     function fireWith(context : JSValue; arguments : JSValue) : TCallbacks;
-    function has(aCallBack : TCallBack) : Boolean;
-    function has(aCallBack : TCallBackEvent) : Boolean;
+    function has(aCallBack : TCallBack) : Boolean; overload;
+    function has(aCallBack : TCallBackEvent) : Boolean; overload;
     function lock : TCallBacks;
     function locked : boolean;
-    function remove(aCallBack : TCallBack) : TCallbacks;
-    function remove(aCallBack : Array of TCallBack) : TCallbacks;
-    function remove(aCallBack : TCallBackEvent) : TCallbacks;
-    function remove(aCallBack : Array of TCallBackEvent) : TCallbacks;
+    function remove(aCallBack : TCallBack) : TCallbacks; overload;
+    function remove(aCallBack : Array of TCallBack) : TCallbacks; overload;
+    function remove(aCallBack : TCallBackEvent) : TCallbacks; overload;
+    function remove(aCallBack : Array of TCallBackEvent) : TCallbacks; overload;
   end;
 
   { TJQuery }
@@ -94,8 +93,8 @@ Type
     procedure always(aHandler : TJQXHRAlwaysHandler); overload;
     procedure fail(aHandler : TJQXHRFailHandler); overload;
     procedure _then(aSuccess : TJQXHRDoneHandler; aFail : TJQXHRFailHandler); overload;
-    procedure abort;
-    procedure abort(AStatusText : String);
+    procedure abort; overload;
+    procedure abort(AStatusText : String); overload;
     property readyState : NativeInt read FReadyState;
     property ResponseHeaders[aName : string] : string Read getResponseHeader;
     property responseXML : TJSDocument read FresponseXML;
@@ -264,30 +263,30 @@ Type
     class function getScript(url : String) : TJQXHR;overload;
     class function getScript(url : String; aSuccess : TJQueryAjaxScriptHandler) : TJQXHR;overload;
 
-    function has(Const aSelector : String) : TJQuery;
-    function has(Const aQuery : TJQuery) : TJQuery;
+    function has(Const aSelector : String) : TJQuery; overload;
+    function has(Const aQuery : TJQuery) : TJQuery; overload;
     function hasClass(Const aClassName : String) : Boolean;
     class function hasData(aElement : TJSElement) : Boolean;
-    function height: Integer;
-    function height(aValue: Integer) : TJQuery;
-    function height(aValue: String) : TJQuery;
-    function height(aHandler: TJQueryHeightHandler) : TJQuery;
-    function html : String;
-    function html(Const aHTML : String) : TJQuery;
-    function html(Const aHandler : TJQueryHTMLHandler) : TJQuery;
-    function innerHeight: Integer;
-    function innerHeight(aValue: Integer) : TJQuery;
-    function innerHeight(aValue: String) : TJQuery;
-    function innerHeight(aHandler: TJQueryHeightHandler) : TJQuery;
-    function innerWidth: Integer;
-    function innerWidth(aValue: Integer) : TJQuery;
-    function innerWidth(aValue: String) : TJQuery;
-    function innerWidth(aHandler: TJQueryWidthHandler) : TJQuery;
-    function _is(Const aSelector : String) : TJQuery; external name 'is';
-    function _is(Const aQuery : TJQuery) : TJQuery; external name 'is';
-    function _is(aHandler : TJQueryFilterHandler) : TJQuery; external name 'is';
-    function _is(Const aElement : TJSElement) : TJQuery; external name 'is';
-    function _is(Const aElements : Array of TJSElement) : TJQuery; external name 'is';
+    function height: Integer; overload;
+    function height(aValue: Integer) : TJQuery; overload;
+    function height(aValue: String) : TJQuery; overload;
+    function height(aHandler: TJQueryHeightHandler) : TJQuery; overload;
+    function html : String; overload;
+    function html(Const aHTML : String) : TJQuery; overload;
+    function html(Const aHandler : TJQueryHTMLHandler) : TJQuery; overload;
+    function innerHeight: Integer; overload;
+    function innerHeight(aValue: Integer) : TJQuery; overload;
+    function innerHeight(aValue: String) : TJQuery; overload;
+    function innerHeight(aHandler: TJQueryHeightHandler) : TJQuery; overload;
+    function innerWidth: Integer; overload;
+    function innerWidth(aValue: Integer) : TJQuery; overload;
+    function innerWidth(aValue: String) : TJQuery; overload;
+    function innerWidth(aHandler: TJQueryWidthHandler) : TJQuery; overload;
+    function _is(Const aSelector : String) : TJQuery; external name 'is'; overload;
+    function _is(Const aQuery : TJQuery) : TJQuery; external name 'is'; overload;
+    function _is(aHandler : TJQueryFilterHandler) : TJQuery; external name 'is'; overload;
+    function _is(Const aElement : TJSElement) : TJQuery; external name 'is'; overload;
+    function _is(Const aElements : Array of TJSElement) : TJQuery; external name 'is'; overload;
     function last : TJQuery;
     class function load(url : String) : TJQXHR;overload;
     class function load(url,Data : String) : TJQXHR;overload;
@@ -340,17 +339,17 @@ Type
     class function param (aObject : TJSObject; traditional : Boolean) : String;overload;
     class function param (aObject : TJQuery; traditional : Boolean) : String;overload;
 
-    Function parent : TJQuery;
-    Function parent (const ASelector: String) : TJQuery;
-    Function parents : TJQuery;
-    Function parents (const ASelector: String) : TJQuery;
-    function parentsUntil : TJQuery;
-    function parentsUntil(const aSelector : String) : TJQuery;
-    function parentsUntil(const aSelector,aFilter : String) : TJQuery;
-    function parentsUntil(const aElement : TJSElement) : TJQuery;
-    function parentsUntil(const aElement : TJSElement; aFilter : String) : TJQuery;
-    function parentsUntil(const aQuery : TJQuery) : TJQuery;
-    function parentsUntil(const aQuery : TJQuery; aFilter : String) : TJQuery;
+    Function parent : TJQuery; overload;
+    Function parent (const ASelector: String) : TJQuery; overload;
+    Function parents : TJQuery; overload;
+    Function parents (const ASelector: String) : TJQuery; overload;
+    function parentsUntil : TJQuery; overload;
+    function parentsUntil(const aSelector : String) : TJQuery; overload;
+    function parentsUntil(const aSelector,aFilter : String) : TJQuery; overload;
+    function parentsUntil(const aElement : TJSElement) : TJQuery; overload;
+    function parentsUntil(const aElement : TJSElement; aFilter : String) : TJQuery; overload;
+    function parentsUntil(const aQuery : TJQuery) : TJQuery; overload;
+    function parentsUntil(const aQuery : TJQuery; aFilter : String) : TJQuery; overload;
     function position : TJQueryTopLeft;
     class function post(url : String) : TJQXHR;overload;
     class function post(url,Data : String) : TJQXHR;overload;
@@ -439,13 +438,13 @@ Type
   end;
 
 
-Function JQuery(Const aSelector :  String) : TJQuery; external name 'jQuery';
-Function JQuery(Const aSelector :  String; Context : TJSElement) : TJQuery; external name 'jQuery';
-Function JQuery(Const aElement : TJSElement) : TJQuery; external name 'jQuery';
-Function JQuery(Const aElement : Array of TJSElement) : TJQuery; external name 'jQuery';
-Function JQuery(Const aElement : TJSObject) : TJQuery; external name 'jQuery';
-Function JQuery(Const aQuery : TJQuery) : TJQuery; external name 'jQuery';
-Function JQuery() : TJQuery; external name 'jQuery';
+Function JQuery(Const aSelector :  String) : TJQuery; external name 'jQuery'; overload;
+Function JQuery(Const aSelector :  String; Context : TJSElement) : TJQuery; external name 'jQuery'; overload;
+Function JQuery(Const aElement : TJSElement) : TJQuery; external name 'jQuery'; overload;
+Function JQuery(Const aElement : Array of TJSElement) : TJQuery; external name 'jQuery'; overload;
+Function JQuery(Const aElement : TJSObject) : TJQuery; external name 'jQuery'; overload;
+Function JQuery(Const aQuery : TJQuery) : TJQuery; external name 'jQuery'; overload;
+Function JQuery() : TJQuery; external name 'jQuery'; overload;
 
 Var
   gJQuery : TJQuery; external name 'jQuery';

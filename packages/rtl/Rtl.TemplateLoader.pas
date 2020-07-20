@@ -14,7 +14,7 @@
  **********************************************************************}
 unit Rtl.TemplateLoader;
 
-{$mode objfpc}
+//{$mode objfpc}
 
 interface
 

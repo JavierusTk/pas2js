@@ -12,7 +12,6 @@
  **********************************************************************}
 unit TypInfo;
 
-{$mode objfpc}
 {$modeswitch externalclass}
 
 interface
@@ -387,56 +386,56 @@ function GetInterfaceMethods(aTIInterface: TTypeInfoInterface): TTypeMemberMetho
 function GetRTTIAttributes(const Attributes: TTypeInfoAttributes): TCustomAttributeArray;
 
 function GetPropInfos(aTIStruct: TTypeInfoStruct): TTypeMemberPropertyDynArray;
-function GetPropList(aTIStruct: TTypeInfoStruct; TypeKinds: TTypeKinds; Sorted: boolean = true): TTypeMemberPropertyDynArray;
-function GetPropList(aTIStruct: TTypeInfoStruct): TTypeMemberPropertyDynArray;
-function GetPropList(AClass: TClass): TTypeMemberPropertyDynArray;
-function GetPropList(Instance: TObject): TTypeMemberPropertyDynArray;
+function GetPropList(aTIStruct: TTypeInfoStruct; TypeKinds: TTypeKinds; Sorted: boolean = true): TTypeMemberPropertyDynArray; overload;
+function GetPropList(aTIStruct: TTypeInfoStruct): TTypeMemberPropertyDynArray; overload;
+function GetPropList(AClass: TClass): TTypeMemberPropertyDynArray; overload;
+function GetPropList(Instance: TObject): TTypeMemberPropertyDynArray; overload;
 
-function GetPropInfo(TI: TTypeInfoStruct; const PropName: String): TTypeMemberProperty;
-function GetPropInfo(TI: TTypeInfoStruct; const PropName: String; const Kinds: TTypeKinds): TTypeMemberProperty;
-function GetPropInfo(Instance: TObject; const PropName: String): TTypeMemberProperty;
-function GetPropInfo(Instance: TObject; const PropName: String; const Kinds: TTypeKinds): TTypeMemberProperty;
-function GetPropInfo(aClass: TClass; const PropName: String): TTypeMemberProperty;
-function GetPropInfo(aClass: TClass; const PropName: String; const Kinds: TTypeKinds): TTypeMemberProperty;
+function GetPropInfo(TI: TTypeInfoStruct; const PropName: String): TTypeMemberProperty; overload;
+function GetPropInfo(TI: TTypeInfoStruct; const PropName: String; const Kinds: TTypeKinds): TTypeMemberProperty; overload;
+function GetPropInfo(Instance: TObject; const PropName: String): TTypeMemberProperty; overload;
+function GetPropInfo(Instance: TObject; const PropName: String; const Kinds: TTypeKinds): TTypeMemberProperty; overload;
+function GetPropInfo(aClass: TClass; const PropName: String): TTypeMemberProperty; overload;
+function GetPropInfo(aClass: TClass; const PropName: String; const Kinds: TTypeKinds): TTypeMemberProperty; overload;
 
-function FindPropInfo(Instance: TObject; const PropName: String): TTypeMemberProperty;
-function FindPropInfo(Instance: TObject; const PropName: String; const Kinds: TTypeKinds): TTypeMemberProperty;
-function FindPropInfo(aClass: TClass; const PropName: String): TTypeMemberProperty;
-function FindPropInfo(aClass: TClass; const PropName: String; const Kinds: TTypeKinds): TTypeMemberProperty;
+function FindPropInfo(Instance: TObject; const PropName: String): TTypeMemberProperty; overload;
+function FindPropInfo(Instance: TObject; const PropName: String; const Kinds: TTypeKinds): TTypeMemberProperty; overload;
+function FindPropInfo(aClass: TClass; const PropName: String): TTypeMemberProperty; overload;
+function FindPropInfo(aClass: TClass; const PropName: String; const Kinds: TTypeKinds): TTypeMemberProperty; overload;
 
 // Property information routines.
-Function IsStoredProp(Instance: TObject; const PropInfo: TTypeMemberProperty): Boolean;
-Function IsStoredProp(Instance: TObject; const PropName: string): Boolean;
-function IsPublishedProp(Instance: TObject; const PropName: String): Boolean;
-function IsPublishedProp(aClass: TClass; const PropName: String): Boolean;
-function PropType(Instance: TObject; const PropName: string): TTypeKind;
-function PropType(aClass: TClass; const PropName: string): TTypeKind;
-function PropIsType(Instance: TObject; const PropName: string; const TypeKind: TTypeKind): Boolean;
-function PropIsType(aClass: TClass; const PropName: string; const TypeKind: TTypeKind): Boolean;
+Function IsStoredProp(Instance: TObject; const PropInfo: TTypeMemberProperty): Boolean; overload;
+Function IsStoredProp(Instance: TObject; const PropName: string): Boolean; overload;
+function IsPublishedProp(Instance: TObject; const PropName: String): Boolean; overload;
+function IsPublishedProp(aClass: TClass; const PropName: String): Boolean; overload;
+function PropType(Instance: TObject; const PropName: string): TTypeKind; overload;
+function PropType(aClass: TClass; const PropName: string): TTypeKind; overload;
+function PropIsType(Instance: TObject; const PropName: string; const TypeKind: TTypeKind): Boolean; overload;
+function PropIsType(aClass: TClass; const PropName: string; const TypeKind: TTypeKind): Boolean; overload;
 
-function GetJSValueProp(Instance: TJSObject; TI: TTypeInfoStruct; const PropName: String): JSValue;
-function GetJSValueProp(Instance: TJSObject; const PropInfo: TTypeMemberProperty): JSValue;
-function GetJSValueProp(Instance: TObject; const PropName: String): JSValue;
-function GetJSValueProp(Instance: TObject; const PropInfo: TTypeMemberProperty): JSValue;
-procedure SetJSValueProp(Instance: TJSObject; TI: TTypeInfoStruct; const PropName: String; Value: JSValue);
-procedure SetJSValueProp(Instance: TJSObject; const PropInfo: TTypeMemberProperty; Value: JSValue);
-procedure SetJSValueProp(Instance: TObject; const PropName: String; Value: JSValue);
-procedure SetJSValueProp(Instance: TObject; const PropInfo: TTypeMemberProperty; Value: JSValue);
+function GetJSValueProp(Instance: TJSObject; TI: TTypeInfoStruct; const PropName: String): JSValue; overload;
+function GetJSValueProp(Instance: TJSObject; const PropInfo: TTypeMemberProperty): JSValue; overload;
+function GetJSValueProp(Instance: TObject; const PropName: String): JSValue; overload;
+function GetJSValueProp(Instance: TObject; const PropInfo: TTypeMemberProperty): JSValue; overload;
+procedure SetJSValueProp(Instance: TJSObject; TI: TTypeInfoStruct; const PropName: String; Value: JSValue); overload;
+procedure SetJSValueProp(Instance: TJSObject; const PropInfo: TTypeMemberProperty; Value: JSValue); overload;
+procedure SetJSValueProp(Instance: TObject; const PropName: String; Value: JSValue); overload;
+procedure SetJSValueProp(Instance: TObject; const PropInfo: TTypeMemberProperty; Value: JSValue); overload;
 
-function GetNativeIntProp(Instance: TObject; const PropName: String): NativeInt;
-function GetNativeIntProp(Instance: TObject; const PropInfo: TTypeMemberProperty): NativeInt;
-procedure SetNativeIntProp(Instance: TObject; const PropName: String; Value: NativeInt);
-procedure SetNativeIntProp(Instance: TObject; const PropInfo: TTypeMemberProperty; Value: NativeInt);
+function GetNativeIntProp(Instance: TObject; const PropName: String): NativeInt; overload;
+function GetNativeIntProp(Instance: TObject; const PropInfo: TTypeMemberProperty): NativeInt; overload;
+procedure SetNativeIntProp(Instance: TObject; const PropName: String; Value: NativeInt); overload;
+procedure SetNativeIntProp(Instance: TObject; const PropInfo: TTypeMemberProperty; Value: NativeInt); overload;
 
-function GetOrdProp(Instance: TObject; const PropName: String): longint;
-function GetOrdProp(Instance: TObject; const PropInfo: TTypeMemberProperty): longint;
-procedure SetOrdProp(Instance: TObject; const PropName: String; Value: longint);
-procedure SetOrdProp(Instance: TObject; const PropInfo: TTypeMemberProperty; Value: longint);
+function GetOrdProp(Instance: TObject; const PropName: String): longint; overload;
+function GetOrdProp(Instance: TObject; const PropInfo: TTypeMemberProperty): longint; overload;
+procedure SetOrdProp(Instance: TObject; const PropName: String; Value: longint); overload;
+procedure SetOrdProp(Instance: TObject; const PropInfo: TTypeMemberProperty; Value: longint); overload;
 
-function GetEnumProp(Instance: TObject; const PropName: String): String;
-function GetEnumProp(Instance: TObject; const PropInfo: TTypeMemberProperty): String;
-procedure SetEnumProp(Instance: TObject; const PropName: String; const Value: String);
-procedure SetEnumProp(Instance: TObject; const PropInfo: TTypeMemberProperty; const Value: String);
+function GetEnumProp(Instance: TObject; const PropName: String): String; overload;
+function GetEnumProp(Instance: TObject; const PropInfo: TTypeMemberProperty): String; overload;
+procedure SetEnumProp(Instance: TObject; const PropName: String; const Value: String); overload;
+procedure SetEnumProp(Instance: TObject; const PropInfo: TTypeMemberProperty; const Value: String); overload;
 // Auxiliary routines, which may be useful
 function GetEnumName(TypeInfo: TTypeInfoEnum; Value: Integer): String;
 function GetEnumValue(TypeInfo: TTypeInfoEnum; const Name: string): Longint;
@@ -449,47 +448,47 @@ function GetSetPropArray(Instance: TObject; const PropInfo: TTypeMemberProperty)
 procedure SetSetPropArray(Instance: TObject; const PropName: String; const Arr: TIntegerDynArray); overload;
 procedure SetSetPropArray(Instance: TObject; const PropInfo: TTypeMemberProperty; const Arr: TIntegerDynArray); overload;
 
-function GetBoolProp(Instance: TObject; const PropName: String): boolean;
-function GetBoolProp(Instance: TObject; const PropInfo: TTypeMemberProperty): boolean;
-procedure SetBoolProp(Instance: TObject; const PropName: String; Value: boolean);
-procedure SetBoolProp(Instance: TObject; const PropInfo: TTypeMemberProperty; Value: boolean);
+function GetBoolProp(Instance: TObject; const PropName: String): boolean; overload;
+function GetBoolProp(Instance: TObject; const PropInfo: TTypeMemberProperty): boolean; overload;
+procedure SetBoolProp(Instance: TObject; const PropName: String; Value: boolean); overload;
+procedure SetBoolProp(Instance: TObject; const PropInfo: TTypeMemberProperty; Value: boolean); overload;
 
-function GetStrProp(Instance: TObject; const PropName: String): String;
-function GetStrProp(Instance: TObject; const PropInfo: TTypeMemberProperty): String;
-procedure SetStrProp(Instance: TObject; const PropName: String; Value: String);
-procedure SetStrProp(Instance: TObject; const PropInfo: TTypeMemberProperty; Value: String);
+function GetStrProp(Instance: TObject; const PropName: String): String; overload;
+function GetStrProp(Instance: TObject; const PropInfo: TTypeMemberProperty): String; overload;
+procedure SetStrProp(Instance: TObject; const PropName: String; Value: String); overload;
+procedure SetStrProp(Instance: TObject; const PropInfo: TTypeMemberProperty; Value: String); overload;
 
-function GetStringProp(Instance: TObject; const PropName: String): String; deprecated; // use GetStrProp
-function GetStringProp(Instance: TObject; const PropInfo: TTypeMemberProperty): String; deprecated; // use GetStrProp
-procedure SetStringProp(Instance: TObject; const PropName: String; Value: String); deprecated; // use GetStrProp
-procedure SetStringProp(Instance: TObject; const PropInfo: TTypeMemberProperty; Value: String); deprecated; // use GetStrProp
+function GetStringProp(Instance: TObject; const PropName: String): String; deprecated; overload; // use GetStrProp
+function GetStringProp(Instance: TObject; const PropInfo: TTypeMemberProperty): String; deprecated; overload; // use GetStrProp
+procedure SetStringProp(Instance: TObject; const PropName: String; Value: String); deprecated; overload; // use GetStrProp
+procedure SetStringProp(Instance: TObject; const PropInfo: TTypeMemberProperty; Value: String); deprecated; overload; // use GetStrProp
 
-function  GetFloatProp(Instance: TObject; const PropName: string): Double;
-function  GetFloatProp(Instance: TObject; PropInfo : TTypeMemberProperty) : Double;
-procedure SetFloatProp(Instance: TObject; const PropName: string; Value: Double);
-procedure SetFloatProp(Instance: TObject; PropInfo : TTypeMemberProperty;  Value : Double);
+function  GetFloatProp(Instance: TObject; const PropName: string): Double; overload;
+function  GetFloatProp(Instance: TObject; PropInfo : TTypeMemberProperty) : Double; overload;
+procedure SetFloatProp(Instance: TObject; const PropName: string; Value: Double); overload;
+procedure SetFloatProp(Instance: TObject; PropInfo : TTypeMemberProperty;  Value : Double); overload;
 
-function GetObjectProp(Instance: TObject; const PropName: String): TObject;
-function GetObjectProp(Instance: TObject; const PropName: String; MinClass: TClass): TObject;
-function GetObjectProp(Instance: TObject; const PropInfo: TTypeMemberProperty):  TObject;
-function GetObjectProp(Instance: TObject; const PropInfo: TTypeMemberProperty; MinClass: TClass):  TObject;
-procedure SetObjectProp(Instance: TObject; const PropName: String; Value: TObject) ;
-procedure SetObjectProp(Instance: TObject; const PropInfo: TTypeMemberProperty; Value: TObject);
+function GetObjectProp(Instance: TObject; const PropName: String): TObject; overload;
+function GetObjectProp(Instance: TObject; const PropName: String; MinClass: TClass): TObject; overload;
+function GetObjectProp(Instance: TObject; const PropInfo: TTypeMemberProperty):  TObject; overload;
+function GetObjectProp(Instance: TObject; const PropInfo: TTypeMemberProperty; MinClass: TClass):  TObject; overload;
+procedure SetObjectProp(Instance: TObject; const PropName: String; Value: TObject); overload;
+procedure SetObjectProp(Instance: TObject; const PropInfo: TTypeMemberProperty; Value: TObject); overload;
 
-function GetMethodProp(Instance: TObject; PropInfo: TTypeMemberProperty): TMethod;
-function GetMethodProp(Instance: TObject; const PropName: string): TMethod;
-procedure SetMethodProp(Instance: TObject; PropInfo: TTypeMemberProperty;  const Value : TMethod);
-procedure SetMethodProp(Instance: TObject; const PropName: string; const Value: TMethod);
+function GetMethodProp(Instance: TObject; PropInfo: TTypeMemberProperty): TMethod; overload;
+function GetMethodProp(Instance: TObject; const PropName: string): TMethod; overload;
+procedure SetMethodProp(Instance: TObject; PropInfo: TTypeMemberProperty;  const Value : TMethod); overload;
+procedure SetMethodProp(Instance: TObject; const PropName: string; const Value: TMethod); overload;
 
-function GetInterfaceProp(Instance: TObject; const PropName: string): IInterface;
-function GetInterfaceProp(Instance: TObject; PropInfo: TTypeMemberProperty): IInterface;
-procedure SetInterfaceProp(Instance: TObject; const PropName: string; const Value: IInterface);
-procedure SetInterfaceProp(Instance: TObject; PropInfo: TTypeMemberProperty; const Value: IInterface);
+function GetInterfaceProp(Instance: TObject; const PropName: string): IInterface; overload;
+function GetInterfaceProp(Instance: TObject; PropInfo: TTypeMemberProperty): IInterface; overload;
+procedure SetInterfaceProp(Instance: TObject; const PropName: string; const Value: IInterface); overload;
+procedure SetInterfaceProp(Instance: TObject; PropInfo: TTypeMemberProperty; const Value: IInterface); overload;
 
-function GetRawInterfaceProp(Instance: TObject; const PropName: string): Pointer;
-function GetRawInterfaceProp(Instance: TObject; PropInfo: TTypeMemberProperty): Pointer;
-procedure SetRawInterfaceProp(Instance: TObject; const PropName: string; const Value: Pointer);
-procedure SetRawInterfaceProp(Instance: TObject; PropInfo: TTypeMemberProperty; const Value: Pointer);
+function GetRawInterfaceProp(Instance: TObject; const PropName: string): Pointer; overload;
+function GetRawInterfaceProp(Instance: TObject; PropInfo: TTypeMemberProperty): Pointer; overload;
+procedure SetRawInterfaceProp(Instance: TObject; const PropName: string; const Value: Pointer); overload;
+procedure SetRawInterfaceProp(Instance: TObject; PropInfo: TTypeMemberProperty; const Value: Pointer); overload;
 
 implementation
 

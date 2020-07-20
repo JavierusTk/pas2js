@@ -29,9 +29,9 @@
       </Linking>
       <Other>
         <CustomOptions Value="-dPas2js -O- -Jc"/>
-        <CompilerPath Value="pas2js"/>
+        <CompilerPath Value="C:/Projetos/pas2js/bin/i386-win32/pas2js.exe"/>
         <ExecuteBefore>
-          <Command Value="$MakeExe(IDE,pas2js) -O- -Jc -vbq pas2js_rtl.pas"/>
+          <Command Value="C:/Projetos/pas2js/bin/i386-win32/pas2js.exe -O- -Jc -vbq -MDelphi pas2js_rtl.pas"/>
           <ScanForFPCMsgs Value="True"/>
         </ExecuteBefore>
       </Other>

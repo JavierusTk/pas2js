@@ -10,8 +10,6 @@
     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
 
  **********************************************************************}
-{$mode objfpc}
-
 unit contnrs;
 
 interface
@@ -35,8 +33,8 @@ Type
     Procedure SetCapacity(NewCapacity: Integer);
     Function GetCapacity: integer;
   public
-    constructor Create; reintroduce;
-    constructor Create(FreeObjects : Boolean);
+    constructor Create; reintroduce; overload;
+    constructor Create(FreeObjects : Boolean); overload;
     destructor Destroy; override;
     Procedure Clear;
     Function Add(AObject: TObject): Integer;
@@ -73,8 +71,8 @@ Type
     Function GetItem(Index: Integer): TObject;
     Procedure SetItem(Index: Integer; AObject: TObject);
   public
-    constructor Create; reintroduce;
-    constructor Create(FreeObjects : boolean);
+    constructor Create; reintroduce; overload;
+    constructor Create(FreeObjects : boolean); overload;
     Function Add(AObject: TObject): Integer; reintroduce;
     Function Extract(Item: TObject): TObject; reintroduce;
     Function Remove(AObject: TObject): Integer; reintroduce;
@@ -268,8 +266,8 @@ Type
     Function GetData(const index: string):JSValue; virtual;
     Function ForEachCall(aMethod: TDataIteratorMethod): THTDataNode; virtual;
   Public
-    Function Iterate(aMethod: TDataIteratorMethod): JSValue; virtual;
-    Function Iterate(aMethod: TDataIteratorCallBack): JSValue; virtual;
+    Function Iterate(aMethod: TDataIteratorMethod): JSValue; virtual; overload;
+    Function Iterate(aMethod: TDataIteratorCallBack): JSValue; virtual; overload;
     Procedure Add(const aKey: string; AItem: JSValue); virtual;
     property Items[const index: string]: JSValue read GetData write SetData; default;
   end;
@@ -296,8 +294,8 @@ Type
     Function GetData(const index: string): String; virtual;
     Function ForEachCall(aMethod: TStringIteratorMethod): THTStringNode; virtual;
   Public
-    Function Iterate(aMethod: TStringIteratorMethod): String; virtual;
-    Function Iterate(aMethod: TStringIteratorCallback): String; virtual;
+    Function Iterate(aMethod: TStringIteratorMethod): String; virtual; overload;
+    Function Iterate(aMethod: TStringIteratorCallback): String; virtual; overload;
     Procedure Add(const aKey,aItem: string); virtual;
     property Items[const index: string]: String read GetData write SetData; default;
   end;
@@ -334,8 +332,8 @@ Type
   Public
     constructor Create(AOwnsObjects : Boolean = True); reintroduce;
     constructor CreateWith(AHashTableSize: Longword; aHashFunc: THashFunction; AOwnsObjects : Boolean = True); reintroduce;
-    Function Iterate(aMethod: TObjectIteratorMethod): TObject; virtual;
-    Function Iterate(aMethod: TObjectIteratorCallback): TObject; virtual;
+    Function Iterate(aMethod: TObjectIteratorMethod): TObject; virtual; overload;
+    Function Iterate(aMethod: TObjectIteratorCallback): TObject; virtual; overload;
     Procedure Add(const aKey: string; AItem : TObject); virtual;
     property Items[const index: string]: TObject read GetData write SetData; default;
     Property OwnsObjects : Boolean Read FOwnsObjects;
@@ -394,8 +392,8 @@ Type
     Procedure Assign(AList: TCustomBucketList);
     Function Exists(AItem: JSValue): Boolean;
     Function Find(AItem: JSValue; out AData: JSValue): Boolean;
-    Function ForEach(AProc: TBucketProc; AInfo: JSValue): Boolean;
-    Function ForEach(AProc: TBucketProc): Boolean;
+    Function ForEach(AProc: TBucketProc; AInfo: JSValue): Boolean; overload;
+    Function ForEach(AProc: TBucketProc): Boolean; overload;
     Function Remove(AItem: JSValue): JSValue;
     property Data[AItem: JSValue]: JSValue read GetData write SetData; default;
   end;

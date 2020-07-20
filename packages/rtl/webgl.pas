@@ -1,6 +1,5 @@
 Unit webgl;
 
-{$MODE ObjFPC}
 {$H+}
 {$modeswitch externalclass}
 
@@ -630,12 +629,12 @@ Type
     Procedure stencilMaskSeparate(face : GLenum; mask : GLuint);
     Procedure stencilOp(fail : GLenum; zfail : GLenum; zpass : GLenum);
     Procedure stencilOpSeparate(face : GLenum; fail : GLenum; zfail : GLenum; zpass : GLenum);
-    Procedure texImage2D(target : GLenum; level : GLint; internalformat : GLint; width : GLsizei; height : GLsizei; border : GLint; format : GLenum; type_ : GLenum; pixels : TJSTypedArray);
-    Procedure texImage2D(target : GLenum; level : GLint; internalformat : GLint; format : GLenum; type_ : GLenum; source : TexImageSource);
+    Procedure texImage2D(target : GLenum; level : GLint; internalformat : GLint; width : GLsizei; height : GLsizei; border : GLint; format : GLenum; type_ : GLenum; pixels : TJSTypedArray); overload;
+    Procedure texImage2D(target : GLenum; level : GLint; internalformat : GLint; format : GLenum; type_ : GLenum; source : TexImageSource); overload;
     Procedure texParameterf(target : GLenum; pname : GLenum; param : GLfloat);
     Procedure texParameteri(target : GLenum; pname : GLenum; param : GLint);
-    Procedure texSubImage2D(target : GLenum; level : GLint; xoffset : GLint; yoffset : GLint; width : GLsizei; height : GLsizei; format : GLenum; type_ : GLenum; pixels : TJSTypedArray);
-    Procedure texSubImage2D(target : GLenum; level : GLint; xoffset : GLint; yoffset : GLint; format : GLenum; type_ : GLenum; source : TexImageSource);
+    Procedure texSubImage2D(target : GLenum; level : GLint; xoffset : GLint; yoffset : GLint; width : GLsizei; height : GLsizei; format : GLenum; type_ : GLenum; pixels : TJSTypedArray); overload;
+    Procedure texSubImage2D(target : GLenum; level : GLint; xoffset : GLint; yoffset : GLint; format : GLenum; type_ : GLenum; source : TexImageSource); overload;
     Procedure uniform1f(location : TJSWebGLUniformLocation; x : GLfloat);
     Procedure uniform2f(location : TJSWebGLUniformLocation; x : GLfloat; y : GLfloat);
     Procedure uniform3f(location : TJSWebGLUniformLocation; x : GLfloat; y : GLfloat; z : GLfloat);

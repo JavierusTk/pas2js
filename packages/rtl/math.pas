@@ -12,8 +12,6 @@
  **********************************************************************}
 unit Math;
 
-{$mode objfpc}
-
 interface
 
 const
@@ -54,8 +52,8 @@ function RoundTo(const AValue: Double; const Digits: TRoundToRange): Double;
 function SimpleRoundTo(const AValue: Double; const Digits: TRoundToRange = -2): Double;
 
 function randg(mean,stddev : float) : float;
-function RandomRange(const aFrom, aTo: Integer): Integer;
-function RandomRange(const aFrom, aTo: NativeLargeInt): NativeLargeInt;
+function RandomRange(const aFrom, aTo: Integer): Integer; overload;
+function RandomRange(const aFrom, aTo: NativeLargeInt): NativeLargeInt; overload;
 
 const
   NegativeValue = -1;
@@ -106,10 +104,10 @@ function lnxp1(x : double) : double;
 
 function IntPower(base : float;const exponent : Integer) : double;
 
-procedure DivMod(Dividend: LongInt; Divisor: Word; out Result, Remainder: Word);
-procedure DivMod(Dividend: LongInt; Divisor: Word; out Result, Remainder: SmallInt);
-procedure DivMod(Dividend: DWord; Divisor: DWord; out Result, Remainder: DWord);
-procedure DivMod(Dividend: LongInt; Divisor: LongInt; out Result, Remainder: LongInt);
+procedure DivMod(Dividend: LongInt; Divisor: Word; out Result, Remainder: Word); overload;
+procedure DivMod(Dividend: LongInt; Divisor: Word; out Result, Remainder: SmallInt); overload;
+procedure DivMod(Dividend: DWord; Divisor: DWord; out Result, Remainder: DWord); overload;
+procedure DivMod(Dividend: LongInt; Divisor: LongInt; out Result, Remainder: LongInt); overload;
 
 { Angle conversion }
 function DegToRad(deg : double) : double;
@@ -171,10 +169,10 @@ const
   LessThanValue = Low(TValueRelationship);
   GreaterThanValue = High(TValueRelationship);
 
-function CompareValue ( const A, B  : Integer) : TValueRelationship;
-function CompareValue ( const A, B  : NativeLargeInt) : TValueRelationship;
-function CompareValue ( const A, B  : NativeLargeUInt) : TValueRelationship;
-function CompareValue ( const A, B : Double; delta : Double = 0.0) : TValueRelationship;
+function CompareValue ( const A, B  : Integer) : TValueRelationship; overload;
+function CompareValue ( const A, B  : NativeLargeInt) : TValueRelationship; overload;
+function CompareValue ( const A, B  : NativeLargeUInt) : TValueRelationship; overload;
+function CompareValue ( const A, B : Double; delta : Double = 0.0) : TValueRelationship; overload;
 
 implementation
 

@@ -1,6 +1,5 @@
 Unit webbluetooth;
 
-{$MODE ObjFPC}
 {$H+}
 {$modeswitch externalclass}
 

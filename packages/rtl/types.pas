@@ -12,11 +12,14 @@
  **********************************************************************}
 unit Types;
 
-{$mode objfpc}
-
 interface
 
 type
+  {$IFDEF DCC}
+  JSValue = class
+
+  end;
+  {$ENDIF}
   TDirection = (FromBeginning, FromEnd);
 
   TBooleanDynArray = array of Boolean;
@@ -56,8 +59,8 @@ function IsRectEmpty(const aRect: TRect) : Boolean;
 function OffsetRect(var aRect: TRect; DX, DY: Integer) : Boolean;
 function CenterPoint(const aRect: TRect): TPoint;
 function InflateRect(var aRect: TRect; dx, dy: Integer): Boolean;
-function Size(AWidth, AHeight: Integer): TSize;
-function Size(const aRect: TRect): TSize;
+function Size(AWidth, AHeight: Integer): TSize; overload;
+function Size(const aRect: TRect): TSize; overload;
 
 implementation
 

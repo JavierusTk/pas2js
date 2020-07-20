@@ -12,7 +12,6 @@
  **********************************************************************}
 unit NodeJS;
 
-{$mode objfpc}
 {$ModeSwitch externalclass}
 
 interface

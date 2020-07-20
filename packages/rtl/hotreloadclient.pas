@@ -1,7 +1,5 @@
 unit hotreloadclient;
 
-{$mode objfpc}
-
 interface
 
 uses sysutils, types, js, web;
@@ -47,8 +45,8 @@ Type
     class var Global : THotReload;
     procedure OnTick; virtual;
   public
-    Constructor Create; reintroduce;
-    Constructor Create(AOptions : THotReloadOptions);
+    Constructor Create; reintroduce; overload;
+    Constructor Create(AOptions : THotReloadOptions); overload;
     Class Procedure StartHotReload;
     Class Procedure StopHotReload;
     class function getGlobal : THotReload;

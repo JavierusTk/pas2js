@@ -21,8 +21,6 @@
 }
 unit browserconsole;
 
-{$mode objfpc}
-
 interface
 
 uses

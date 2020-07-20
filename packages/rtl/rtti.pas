@@ -12,7 +12,6 @@
  **********************************************************************}
 unit RTTI;
 
-{$mode objfpc}
 {$ModeSwitch advancedrecords}
 
 interface

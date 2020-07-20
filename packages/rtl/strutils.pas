@@ -12,7 +12,6 @@
     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
 
  **********************************************************************}
-{$mode objfpc}
 
 {$inline on}
 unit strutils;
@@ -68,8 +67,8 @@ Function AnsiReverseString(const AText: String): String;
 Function StuffString(const AText: string; AStart, ALength: Cardinal;  const ASubText: string): string;
 Function RandomFrom(const AValues: array of string): string; overload;
 Function IfThen(AValue: Boolean; const ATrue: string; const AFalse: string = ''): string; overload;
-function NaturalCompareText (const S1 , S2 : string ): Integer ;
-function NaturalCompareText(const Str1, Str2: string; const ADecSeparator, AThousandSeparator: String): Integer;
+function NaturalCompareText (const S1 , S2 : string ): Integer ; overload;
+function NaturalCompareText(const Str1, Str2: string; const ADecSeparator, AThousandSeparator: String): Integer; overload;
 
 
 { ---------------------------------------------------------------------
@@ -103,9 +102,9 @@ type
   TStringSearchOptions = set of TStringSearchOption;
   TStringSeachOption = TStringSearchOption;
 
-Function PosEx(const SubStr, S: string; Offset: SizeUint): SizeInt;
-Function PosEx(const SubStr, S: string): SizeInt; // Offset: Cardinal = 1
-Function PosEx(c:char; const S: string; Offset: SizeUint): SizeInt;
+Function PosEx(const SubStr, S: string; Offset: SizeUint): SizeInt; overload;
+Function PosEx(const SubStr, S: string): SizeInt; overload; // Offset: Cardinal = 1
+Function PosEx(c:char; const S: string; Offset: SizeUint): SizeInt; overload;
 function StringsReplace(const S: string; OldPattern, NewPattern: array of string;  Flags: TReplaceFlags): string;
 
 { ---------------------------------------------------------------------
@@ -122,21 +121,21 @@ Function ReplaceText(const AText, AFromText, AToText: string): string;
 type
   TSoundexLength = 1..MaxInt;
 
-Function Soundex(const AText: string; ALength: TSoundexLength): string;
-Function Soundex(const AText: string): string; // ; ALength: TSoundexLength = 4
+Function Soundex(const AText: string; ALength: TSoundexLength): string; overload;
+Function Soundex(const AText: string): string; overload; // ; ALength: TSoundexLength = 4
 
 type
   TSoundexIntLength = 1..8;
 
-Function SoundexInt(const AText: string; ALength: TSoundexIntLength): Integer;
-Function SoundexInt(const AText: string): Integer; //; ALength: TSoundexIntLength = 4
+Function SoundexInt(const AText: string; ALength: TSoundexIntLength): Integer; overload;
+Function SoundexInt(const AText: string): Integer; overload; //; ALength: TSoundexIntLength = 4
 Function DecodeSoundexInt(AValue: Integer): string;
 Function SoundexWord(const AText: string): Word;
 Function DecodeSoundexWord(AValue: Word): string;
-Function SoundexSimilar(const AText, AOther: string; ALength: TSoundexLength): Boolean;
-Function SoundexSimilar(const AText, AOther: string): Boolean; //; ALength: TSoundexLength = 4
-Function SoundexCompare(const AText, AOther: string; ALength: TSoundexLength): Integer;
-Function SoundexCompare(const AText, AOther: string): Integer; //; ALength: TSoundexLength = 4
+Function SoundexSimilar(const AText, AOther: string; ALength: TSoundexLength): Boolean; overload;
+Function SoundexSimilar(const AText, AOther: string): Boolean; overload; //; ALength: TSoundexLength = 4
+Function SoundexCompare(const AText, AOther: string; ALength: TSoundexLength): Integer; overload;
+Function SoundexCompare(const AText, AOther: string): Integer; overload; //; ALength: TSoundexLength = 4
 Function SoundexProc(const AText, AOther: string): Boolean;
 
 type
@@ -190,9 +189,9 @@ function Numb2USA(const S: string): string;
 function Hex2Dec(const S: string): Longint;
 function Dec2Numb(N: Longint; Len, Base: Byte): string;
 function Numb2Dec(S: string; Base: Byte): Longint;
-function IntToBin(Value: Longint; Digits, Spaces: Integer): string;
-function IntToBin(Value: Longint; Digits: Integer): string;
-function IntToBin(Value: NativeInt; Digits:integer): string;
+function IntToBin(Value: Longint; Digits, Spaces: Integer): string;  overload;
+function IntToBin(Value: Longint; Digits: Integer): string; overload;
+function IntToBin(Value: NativeInt; Digits:integer): string; overload;
 function IntToRoman(Value: Longint): string;
 function TryRomanToInt(S: String; out N: LongInt; Strictness: TRomanConversionStrictness = rcsRelaxed): Boolean;
 function RomanToInt(const S: string; Strictness: TRomanConversionStrictness = rcsRelaxed): Longint;
@@ -204,10 +203,10 @@ const
   StdWordDelims = [#0..' ',',','.',';','/','\',':','''','"','`'] + Brackets;
   StdSwitchChars = ['-','/'];
 
-function PosSet (const c:Array of char;const s : String ):SizeInt;
-function PosSet (const c:string;const s : String ):SizeInt;
-function PosSetEx (const c:Array of char;const s : String;count:Integer ):SizeInt;
-function PosSetEx (const c:string;const s : String;count:Integer ):SizeInt;
+function PosSet (const c:Array of char;const s : String ):SizeInt; overload;
+function PosSet (const c:string;const s : String ):SizeInt; overload;
+function PosSetEx (const c:Array of char;const s : String;count:Integer ):SizeInt; overload;
+function PosSetEx (const c:string;const s : String;count:Integer ):SizeInt; overload;
 
 Procedure Removeleadingchars(VAR S : String; Const CSet:Array of char);
 Procedure RemoveTrailingChars(VAR S : String;Const CSet:Array of char);

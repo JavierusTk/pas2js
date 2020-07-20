@@ -1,6 +1,5 @@
 unit websvg;
 
-{$MODE ObjFPC}
 {$H+}
 {$MODESWITCH externalclass}
 

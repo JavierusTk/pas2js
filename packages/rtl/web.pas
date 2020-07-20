@@ -10,8 +10,6 @@
     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
 
  **********************************************************************}
-
-{$mode objfpc}
 {$modeswitch externalclass}
 
 unit Web;
@@ -60,13 +58,13 @@ TEventListenerEvent = class external name 'EventListener_Event' (TJSObject)
 
   TJSEventTarget = class external name 'EventTarget' (TJSObject)
   public
-    procedure addEventListener(aname : string; aListener : TJSEventHandler);
-    procedure addEventListener(aname : string; aListener : TJSRawEventHandler);
-    procedure addEventListener(aname : string; aListener : JSValue);
+    procedure addEventListener(aname : string; aListener : TJSEventHandler); overload;
+    procedure addEventListener(aname : string; aListener : TJSRawEventHandler); overload;
+    procedure addEventListener(aname : string; aListener : JSValue); overload;
     function dispatchEvent(event : JSValue) : Boolean;
-    procedure removeEventListener(aname : string; aListener : TJSEventHandler);
-    procedure removeEventListener(aname : string; aListener : TJSRawEventHandler);
-    procedure removeEventListener(aname : string; aListener : JSValue);
+    procedure removeEventListener(aname : string; aListener : TJSEventHandler); overload;
+    procedure removeEventListener(aname : string; aListener : TJSRawEventHandler); overload;
+    procedure removeEventListener(aname : string; aListener : JSValue); overload;
   end;
 
   TJSNode = class external name 'Node' (TJSEventTarget)
@@ -135,8 +133,8 @@ TEventListenerEvent = class external name 'EventListener_Event' (TJSObject)
   Private
     FLength : NativeInt; external name 'length';
   Public
-    procedure forEach(const aCallBack : TJSNodeListCallBack);
-    procedure forEach(const aCallBack : TJSNodeListEvent);
+    procedure forEach(const aCallBack : TJSNodeListCallBack); overload;
+    procedure forEach(const aCallBack : TJSNodeListEvent); overload;
     function item(aIndex : NativeInt) : TJSNode;
     Property length : NativeInt Read FLength;
     Property Nodes [aIndex : NativeInt] : TJSNode Read item; default;
@@ -185,7 +183,7 @@ TEventListenerEvent = class external name 'EventListener_Event' (TJSObject)
   Private
     FLength : NativeInt; external name 'length';
   public
-    Procedure add(aToken : TJSDOMString); varargs;
+    Procedure add(aToken : TJSDOMString); varargs;  overload;
     Procedure remove(aToken : TJSDOMString); varargs;
     function item(aIndex : NativeInt) : String;
     function contains(aToken : TJSDOMString) : Boolean;
@@ -1003,7 +1001,7 @@ TEventListenerEvent = class external name 'EventListener_Event' (TJSObject)
     procedure assert(anAssertion : string; Obj1 : JSValue); varargs;
     Procedure clear;  
     procedure count; overload;
-    procedure count(aCounter : String);
+    procedure count(aCounter : String); overload;
     procedure debug(Obj1 : JSValue); varargs of JSValue;
     procedure error(Obj1 : JSValue); varargs of JSValue;
     procedure group; overload;
@@ -1014,7 +1012,7 @@ TEventListenerEvent = class external name 'EventListener_Event' (TJSObject)
     procedure info(Obj1 : JSValue); varargs of JSValue;
     procedure log(Obj1 : JSValue); varargs of JSValue;
     procedure table(args: array of JSValue); overload;
-    procedure table(args: array of JSValue; Columns : Array of string);
+    procedure table(args: array of JSValue; Columns : Array of string); overload;
     procedure table(args: TJSObject); overload;
     procedure table(args: TJSObject; Columns : Array of string); overload;
     procedure time(aName : string);
@@ -1331,13 +1329,13 @@ TEventListenerEvent = class external name 'EventListener_Event' (TJSObject)
   Public
     procedure back;
     procedure forward;
-    procedure go(aIndex : NativeInt);
-    procedure go;
-    procedure pushState(aState : jsValue; aTitle : String; AURL : String);
-    procedure pushState(aState : jsValue; aTitle : String);
-    procedure replaceState(aState : jsValue; aTitle : String; AURL : String);
-    procedure replaceState(aState : jsValue; aTitle : String);
-    procedure replaceState(aState : jsValue);
+    procedure go(aIndex : NativeInt); overload;
+    procedure go; overload;
+    procedure pushState(aState : jsValue; aTitle : String; AURL : String); overload;
+    procedure pushState(aState : jsValue; aTitle : String); overload;
+    procedure replaceState(aState : jsValue; aTitle : String; AURL : String); overload;
+    procedure replaceState(aState : jsValue; aTitle : String); overload;
+    procedure replaceState(aState : jsValue); overload;
 {$IFDEF FIREFOX}
     property state : JSValue read FState;
 {$ENDIF}
@@ -1475,11 +1473,11 @@ TEventListenerEvent = class external name 'EventListener_Event' (TJSObject)
 
   TJSIDBObjectStore = class external name 'IDBObjectStore'  (TJSEventTarget)
   public
-    function add(aValue : JSValue; aKey : String) : TJSIDBRequest;
-    function add(aValue : JSValue) : TJSIDBRequest;
+    function add(aValue : JSValue; aKey : String) : TJSIDBRequest; overload;
+    function add(aValue : JSValue) : TJSIDBRequest; overload;
     function clear : TJSIDBRequest;
-    function delete(aKey : string) : TJSIDBRequest;
-    function delete(aKeyRange : TJSIDBKeyRange) : TJSIDBRequest;
+    function delete(aKey : string) : TJSIDBRequest; overload;
+    function delete(aKeyRange : TJSIDBKeyRange) : TJSIDBRequest; overload;
     function get(aKey : string) : TJSIDBRequest; overload;
     function get(aKeyRange : TJSIDBKeyRange) : TJSIDBRequest; overload;
     function getKey(aKey : string) : TJSIDBRequest; overload;
@@ -1587,8 +1585,8 @@ TEventListenerEvent = class external name 'EventListener_Event' (TJSObject)
 
   TJSIDBFactory = class external name 'IDBFactory' (TJSEventTarget)
   public
-    function open(aName : string) : TJSIDBOpenDBRequest;
-    function open(aName : string; aVersion : Integer) : TJSIDBOpenDBRequest;
+    function open(aName : string) : TJSIDBOpenDBRequest; overload;
+    function open(aName : string; aVersion : Integer) : TJSIDBOpenDBRequest; overload;
     function deleteDatabase(aName : string) : TJSIDBOpenDBRequest;
     function cmp (a,b : jsValue) : NativeInt;
   end;
@@ -1674,15 +1672,15 @@ TEventListenerEvent = class external name 'EventListener_Event' (TJSObject)
   TJSWorker = class external name 'Worker' (TJSEventTarget)
   public
     constructor new(aURL : string);
-    procedure postMessage(aValue : JSValue);
-    procedure postMessage(aValue : JSValue; aList : TJSValueDynArray);
+    procedure postMessage(aValue : JSValue); overload;
+    procedure postMessage(aValue : JSValue; aList : TJSValueDynArray); overload;
   end;
 
   TJSMessagePort = class external name 'MessagePort' (TJSEventTarget)
   Public
     procedure close;
-    procedure postMessage(aValue : JSValue);
-    procedure postMessage(aValue : JSValue; aList : TJSValueDynArray);
+    procedure postMessage(aValue : JSValue); overload;
+    procedure postMessage(aValue : JSValue; aList : TJSValueDynArray); overload;
     procedure start;
   end;
 
@@ -1770,8 +1768,8 @@ TEventListenerEvent = class external name 'EventListener_Event' (TJSObject)
     function requestMediaKeySystemAccess(aKeySystem : String; supportedConfigurations : TJSValueDynArray) : TJSPromise;
     Procedure registerContentHandler(aMimeType,aURI,aTitle : string);
     Procedure registerProtocolHandler(aProtocol,aURI,aTitle : string);
-    Procedure vibrate(aPattern : NativeInt);
-    Procedure vibrate(aPattern : Array of NativeInt);
+    Procedure vibrate(aPattern : NativeInt); overload;
+    Procedure vibrate(aPattern : Array of NativeInt); overload;
 {$IFDEF FIREFOX}
     property buildID : String read FBuildID;
     property oscpu : string read FOSCPU;
@@ -1880,8 +1878,8 @@ TEventListenerEvent = class external name 'EventListener_Event' (TJSObject)
     protocol : string;
     search : string;
     username : string;
-    constructor new(aURL : String);
-    constructor new(aURL,aBase : String);
+    constructor new(aURL : String); overload;
+    constructor new(aURL,aBase : String); overload;
     class function createObjectURL(const v: JSValue): string;
     class function revokeObjectURL(const S : String): string;
     function toJSON : String;
@@ -1926,8 +1924,8 @@ TEventListenerEvent = class external name 'EventListener_Event' (TJSObject)
     flocked: Boolean; external name 'locked';
   public
     property locked: Boolean read flocked;
-    constructor new(underlyingSource: TJSObject);
-    constructor new(underlyingSource, queueingStrategy: TJSObject);
+    constructor new(underlyingSource: TJSObject); overload;
+    constructor new(underlyingSource, queueingStrategy: TJSObject); overload;
     function cancel(reason: TJSDOMString): TJSPromise;
     function getReader(): TJSObject; overload;
     function getReader(mode: TJSObject): TJSObject; overload;
@@ -2088,8 +2086,8 @@ TEventListenerEvent = class external name 'EventListener_Event' (TJSObject)
     touchend : TJSTouchEventHandler;
     touchmove : TJSTouchEventHandler;
     touchcancel : TJSTouchEventHandler;
-    procedure addEventListener(aname : string; aListener : TJSEventHandler);
-    procedure addEventListener(aname : string; aListener : JSValue);
+    procedure addEventListener(aname : string; aListener : TJSEventHandler); overload;
+    procedure addEventListener(aname : string; aListener : JSValue); overload;
     Procedure alert(Const Msg : String);
     Function atob(Const aValue : string) : string;
     procedure blur;
@@ -2110,28 +2108,28 @@ TEventListenerEvent = class external name 'EventListener_Event' (TJSObject)
     function matchMedia(aQuery : String) : TJSMediaQueryList;
     procedure moveBy(x,y : NativeInt);
     procedure moveTo(x,y : NativeInt);
-    function open : TJSWindow;
+    function open : TJSWindow; overload;
     function open(Const aURL : String) : TJSWindow; overload;
     function open(Const aURL,aTarget : String) : TJSWindow; overload;
     function open(Const aURL,aTarget : String; AOptions : TJSObject) : TJSWindow; overload;
-    procedure postMessage(aMessage : JSValue);
-    procedure postMessage(aMessage : JSValue; aOptions : TJSPostMessageOptions);
-    procedure postMessage(aMessage : JSValue; aTransfer : TJSValueDynArray);
-    procedure postMessage(aMessage : JSValue; aTarget : string);
-    procedure postMessage(aMessage : JSValue; aTarget : string; aTransfer : TJSValueDynArray);
+    procedure postMessage(aMessage : JSValue); overload;
+    procedure postMessage(aMessage : JSValue; aOptions : TJSPostMessageOptions); overload;
+    procedure postMessage(aMessage : JSValue; aTransfer : TJSValueDynArray); overload;
+    procedure postMessage(aMessage : JSValue; aTarget : string); overload;
+    procedure postMessage(aMessage : JSValue; aTarget : string; aTransfer : TJSValueDynArray); overload;
     procedure print;
     function prompt(const aMessage : String) : String; overload;
     function prompt(const aMessage,aDefault : String) : String; overload;
-    procedure removeEventListener(aname : string; aListener : TJSEventHandler);
-    procedure removeEventListener(aname : string; aListener : JSValue);
+    procedure removeEventListener(aname : string; aListener : TJSEventHandler); overload;
+    procedure removeEventListener(aname : string; aListener : JSValue); overload;
     function requestAnimationFrame(aCallback: TFrameRequestCallback): Integer;
     procedure resizeBy(aWidth,aHeight : NativeInt);
     procedure resizeTo(aWidth,aHeight : NativeInt);
     procedure scrollBy(x,y : NativeInt);
     procedure scrollTo(x,y : NativeInt);
     Function setInterval(ahandler : TJSTimerCallBack; aInterval : NativeUInt) : NativeInt; varargs;
-    Function setTimeout(ahandler : TJSTimerCallBack; aTimeout : NativeUInt) : NativeInt; varargs;
-    Function setTimeout(ahandler : TJSTimerCallBack) : NativeInt;
+    Function setTimeout(ahandler : TJSTimerCallBack; aTimeout : NativeUInt) : NativeInt; varargs; overload;
+    Function setTimeout(ahandler : TJSTimerCallBack) : NativeInt; overload;
     procedure stop;
     { public properties }
     property console : TJSConsole Read FConsole;
@@ -2894,10 +2892,10 @@ TEventListenerEvent = class external name 'EventListener_Event' (TJSObject)
   Public
     height : integer;
     width : integer;
-    Function getContext(contextType : string) : TJSObject;
-    Function getContext(contextType : string; contextAttributes : TJSObject) : TJSObject;
-    Function getContextAs2DContext(contextType : string; contextAttributes : TJSObject) : TJSCanvasRenderingContext2D; external name 'getContext';
-    Function getContextAs2DContext(contextType : string) : TJSCanvasRenderingContext2D; external name 'getContext';
+    Function getContext(contextType : string) : TJSObject; overload;
+    Function getContext(contextType : string; contextAttributes : TJSObject) : TJSObject; overload;
+    Function getContextAs2DContext(contextType : string; contextAttributes : TJSObject) : TJSCanvasRenderingContext2D; external name 'getContext'; overload;
+    Function getContextAs2DContext(contextType : string) : TJSCanvasRenderingContext2D; external name 'getContext'; overload;
     Procedure toBlob (aCallBack : THTMLCanvasToBlobCallback; aMimeType : String); overload;
     Procedure toBlob (aCallBack : THTMLCanvasToBlobCallback; aMimeType : String; aQuality : Double); overload;
     Function toDataURL : String; overload;
@@ -2954,8 +2952,8 @@ TEventListenerEvent = class external name 'EventListener_Event' (TJSObject)
     procedure readAsArrayBuffer(Blob: TJSBlob);
     procedure readAsBinaryString(Blob: TJSBlob);
     procedure readAsDataURL(Blob: TJSBlob);
-    procedure readAsText(Blob: TJSBlob; encoding : string);
-    procedure readAsText(Blob: TJSBlob);
+    procedure readAsText(Blob: TJSBlob; encoding : string); overload;
+    procedure readAsText(Blob: TJSBlob); overload;
     property Error : TJSDOMException read FError;
     Property readyState : Integer Read fReadyState;
     property Result : JSValue Read FResult;
@@ -3577,10 +3575,10 @@ TEventListenerEvent = class external name 'EventListener_Event' (TJSObject)
     Procedure close; overload;
     Procedure close(code : Cardinal); overload;
     Procedure close(code : Cardinal; reason : String); overload;
-    Procedure send(data : String);
-    Procedure send(data : TJSBlob);
-    Procedure send(data : TJSArrayBuffer);
-    Procedure send(data : TJSTypedArray);
+    Procedure send(data : String); overload;
+    Procedure send(data : TJSBlob); overload;
+    Procedure send(data : TJSArrayBuffer); overload;
+    Procedure send(data : TJSTypedArray); overload;
     Property url : String Read Furl;
     Property readyState : Cardinal Read FreadyState;
     Property bufferedAmount : NativeInt Read FbufferedAmount;
@@ -3705,17 +3703,17 @@ TEventListenerEvent = class external name 'EventListener_Event' (TJSObject)
   TJSFormDataEntryValueArray = Array of TJSFormDataEntryValue;
 
   TJSFormData = Class external name 'FormData' (TJSObject)
-    constructor new;
-    constructor new(aForm : TJSHTMLElement);
-    Procedure append(const aName,aValue : String);
-    Procedure append(const aName : String; aBlob : TJSBlob);
+    constructor new; overload;
+    constructor new(aForm : TJSHTMLElement); overload;
+    Procedure append(const aName,aValue : String); overload;
+    Procedure append(const aName : String; aBlob : TJSBlob); overload;
     Procedure delete(const aName : String);
     Function entries : TJSFormDataEntryValueArray;
     Function get(const aName : String): TJSFormDataEntryValue;
     function has(const aName : String): Boolean;
     Function keys : TStringDynArray; reintroduce;
-    Procedure set_(const aName,aValue : String); external name 'set';
-    Procedure set_(const aName : String; aBlob : TJSBlob); external name 'set';
+    Procedure set_(const aName,aValue : String); external name 'set'; overload;
+    Procedure set_(const aName : String; aBlob : TJSBlob); external name 'set'; overload;
     Function getAll(const aName : String) : TJSFormDataEntryValueArray;
     Function values : TJSValueDynArray; reintroduce;
     Property Entry[aIndex : String] : TJSFormDataEntryValue read Get;

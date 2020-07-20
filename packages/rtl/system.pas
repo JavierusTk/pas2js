@@ -12,7 +12,6 @@
  **********************************************************************}
 unit System;
 
-{$mode objfpc}
 {$modeswitch externalclass}
 
 interface
@@ -157,8 +156,8 @@ type
     procedure DefaultHandler(var aMessage); virtual;
     procedure DefaultHandlerStr(var aMessage); virtual;
 
-    function GetInterface(const iid: TGuid; out obj): boolean;
-    function GetInterface(const iidstr: String; out obj): boolean; inline;
+    function GetInterface(const iid: TGuid; out obj): boolean; overload;
+    function GetInterface(const iidstr: String; out obj): boolean; inline; overload;
     function GetInterfaceByStr(const iidstr: String; out obj): boolean;
     function GetInterfaceWeak(const iid: TGuid; out obj): boolean; // equal to GetInterface but the interface returned is not referenced
 
@@ -182,13 +181,13 @@ const
 
 type
   {$Interfaces COM}
-  IUnknown = interface
+  IInterface = interface
     ['{00000000-0000-0000-C000-000000000046}']
     function QueryInterface(const iid: TGuid; out obj): Integer;
     function _AddRef: Integer;
     function _Release: Integer;
   end;
-  IInterface = IUnknown;
+  IUnknown = IInterface;
 
   {$M+}
   IInvokable = interface(IInterface)
@@ -209,7 +208,7 @@ type
 
   { TInterfacedObject }
 
-  TInterfacedObject = class(TObject,IUnknown)
+  TInterfacedObject = class(TObject,IInterface)
   protected
     fRefCount: Integer;
     { implement methods of IUnknown }
@@ -227,15 +226,15 @@ type
   TAggregatedObject = class(TObject)
   private
     fController: Pointer;
-    function GetController: IUnknown;
+    function GetController: IInterface;
   protected
     { implement methods of IUnknown }
     function QueryInterface(const iid: TGuid; out obj): Integer; virtual;
     function _AddRef: Integer; virtual;
     function _Release: Integer; virtual;
   public
-    constructor Create(const aController: IUnknown); reintroduce;
-    property Controller: IUnknown read GetController;
+    constructor Create(const aController: IInterface); reintroduce;
+    property Controller: IInterface read GetController;
   end;
 
   { TContainedObject }
@@ -771,27 +770,27 @@ end;
 
 { TAggregatedObject }
 
-function TAggregatedObject.GetController: IUnknown;
+function TAggregatedObject.GetController: IInterface;
 begin
-  Result := IUnknown(fController);
+  Result := IInterface(fController);
 end;
 
 function TAggregatedObject.QueryInterface(const iid: TGuid; out obj): Integer;
 begin
-  Result := IUnknown(fController).QueryInterface(iid, obj);
+  Result := IInterface(fController).QueryInterface(iid, obj);
 end;
 
 function TAggregatedObject._AddRef: Integer;
 begin
-  Result := IUnknown(fController)._AddRef;
+  Result := IInterface(fController)._AddRef;
 end;
 
 function TAggregatedObject._Release: Integer;
 begin
-  Result := IUnknown(fController)._Release;
+  Result := IInterface(fController)._Release;
 end;
 
-constructor TAggregatedObject.Create(const aController: IUnknown);
+constructor TAggregatedObject.Create(const aController: IInterface);
 begin
   inherited Create;
   { do not keep a counted reference to the controller! }

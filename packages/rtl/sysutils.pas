@@ -12,9 +12,10 @@
  **********************************************************************}
 unit SysUtils;
 
-{$mode objfpc}
+{$IFDEF PAS2JS}
 {$modeswitch typehelpers}
 {$modeswitch advancedrecords}
+{$ENDIF}
 
 interface
 
@@ -186,7 +187,7 @@ Const
   HexDisplayPrefix: string = '$';
   LeadBytes = [] unimplemented;
 
-Function CharInSet(Ch: Char;Const CSet : array of char) : Boolean;
+Function CharInSet(Ch: Char;Const CSet : array of char) : Boolean; overload;
 
 function LeftStr(const S: string; Count: Integer): String; assembler;
 function RightStr(const S: string; Count: Integer): String; assembler;
@@ -230,20 +231,20 @@ function QuotedStr(const s: string; QuoteChar: Char = ''''): string;
 function DeQuoteString(aQuoted: String; AQuote: Char): String;
 Function LastDelimiter(const Delimiters, S: string): SizeInt;
 function IsDelimiter(const Delimiters, S: string; Index: Integer): Boolean;
-function AdjustLineBreaks(const S: string): string;
-function AdjustLineBreaks(const S: string; Style: TTextLineBreakStyle): string;
-function WrapText(const Line, BreakStr: string; const BreakChars: Array of char;  MaxCol: Integer): string;
-function WrapText(const Line: string; MaxCol: Integer): string;
+function AdjustLineBreaks(const S: string): string; overload;
+function AdjustLineBreaks(const S: string; Style: TTextLineBreakStyle): string; overload;
+function WrapText(const Line, BreakStr: string; const BreakChars: Array of char;  MaxCol: Integer): string; overload;
+function WrapText(const Line: string; MaxCol: Integer): string; overload;
 
 { *****************************************************************************
   Integer conversions
   *****************************************************************************}
 
 function IntToStr(const Value: Integer): string;
-Function TryStrToInt(const S : String; Out res : Integer) : Boolean;
-Function TryStrToInt(const S : String; Out res : NativeInt) : Boolean;
-Function StrToIntDef(const S : String; Const aDef : Integer) : Integer;
-Function StrToIntDef(const S : String; Const aDef : NativeInt) : NativeInt;
+Function TryStrToInt(const S : String; Out res : Integer) : Boolean; overload;
+Function TryStrToInt(const S : String; Out res : NativeInt) : Boolean; overload;
+Function StrToIntDef(const S : String; Const aDef : Integer) : Integer; overload;
+Function StrToIntDef(const S : String; Const aDef : NativeInt) : NativeInt; overload;
 Function StrToInt(const S : String) : Integer;
 Function StrToNativeInt(const S : String) : NativeInt;
 // For compatibility
@@ -285,8 +286,8 @@ Function TryStrToFloat(const S : String; Out res : Double) : Boolean; overload;
 Function StrToFloatDef(const S : String; Const aDef : Double) : Double;
 Function StrToFloat(const S : String) : Double;
 Function FormatFloat (Fmt : String; aValue : Double) : String;
-Function SwapEndian(W : Word) : Word;
-Function SwapEndian(C : Cardinal) : Cardinal;
+Function SwapEndian(W : Word) : Word; overload;
+Function SwapEndian(C : Cardinal) : Cardinal; overload;
 
 { *****************************************************************************
   Boolean conversions
@@ -296,8 +297,8 @@ Var
   TrueBoolStrs, FalseBoolStrs : Array of String;
 
 function StrToBool(const S: String): Boolean;
-function BoolToStr(B: Boolean; UseBoolStrs:Boolean=False): string;
-function BoolToStr(B: Boolean; const TrueS, FalseS: String): string;
+function BoolToStr(B: Boolean; UseBoolStrs:Boolean=False): string; overload;
+function BoolToStr(B: Boolean; const TrueS, FalseS: String): string; overload;
 function StrToBoolDef(const S: String; Default: Boolean): Boolean;
 function TryStrToBool(const S: String; out Value: Boolean): Boolean;
 
@@ -327,8 +328,8 @@ var
 
 // Set handlers for uncaught exceptions. These will call HookUncaughtExceptions
 // They return the old exception handler, if there was any.
-Function SetOnUnCaughtExceptionHandler(aValue : TUncaughtPascalExceptionHandler) : TUncaughtPascalExceptionHandler;
-Function SetOnUnCaughtExceptionHandler(aValue : TUncaughtJSExceptionHandler) : TUncaughtJSExceptionHandler;
+Function SetOnUnCaughtExceptionHandler(aValue : TUncaughtPascalExceptionHandler) : TUncaughtPascalExceptionHandler; overload;
+Function SetOnUnCaughtExceptionHandler(aValue : TUncaughtJSExceptionHandler) : TUncaughtJSExceptionHandler; overload;
 // Hook the rtl handler for uncaught exceptions. If any exception handlers were set, they will be called.
 // If none were set, the exceptions will be displayed using ShowException.
 Procedure HookUncaughtExceptions;
@@ -546,30 +547,30 @@ function TimeToStr(Time: TDateTime): string;
 // function TimeToStr(Time: TDateTime; const FormatSettings: TFormatSettings): string;
 function DateTimeToStr(DateTime: TDateTime; ForceTimeIfZero : Boolean = False): string;
 // function DateTimeToStr(DateTime: TDateTime; const FormatSettings: TFormatSettings; ForceTimeIfZero : Boolean = False): string;
-function StrToDate(const S: String): TDateTime;
-function StrToDate(const S: String; separator : char): TDateTime;
-function StrToDate(const S: String; const useformat : string; separator : char): TDateTime;
+function StrToDate(const S: String): TDateTime; overload;
+function StrToDate(const S: String; separator : char): TDateTime; overload;
+function StrToDate(const S: String; const useformat : string; separator : char): TDateTime; overload;
 //function StrToDate(const S: string; FormatSettings : TFormatSettings): TDateTime;
-function StrToTime(const S: String): TDateTime;
-function StrToTime(const S: String; separator : char): TDateTime;
+function StrToTime(const S: String): TDateTime; overload;
+function StrToTime(const S: String; separator : char): TDateTime; overload;
 // function StrToTime(const S: string; FormatSettings : TFormatSettings): TDateTime;
 function StrToDateTime(const S: String): TDateTime;
 //function StrToDateTime(const s: ShortString; const FormatSettings : TFormatSettings): TDateTime;
 function FormatDateTime(const FormatStr: string; const DateTime: TDateTime): string;
 // function FormatDateTime(const FormatStr: string; DateTime: TDateTime; const FormatSettings: TFormatSettings; Options : TFormatDateTimeOptions = []): string;
-function TryStrToDate(const S: String; out Value: TDateTime): Boolean;
-function TryStrToDate(const S: String; out Value: TDateTime; separator : char): Boolean;
-function TryStrToDate(const S: String; out Value: TDateTime; const useformat : string; separator : char): Boolean;
+function TryStrToDate(const S: String; out Value: TDateTime): Boolean; overload;
+function TryStrToDate(const S: String; out Value: TDateTime; separator : char): Boolean; overload;
+function TryStrToDate(const S: String; out Value: TDateTime; const useformat : string; separator : char): Boolean; overload;
 // function TryStrToDate(const S: string; out Value: TDateTime; const FormatSettings: TFormatSettings): Boolean;
-function TryStrToTime(const S: String; out Value: TDateTime): Boolean;
-function TryStrToTime(const S: String; out Value: TDateTime; separator : char): Boolean;
+function TryStrToTime(const S: String; out Value: TDateTime): Boolean; overload;
+function TryStrToTime(const S: String; out Value: TDateTime; separator : char): Boolean; overload;
 function TryStrToDateTime(const S: String; out Value: TDateTime): Boolean;
 // function TryStrToTime(const S: string; out Value: TDateTime; const FormatSettings: TFormatSettings): Boolean;
 // function TryStrToDateTime(const S: string; out Value: TDateTime; const FormatSettings: TFormatSettings): Boolean;
-function StrToDateDef(const S: String; const Defvalue : TDateTime): TDateTime;
-function StrToDateDef(const S: String; const Defvalue : TDateTime; separator : char): TDateTime;
-function StrToTimeDef(const S: String; const Defvalue : TDateTime): TDateTime;
-function StrToTimeDef(const S: String; const Defvalue : TDateTime; separator : char): TDateTime;
+function StrToDateDef(const S: String; const Defvalue : TDateTime): TDateTime; overload;
+function StrToDateDef(const S: String; const Defvalue : TDateTime; separator : char): TDateTime; overload;
+function StrToTimeDef(const S: String; const Defvalue : TDateTime): TDateTime; overload;
+function StrToTimeDef(const S: String; const Defvalue : TDateTime; separator : char): TDateTime; overload;
 function StrToDateTimeDef(const S: String; const Defvalue : TDateTime): TDateTime;
 function CurrentYear:Word;
 procedure ReplaceTime(var dati: TDateTime; NewTime : TDateTime);
@@ -742,7 +743,7 @@ Type
     Class Function ToNativeInt(const S: string): NativeInt; overload; static; inline;
     Class Function ToInteger(const S: string): Integer; overload; static; inline;
     Class Function UpperCase(const S: string): string; overload; static; inline;
-    Class Function ToCharArray(const S : String) : TCharArray; static;
+    Class Function ToCharArray(const S : String) : TCharArray; static; overload;
     Function CompareTo(const B: string): Integer;
     Function Contains(const AValue: string): Boolean;
     Function CountChar(const C: Char): SizeInt;
@@ -1261,7 +1262,7 @@ end;
 Type
   TCharSet = Set of Char;
 
-Function CharInSet(Ch: Char;Const CSet : TCharSet) : Boolean;
+Function CharInSet(Ch: Char;Const CSet : TCharSet) : Boolean; overload;
 
 begin
   Result:=Ch in CSet;

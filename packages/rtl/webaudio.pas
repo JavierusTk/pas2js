@@ -1,6 +1,5 @@
 Unit webaudio;
 
-{$MODE ObjFPC}
 {$H+}
 {$modeswitch externalclass}
 
@@ -553,13 +552,13 @@ Type
     function connect(destinationNode : TJSAudioNode; output : NativeInt): TJSAudioNode; overload;
     Procedure connect(destinationParam : TJSAudioParam; output : NativeInt); overload;
     Procedure connect(destinationParam : TJSAudioParam); overload;
-    Procedure disconnect;
-    Procedure disconnect(output : NativeInt);
-    Procedure disconnect(destinationNode : TJSAudioNode);
-    Procedure disconnect(destinationNode : TJSAudioNode; output : NativeInt);
-    Procedure disconnect(destinationNode : TJSAudioNode; output : NativeInt; input : NativeInt);
-    Procedure disconnect(destinationParam : TJSAudioParam);
-    Procedure disconnect(destinationParam : TJSAudioParam; output : NativeInt);
+    Procedure disconnect; overload;
+    Procedure disconnect(output : NativeInt); overload;
+    Procedure disconnect(destinationNode : TJSAudioNode); overload;
+    Procedure disconnect(destinationNode : TJSAudioNode; output : NativeInt); overload;
+    Procedure disconnect(destinationNode : TJSAudioNode; output : NativeInt; input : NativeInt); overload;
+    Procedure disconnect(destinationParam : TJSAudioParam); overload;
+    Procedure disconnect(destinationParam : TJSAudioParam; output : NativeInt); overload;
     Property context : TJSBaseAudioContext Read Fcontext; 
     Property numberOfInputs : NativeInt Read FnumberOfInputs; 
     Property numberOfOutputs : NativeInt Read FnumberOfOutputs; 

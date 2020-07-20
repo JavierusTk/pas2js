@@ -17,7 +17,6 @@
   The MatchPattern routine was taken from Brook Framework's router unit, by Silvio Clecio.
 }
 
-{$mode objfpc}
 // Define this to output some debugging output
 { $DEFINE DEBUGROUTER }
 unit webrouter;
@@ -68,8 +67,8 @@ Type
     function doGo(N: integer): TTransitionResult; virtual; abstract;
     procedure ensureURL (push : boolean = false); virtual; abstract;
   Public
-    Constructor Create(aRouter : TRouter); reintroduce;
-    Constructor Create(aRouter : TRouter; aBase : String); virtual;
+    Constructor Create(aRouter : TRouter); reintroduce; overload;
+    Constructor Create(aRouter : TRouter; aBase : String); virtual; overload;
     Class Function NormalizeHash(aHash : String) : string;
     Procedure UpdateRoute (aRoute : TRoute);
     Destructor Destroy; override;
@@ -225,18 +224,18 @@ Type
     Function CreateRouteList : TRouteList; virtual;
     Procedure CheckDuplicate(APattern : String; isDefault : Boolean);
     // Actually route request. Override this for customized behaviour.
-    function DoRouteRequest(ARoute : TRoute; Const AURL : String; AParams : TStrings) : TRoute; virtual;
-    function DoRouteRequest(AURL : String; DoPush : Boolean = False) : TRoute;
+    function DoRouteRequest(ARoute : TRoute; Const AURL : String; AParams : TStrings) : TRoute; virtual; overload;
+    function DoRouteRequest(AURL : String; DoPush : Boolean = False) : TRoute; overload;
   Public
     Constructor Create(AOwner: TComponent); override;
     Destructor Destroy; override;
     Procedure InitHistory(aKind : THistoryKind; aBase : String = '');
     // Delete given route by index.
-    Procedure DeleteRoute(AIndex : Integer);
+    Procedure DeleteRoute(AIndex : Integer); overload;
     // Delete given route by index.
     Procedure DeleteRouteByID(AID : Integer);
     // Delete given route by index. The route object will be freed.
-    Procedure DeleteRoute(ARoute : TRoute);
+    Procedure DeleteRoute(ARoute : TRoute); overload;
     // Sanitize route path. Strips of query parameters and makes sure it ends in /
     class function SanitizeRoute(const Path: String): String;
     // Global instance.

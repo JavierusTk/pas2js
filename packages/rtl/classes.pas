@@ -12,8 +12,6 @@
  **********************************************************************}
 unit Classes;
 
-{$mode objfpc}
-
 interface
 
 uses
@@ -114,8 +112,8 @@ type
     procedure Pack;
     procedure Sort(const Compare: TListSortCompare);
     procedure SortList(const Compare: TListSortCompareFunc);
-    procedure ForEachCall(const proc2call: TListCallback; const arg: JSValue);
-    procedure ForEachCall(const proc2call: TListStaticCallback; const arg: JSValue);
+    procedure ForEachCall(const proc2call: TListCallback; const arg: JSValue); overload;
+    procedure ForEachCall(const proc2call: TListStaticCallback; const arg: JSValue); overload;
     property Capacity: Integer read FCapacity write SetCapacity;
     property Count: Integer read FCount write SetCount;
     property Items[Index: Integer]: JSValue read Get write Put; default;
@@ -389,8 +387,8 @@ type
     procedure PutObject(Index: Integer; AObject: TObject); override;
     procedure SetCapacity(NewCapacity: Integer); override;
     procedure SetUpdateState(Updating: Boolean); override;
-    procedure InsertItem(Index: Integer; const S: string); virtual;
-    procedure InsertItem(Index: Integer; const S: string; O: TObject); virtual;
+    procedure InsertItem(Index: Integer; const S: string); virtual; overload;
+    procedure InsertItem(Index: Integer; const S: string; O: TObject); virtual; overload;
     Function DoCompareText(const s1,s2 : string) : PtrInt; override;
     function CompareStrings(const s1,s2 : string) : Integer; virtual;
   public
@@ -679,6 +677,8 @@ type
     function ReadData(var Buffer: NativeLargeUInt; Count: NativeInt): NativeInt; overload;
     function ReadData(var Buffer: Double): NativeInt; overload;
     function ReadData(var Buffer: Double; Count: NativeInt): NativeInt; overload;
+    function ReadData(var Buffer: Extended): NativeInt; overload;
+    function ReadData(var Buffer: Extended; Count: NativeInt): NativeInt; overload;
     procedure ReadBuffer(var Buffer: TBytes; Count: NativeInt); overload;
     procedure ReadBuffer(var Buffer: TBytes; Offset, Count: NativeInt); overload;
 
@@ -705,6 +705,8 @@ type
     procedure ReadBufferData(var Buffer: NativeLargeUInt; Count: NativeInt); overload;
     procedure ReadBufferData(var Buffer: Double); overload;
     procedure ReadBufferData(var Buffer: Double; Count: NativeInt); overload;
+    procedure ReadBufferData(var Buffer: Extended); overload;
+    procedure ReadBufferData(var Buffer: Extended; Count: NativeInt); overload;
     procedure WriteBuffer(const Buffer: TBytes; Count: NativeInt); overload;
     procedure WriteBuffer(const Buffer: TBytes; Offset, Count: NativeInt); overload;
 
@@ -1177,8 +1179,8 @@ type
     procedure WriteChildren(Component: TComponent);
     function CreateDriver(Stream: TStream): TAbstractObjectWriter; virtual;
   public
-    constructor Create(ADriver: TAbstractObjectWriter);
-    constructor Create(Stream: TStream);
+    constructor Create(ADriver: TAbstractObjectWriter); overload;
+    constructor Create(Stream: TStream); overload;
     destructor Destroy; override;
     procedure DefineProperty(const Name: string;
       ReadData: TReaderProc; AWriteData: TWriterProc;
@@ -1315,8 +1317,8 @@ type
      function ReadWord: word;
      function ReadDWord: longword;
      function ReadDouble: Double;
-     function ReadInt(ValueType: TValueType): NativeInt;
-     function ReadInt: NativeInt;
+     function ReadInt(ValueType: TValueType): NativeInt; overload;
+     function ReadInt: NativeInt; overload;
      function ReadNativeInt: NativeInt;
      function ReadStr: String;
      function ReadString(StringType: TValueType): String; virtual;
@@ -1326,8 +1328,8 @@ type
      procedure ReadObject(indent: String); virtual;
      procedure ReadPropList(indent: String); virtual;
    Public
-     procedure ObjectBinaryToText(aInput, aOutput: TStream);
-     procedure ObjectBinaryToText(aInput, aOutput: TStream; aEncoding: TObjectTextEncoding);
+     procedure ObjectBinaryToText(aInput, aOutput: TStream); overload;
+     procedure ObjectBinaryToText(aInput, aOutput: TStream; aEncoding: TObjectTextEncoding); overload;
      Procedure Execute;
      Property Input : TStream Read FInput Write FInput;
      Property Output : TStream Read Foutput Write FOutput;
@@ -1390,12 +1392,12 @@ function IntToIdent(Int: Longint; var Ident: string; const Map: array of TIdentM
 function FindIntToIdent(AIntegerType: Pointer): TIntToIdent;
 function FindIdentToInt(AIntegerType: Pointer): TIdentToInt;
 function FindClass(const AClassName: string): TPersistentClass;
-function CollectionsEqual(C1, C2: TCollection): Boolean;
-function CollectionsEqual(C1, C2: TCollection; Owner1, Owner2: TComponent): Boolean;
+function CollectionsEqual(C1, C2: TCollection): Boolean; overload;
+function CollectionsEqual(C1, C2: TCollection; Owner1, Owner2: TComponent): Boolean; overload;
 procedure GetFixupReferenceNames(Root: TComponent; Names: TStrings);
 procedure GetFixupInstanceNames(Root: TComponent; const ReferenceRootName: string; Names: TStrings);
-procedure ObjectBinaryToText(aInput, aOutput: TStream);
-procedure ObjectBinaryToText(aInput, aOutput: TStream; aEncoding: TObjectTextEncoding);
+procedure ObjectBinaryToText(aInput, aOutput: TStream); overload;
+procedure ObjectBinaryToText(aInput, aOutput: TStream; aEncoding: TObjectTextEncoding); overload;
 procedure ObjectTextToBinary(aInput, aOutput: TStream);
 
 Const
@@ -5257,6 +5259,32 @@ begin
     end;
 end;
 
+function TStream.ReadData(var Buffer: Extended): NativeInt;
+begin
+  Result:=ReadData(Buffer,8);
+end;
+
+function TStream.ReadData(var Buffer: Extended; Count: NativeInt): NativeInt;
+
+Var
+  B : TBytes;
+  Mem : TJSArrayBuffer;
+  A : TJSUInt8Array;
+  D : TJSDataView;
+
+begin
+  SetLength(B,Count);
+  Result:=ReadMaxSizeData(B,8,Count);
+  if Result>=8 then
+    begin
+    Mem:=TJSArrayBuffer.New(8);
+    A:=TJSUInt8Array.new(Mem);
+    A._set(B);
+    D:=TJSDataView.New(Mem);
+    Buffer:=D.getFloat64(0);
+    end;
+end;
+
 procedure TStream.ReadBuffer(var Buffer: TBytes; Count: NativeInt);
 begin
   ReadBuffer(Buffer,0,Count);
@@ -5385,6 +5413,17 @@ begin
 end;
 
 procedure TStream.ReadBufferData(var Buffer: Double; Count: NativeInt);
+begin
+  if (ReadData(Buffer,Count)<>Count) then
+    Raise EStreamError.Create(SReadError);
+end;
+
+procedure TStream.ReadBufferData(var Buffer: Extended);
+begin
+  ReadBufferData(Buffer,8);
+end;
+
+procedure TStream.ReadBufferData(var Buffer: Extended; Count: NativeInt);
 begin
   if (ReadData(Buffer,Count)<>Count) then
     Raise EStreamError.Create(SReadError);
