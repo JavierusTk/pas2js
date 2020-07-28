@@ -10,7 +10,9 @@
     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
 
  **********************************************************************}
+{$IFDEF PAS2JS}
 {$modeswitch externalclass}
+{$ENDIF}
 
 unit Web;
 
@@ -40,23 +42,14 @@ Type
   TJSUIEvent = class;
   TJSTouchEvent = Class;
 
-
   { TEventListenerEvent }
 
-(*
-TEventListenerEvent = class external name 'EventListener_Event' (TJSObject)
-  private
-    FTarget: TJSEventTarget; external name 'target';
-  public
-    Property target: TJSEventTarget Read FTarget;
-  end;
-*)
   TEventListenerEvent = TJSEvent;
 
-  TJSEventHandler = reference to function(Event: TEventListenerEvent): boolean; safecall;
-  TJSRawEventHandler = reference to Procedure(Event: TJSEvent); safecall;
+  TJSEventHandler = reference to function(Event: TEventListenerEvent): boolean; {$IFDEF PAS2JS}{$IFDEF PAS2JS}safecall;{$ENDIF}{$ENDIF}
+  TJSRawEventHandler = reference to Procedure(Event: TJSEvent);{$IFDEF PAS2JS}{$IFDEF PAS2JS}safecall;{$ENDIF}{$ENDIF}
 
-  TJSEventTarget = class external name 'EventTarget' (TJSObject)
+  TJSEventTarget = class {$IFDEF PAS2JS}external name 'EventTarget' (TJSObject) {$ENDIF}
   public
     procedure addEventListener(aname : string; aListener : TJSEventHandler); overload;
     procedure addEventListener(aname : string; aListener : TJSRawEventHandler); overload;
@@ -67,18 +60,18 @@ TEventListenerEvent = class external name 'EventListener_Event' (TJSObject)
     procedure removeEventListener(aname : string; aListener : JSValue); overload;
   end;
 
-  TJSNode = class external name 'Node' (TJSEventTarget)
+  TJSNode = class {$IFDEF PAS2JS}external name 'Node' (TJSEventTarget){$ENDIF}
   Private
-    FBaseURI : String; external name 'baseURI';
-    FChildNodes: TJSNodeList; external name 'childNodes';
-    FFirstChild : TJSNode; external name 'firstChild';
-    FNextSibling : TJSNode; external name 'nextSibling';
-    FNodeName : String; external name 'nodeName';
-    FNodeType : NativeInt; external name 'nodeType';
-    FOwnerDocument : TJSDocument; external name 'ownerDocument';
-    FParentElement : TJSElement; external name 'parentElement';
-    FParentNode : TJSNode; external name 'parentNode';
-    FPreviousSibling : TJSNode; external name 'previousSibling';
+    FBaseURI : String; {$IFDEF PAS2JS} external name 'baseURI';{$ENDIF}
+    FChildNodes: TJSNodeList; {$IFDEF PAS2JS} external name 'childNodes';{$ENDIF}
+    FFirstChild : TJSNode; {$IFDEF PAS2JS} external name 'firstChild';{$ENDIF}
+    FNextSibling : TJSNode; {$IFDEF PAS2JS} external name 'nextSibling';{$ENDIF}
+    FNodeName : String; {$IFDEF PAS2JS} external name 'nodeName';{$ENDIF}
+    FNodeType : NativeInt; {$IFDEF PAS2JS} external name 'nodeType';{$ENDIF}
+    FOwnerDocument : TJSDocument; {$IFDEF PAS2JS} external name 'ownerDocument';{$ENDIF}
+    FParentElement : TJSElement; {$IFDEF PAS2JS} external name 'parentElement';{$ENDIF}
+    FParentNode : TJSNode; {$IFDEF PAS2JS} external name 'parentNode';{$ENDIF}
+    FPreviousSibling : TJSNode; {$IFDEF PAS2JS} external name 'previousSibling';{$ENDIF}
   Public 
     Const
       ELEMENT_NODE 	=1;
@@ -129,9 +122,9 @@ TEventListenerEvent = class external name 'EventListener_Event' (TJSObject)
   TJSNodeListCallBack = procedure (currentValue : TJSNode; currentIndex: NativeInt; list : TJSNodeList);
   TJSNodeListEvent = procedure (currentValue : TJSNode; currentIndex: NativeInt; list : TJSNodeList) of object;
   
-  TJSNodeList = class external name 'NodeList' (TJSObject)
+  TJSNodeList = class {$IFDEF PAS2JS}external name 'NodeList' (TJSObject){$ENDIF}
   Private
-    FLength : NativeInt; external name 'length';
+    FLength : NativeInt; {$IFDEF PAS2JS} external name 'length';{$ENDIF}
   Public
     procedure forEach(const aCallBack : TJSNodeListCallBack); overload;
     procedure forEach(const aCallBack : TJSNodeListEvent); overload;
@@ -140,13 +133,13 @@ TEventListenerEvent = class external name 'EventListener_Event' (TJSObject)
     Property Nodes [aIndex : NativeInt] : TJSNode Read item; default;
   end;
 
-  TJSAttr = class external name 'Attr' (TJSNode)
+  TJSAttr = class {$IFDEF PAS2JS}external name 'Attr' (TJSNode){$ENDIF}
   Private
-    fLocalName : String; external name 'localName';
-    fNameSpaceURI : String external name 'namespaceURI';
-    fPrefix : string; external name 'prefix';
-    fName : string; external name 'name';
-    fSpecified : Boolean; external name 'specified';
+    fLocalName : String; {$IFDEF PAS2JS} external name 'localName';{$ENDIF}
+    fNameSpaceURI : String; {$IFDEF PAS2JS} external name 'namespaceURI';{$ENDIF}
+    fPrefix : string; {$IFDEF PAS2JS} external name 'prefix';{$ENDIF}
+    fName : string; {$IFDEF PAS2JS} external name 'name';{$ENDIF}
+    fSpecified : Boolean; {$IFDEF PAS2JS} external name 'specified';{$ENDIF}
   public
     value : JSValue;
     property localName : String Read fLocalName;
@@ -157,15 +150,15 @@ TEventListenerEvent = class external name 'EventListener_Event' (TJSObject)
   end;
 
 
-  TJSNamedNodeMap = class external name 'NamedNodeMap'  (TJSObject)
+  TJSNamedNodeMap = class {$IFDEF PAS2JS}external name 'NamedNodeMap'  (TJSObject){$ENDIF}
   Public
     function getNamedItem(aName : string) : TJSAttr;
     Property Attrs[aIndex : String] : TJSattr Read getNamedItem; default;
   end;
-  
-  TJSHTMLCollection = class external name 'HTMLCollection'  (TJSObject)
+
+  TJSHTMLCollection = class {$IFDEF PAS2JS}external name 'HTMLCollection'  (TJSObject){$ENDIF}
   Private
-    FLength : NativeInt; external name 'length';
+    FLength : NativeInt; {$IFDEF PAS2JS} external name 'length';{$ENDIF}
   public
     Function item(aIndex : Integer) : TJSNode;
     Function namedItem(aName : string) : TJSNode;
@@ -179,12 +172,12 @@ TEventListenerEvent = class external name 'EventListener_Event' (TJSObject)
   TDOMTokenlistCallBack = Procedure (Current : JSValue; currentIndex : NativeInt; list : TJSDOMTokenList);
   
   // Interface
-  TJSDOMTokenList = class external name 'DOMTokenList'  (TJSObject)
+  TJSDOMTokenList = class {$IFDEF PAS2JS}external name 'DOMTokenList'  (TJSObject){$ENDIF}
   Private
-    FLength : NativeInt; external name 'length';
+    FLength : NativeInt; {$IFDEF PAS2JS} external name 'length';{$ENDIF}
   public
-    Procedure add(aToken : TJSDOMString); varargs;  overload;
-    Procedure remove(aToken : TJSDOMString); varargs;
+    Procedure add(aToken : TJSDOMString); {$IFDEF PAS2JS}{$IFDEF PAS2JS}varargs;{$ENDIF}{$ENDIF} overload;
+    Procedure remove(aToken : TJSDOMString); {$IFDEF PAS2JS}{$IFDEF PAS2JS}varargs;{$ENDIF}{$ENDIF}
     function item(aIndex : NativeInt) : String;
     function contains(aToken : TJSDOMString) : Boolean;
     Procedure replace(aOldToken, ANewToken : TJSDOMString);
@@ -195,7 +188,7 @@ TEventListenerEvent = class external name 'EventListener_Event' (TJSObject)
     property length : NativeInt read FLength;
   end;
 
-  TJSDOMRect = class external name 'DOMRect'  (TJSObject)
+  TJSDOMRect = class {$IFDEF PAS2JS}external name 'DOMRect'  (TJSObject){$ENDIF}
   public
     left,top,right,bottom,x,y,width,height : double;
     {$IFDEF FIREFOX}
@@ -211,30 +204,30 @@ TEventListenerEvent = class external name 'EventListener_Event' (TJSObject)
   
   TJSClientRectArray = array of TJSClientRect;
   
-  TJSElement = class external name 'Element' (TJSNode)
+  TJSElement = class {$IFDEF PAS2JS}external name 'Element' (TJSNode){$ENDIF}
   Private
-    FAttributes : TJSNamedNodeMap; external name 'attributes';
-    FChildElementCount : NativeInt; external name 'childElementCount';
-    FChildren : TJSHTMLCollection; external name 'children';
-    FClassList : TJSDOMTokenList; external name 'classList';
-    FCLientHeight : NativeInt; external name 'clientHeight';
-    FCLientLeft : NativeInt; external name 'clientLeft';
-    FCLientTop : NativeInt; external name 'clientTop';
-    FCLientWidth : NativeInt; external name 'clientWidth';
-    FFirstElementChild : TJSElement; external name 'firstElementChild';
-    FLastElementChild : TJSElement; external name 'lastElementChild';
-    FLocalName : string; external name 'localName';
-    FNameSpaceURI : String; external name 'namespaceURI';
-    FNextElementSibling : TJSElement; external name 'nextElementSibling';
-    FPreviousElementSibling : TJSElement; external name 'previousElementSibling';
-    FPrefix : String; external name 'prefix';
-    FScrollHeight : NativeInt; external name 'scrollHeight';
+    FAttributes : TJSNamedNodeMap; {$IFDEF PAS2JS} external name 'attributes';{$ENDIF}
+    FChildElementCount : NativeInt; {$IFDEF PAS2JS} external name 'childElementCount';{$ENDIF}
+    FChildren : TJSHTMLCollection; {$IFDEF PAS2JS} external name 'children';{$ENDIF}
+    FClassList : TJSDOMTokenList; {$IFDEF PAS2JS} external name 'classList';{$ENDIF}
+    FCLientHeight : NativeInt; {$IFDEF PAS2JS} external name 'clientHeight';{$ENDIF}
+    FCLientLeft : NativeInt; {$IFDEF PAS2JS} external name 'clientLeft';{$ENDIF}
+    FCLientTop : NativeInt; {$IFDEF PAS2JS} external name 'clientTop';{$ENDIF}
+    FCLientWidth : NativeInt; {$IFDEF PAS2JS} external name 'clientWidth';{$ENDIF}
+    FFirstElementChild : TJSElement; {$IFDEF PAS2JS} external name 'firstElementChild';{$ENDIF}
+    FLastElementChild : TJSElement; {$IFDEF PAS2JS} external name 'lastElementChild';{$ENDIF}
+    FLocalName : string; {$IFDEF PAS2JS} external name 'localName';{$ENDIF}
+    FNameSpaceURI : String; {$IFDEF PAS2JS} external name 'namespaceURI';{$ENDIF}
+    FNextElementSibling : TJSElement; {$IFDEF PAS2JS} external name 'nextElementSibling';{$ENDIF}
+    FPreviousElementSibling : TJSElement; {$IFDEF PAS2JS} external name 'previousElementSibling';{$ENDIF}
+    FPrefix : String; {$IFDEF PAS2JS} external name 'prefix';{$ENDIF}
+    FScrollHeight : NativeInt; {$IFDEF PAS2JS} external name 'scrollHeight';{$ENDIF}
 {$IFDEF FIREFOX}
-    FScrollLeftMax : NativeInt; external name 'scrollLeftMax';
-    FScrollTopMax : NativeInt; external name 'scrollTopMax';
+    FScrollLeftMax : NativeInt; {$IFDEF PAS2JS} external name 'scrollLeftMax';{$ENDIF}
+    FScrollTopMax : NativeInt; {$IFDEF PAS2JS} external name 'scrollTopMax';{$ENDIF}
 {$endif}
-    FScrollWidth : NativeInt; external name 'scrollWidth';
-    FTagName : string; external name 'tagName';
+    FScrollWidth : NativeInt; {$IFDEF PAS2JS} external name 'scrollWidth';{$ENDIF}
+    FTagName : string; {$IFDEF PAS2JS} external name 'tagName';{$ENDIF}
   Public
     name : string;
     className : string;
@@ -245,8 +238,8 @@ TEventListenerEvent = class external name 'EventListener_Event' (TJSObject)
     scrollTop : NativeInt;
     procedure append(aText : String); overload;
     procedure append(aNode : TJSElement); overload;
-    procedure append(aText : String; aNode : TJSElement); varargs; overload;
-    procedure append(aNode1,aNode2: TJSElement); varargs; overload;
+    procedure append(aText : String; aNode : TJSElement); {$IFDEF PAS2JS}varargs;{$ENDIF} overload;
+    procedure append(aNode1,aNode2: TJSElement); {$IFDEF PAS2JS}varargs;{$ENDIF} overload;
     function getAttribute(aName : string) : string;
     function getAttributeNode(aName : string) : TJSAttr;
     function getAttributeNodeNS(aNameSpace, aName : string) : TJSAttr;
@@ -300,32 +293,31 @@ TEventListenerEvent = class external name 'EventListener_Event' (TJSObject)
     property tagName : String read FTagName;
     Property Attrs[aName : string] : String read getAttribute write setAttribute; default;
   end;
-   
   TJSElementCreationOptions = record
     named : string;
   end;
  
-  TJSDocumentType = class external name 'DocumentType' (TJSNode)
+  TJSDocumentType = class {$IFDEF PAS2JS}external name 'DocumentType' (TJSNode){$ENDIF}
   private
-    FName : String; external name 'name';
-    FPublicID : String; external name 'publicId';
-    FSystemID : String; external name 'systemId';
+    FName : String; {$IFDEF PAS2JS} external name 'name';{$ENDIF}
+    FPublicID : String; {$IFDEF PAS2JS} external name 'publicId';{$ENDIF}
+    FSystemID : String; {$IFDEF PAS2JS} external name 'systemId';{$ENDIF}
   public
     property name : String read FName;
     property publicId : String Read FPublicID;
     property systemId : String read FSystemID;
   end;
 
-  TJSDOMImplementation  = class external name 'DocumentImplementation'  (TJSObject)
+  TJSDOMImplementation  = class {$IFDEF PAS2JS}external name 'DocumentImplementation'  (TJSObject){$ENDIF}
   Public  
     function createDocument(aNamespaceURI, aQualifiedNameStr : String; aDocumentType : TJSDocumentType) : TJSDocument;
     function createDocumentType(aQualifiedNameStr,aPublicId,aSystemId : String) : TJSDocumentType;
     function createHTMLDocument(aTitle : String) : TJSDocument;
   end;
 
-  TJSLocation = class external name 'Location'  (TJSObject)
+  TJSLocation = class {$IFDEF PAS2JS}external name 'Location'  (TJSObject){$ENDIF}
   Private
-    FOrigin : string; external name 'origin';
+    FOrigin : string; {$IFDEF PAS2JS} external name 'origin';{$ENDIF}
   Public
     hash : string;
     host : string;
@@ -343,13 +335,13 @@ TEventListenerEvent = class external name 'EventListener_Event' (TJSObject)
     property origin : string read FOrigin;
   end;
   
-  TJSStyleSheet = class external name 'StyleSheet' (TJSEventTarget)
+  TJSStyleSheet = class {$IFDEF PAS2JS}external name 'StyleSheet' (TJSEventTarget){$ENDIF}
   Private
-    FHRef : String; external name 'href';
-    FOwnerNode : TJSNode; external name 'ownerNode';
-    FParentStyleSheet : TJSStyleSheet; external name 'parentStyleSheet';
-    FTitle : String; external name 'title';
-    FType : String; external name 'type';
+    FHRef : String; {$IFDEF PAS2JS} external name 'href';{$ENDIF}
+    FOwnerNode : TJSNode; {$IFDEF PAS2JS} external name 'ownerNode';{$ENDIF}
+    FParentStyleSheet : TJSStyleSheet; {$IFDEF PAS2JS} external name 'parentStyleSheet';{$ENDIF}
+    FTitle : String; {$IFDEF PAS2JS} external name 'title';{$ENDIF}
+    FType : String; {$IFDEF PAS2JS} external name 'type';{$ENDIF}
   Public
     disabled : String;
     Property href : String read FHRef;
@@ -360,20 +352,20 @@ TEventListenerEvent = class external name 'EventListener_Event' (TJSObject)
   end;
 
 
-  TJSCSSRule = class external name 'CSSRule'  (TJSObject)
+  TJSCSSRule = class {$IFDEF PAS2JS}external name 'CSSRule'  (TJSObject){$ENDIF}
   Private
-    FCSSText : String; external name 'cssText';
-    FParentStyleSheet : TJSCSSStyleSheet; external name 'parentStyleSheet';
-    FparentRule : TJSCSSRule; external name 'parentRule';
+    FCSSText : String; {$IFDEF PAS2JS} external name 'cssText';{$ENDIF}
+    FParentStyleSheet : TJSCSSStyleSheet; {$IFDEF PAS2JS} external name 'parentStyleSheet';{$ENDIF}
+    FparentRule : TJSCSSRule; {$IFDEF PAS2JS} external name 'parentRule';{$ENDIF}
   Public
     property cssText : String Read FCSSText;
     property parentRule : TJSCSSRule read FparentRule;
     property parentStyleSheet : TJSCSSStyleSheet Read FParentStyleSheet;
   end;
   
-  TJSCSSRuleList = Class external name 'CSSRuleList'  (TJSObject)
+  TJSCSSRuleList = class {$IFDEF PAS2JS}external name 'CSSRuleList'  (TJSObject){$ENDIF}
   Private
-    FLength : NativeInt; external name 'length';
+    FLength : NativeInt; {$IFDEF PAS2JS} external name 'length';{$ENDIF}
   Public
     function item(index : NativeInt) : TJSCSSRule;
     property length : NativeInt Read FLength;
@@ -381,18 +373,18 @@ TEventListenerEvent = class external name 'EventListener_Event' (TJSObject)
   end;
   
   
-  TJSCSSStyleSheet = class external name 'CSSStyleSheet' (TJSStyleSheet)
+  TJSCSSStyleSheet = class {$IFDEF PAS2JS}external name 'CSSStyleSheet' (TJSStyleSheet){$ENDIF}
   Private
-    FCSSRules : TJSCSSRuleList; external name 'cssRules';
+    FCSSRules : TJSCSSRuleList; {$IFDEF PAS2JS} external name 'cssRules';{$ENDIF}
   Public
     procedure deleteRule(aIndex : NativeInt);
     function insertRule(aRule : String; aIndex : NativeInt) : NativeInt;
     Property cssRules : TJSCSSRuleList read FCSSRules;
   end;
 
-  TJSStyleSheetList = Class external name 'StyleSheetList'  (TJSObject)
+  TJSStyleSheetList = class {$IFDEF PAS2JS}external name 'StyleSheetList'  (TJSObject){$ENDIF}
   Private
-    FLength : NativeInt; external name 'length';
+    FLength : NativeInt; {$IFDEF PAS2JS} external name 'length';{$ENDIF}
   Public
     function item(index : NativeInt) : TJSStyleSheet;
     property length : NativeInt Read FLength;
@@ -401,12 +393,12 @@ TEventListenerEvent = class external name 'EventListener_Event' (TJSObject)
 
   { TJSDocumentFragment }
 
-  TJSDocumentFragment = Class external name 'DocumentFragment' (TJSNode)
+  TJSDocumentFragment = class {$IFDEF PAS2JS}external name 'DocumentFragment' (TJSNode){$ENDIF}
   private
-    FchildElementCount: Integer; external name 'childElementCount';
-    Fchildren: TJSHTMLCollection; external name 'children';
-    FfirstElementChild: TJSElement; external name 'firstElementChild';
-    FlastElementChild: TJSElement; external name 'lastElementChild';
+    FchildElementCount: Integer; {$IFDEF PAS2JS} external name 'childElementCount';{$ENDIF}
+    Fchildren: TJSHTMLCollection; {$IFDEF PAS2JS} external name 'children';{$ENDIF}
+    FfirstElementChild: TJSElement; {$IFDEF PAS2JS} external name 'firstElementChild';{$ENDIF}
+    FlastElementChild: TJSElement; {$IFDEF PAS2JS} external name 'lastElementChild';{$ENDIF}
   public
     constructor new;
     function querySelector(aSelector : String) : TJSElement;
@@ -424,20 +416,20 @@ TEventListenerEvent = class external name 'EventListener_Event' (TJSObject)
     composed : boolean;
   end;
 
-  TJSEvent = class external name 'Event'  (TJSObject)
+  TJSEvent = class {$IFDEF PAS2JS}external name 'Event'  (TJSObject){$ENDIF}
   Private
-    FBubbles : Boolean; external name 'bubbles';
-    FCancelable : Boolean; external name 'cancelable';
-    FComposed : Boolean; external name 'composed';
-    FCurrentTarget : TJSEventTarget; external name 'currentTarget';
-    FCurrentTargetElement : TJSElement; external name 'currentTarget';
-    FdefaultPrevented : Boolean; external name 'defaultPrevented';
-    FEventPhase : NativeInt; external name 'eventPhase';
-    FTarget : TJSEventTarget; external name 'target';
-    FTargetElement : TJSElement; external name 'target';
-    FTimeStamp : NativeInt; external name 'timestamp';
-    FType : String; external name 'type';
-    FIsTrusted : Boolean; external name 'isTrusted';
+    FBubbles : Boolean; {$IFDEF PAS2JS} external name 'bubbles';{$ENDIF}
+    FCancelable : Boolean; {$IFDEF PAS2JS} external name 'cancelable';{$ENDIF}
+    FComposed : Boolean; {$IFDEF PAS2JS} external name 'composed';{$ENDIF}
+    FCurrentTarget : TJSEventTarget; {$IFDEF PAS2JS} external name 'currentTarget';{$ENDIF}
+    FCurrentTargetElement : TJSElement; {$IFDEF PAS2JS} external name 'currentTarget';{$ENDIF}
+    FdefaultPrevented : Boolean; {$IFDEF PAS2JS} external name 'defaultPrevented';{$ENDIF}
+    FEventPhase : NativeInt; {$IFDEF PAS2JS} external name 'eventPhase';{$ENDIF}
+    FTarget : TJSEventTarget; {$IFDEF PAS2JS} external name 'target';{$ENDIF}
+    FTargetElement : TJSElement; {$IFDEF PAS2JS} external name 'target';{$ENDIF}
+    FTimeStamp : NativeInt; {$IFDEF PAS2JS} external name 'timestamp';{$ENDIF}
+    FType : String; {$IFDEF PAS2JS} external name 'type';{$ENDIF}
+    FIsTrusted : Boolean; {$IFDEF PAS2JS} external name 'isTrusted';{$ENDIF}
   Public
     Const
       NONE = 0;
@@ -466,40 +458,41 @@ TEventListenerEvent = class external name 'EventListener_Event' (TJSObject)
   end;
 
 
-  TJSXPathExpression = class external name 'XPathExpression'  (TJSObject)
+  TJSXPathExpression = class {$IFDEF PAS2JS}external name 'XPathExpression'  (TJSObject){$ENDIF}
   Public
     function evaluate(contextNode : TJSNode; aType : NativeInt; aResult : TJSXPathResult) : TJSXPathResult;
     function evaluateWithContext(contextNode : TJSNode; aPosition, aSize, aType : NativeInt; aResult : TJSXPathResult) : TJSXPathResult;
   end;
 
-  TJSXPathNSResolver = class external name 'XPathNSResolver'  (TJSObject)
+  TJSXPathNSResolver = class {$IFDEF PAS2JS}external name 'XPathNSResolver'  (TJSObject){$ENDIF}
   Public
     function lookupNamespaceURI(prefix : string) : string;
   end;
 
   { TJSCharacterData }
 
-  TJSCharacterData = class external name 'CharacterData' (TJSNode)
+  TJSCharacterData = class {$IFDEF PAS2JS}external name 'CharacterData' (TJSNode){$ENDIF}
   private
-    FnextElementSibling: TJSElement; external name 'nextElementSibling';
-    FpreviousElementSibling: TJSElement; external name 'previousElementSibling';
+    FnextElementSibling: TJSElement; {$IFDEF PAS2JS} external name 'nextElementSibling';{$ENDIF}
+    FpreviousElementSibling: TJSElement; {$IFDEF PAS2JS} external name 'previousElementSibling';{$ENDIF}
   public
     property nextElementSibling : TJSElement read FnextElementSibling;
     property previousElementSibling : TJSElement read FpreviousElementSibling;
   end;
 
-  TJSProcessingInstruction = class external name 'ProcessingInstruction' (TJSCharacterData);
+  TJSProcessingInstruction = class {$IFDEF PAS2JS}external name 'ProcessingInstruction' (TJSCharacterData);{$ENDIF}
+  end;
 
   { TJSRange }
 
-  TJSRange = class external name 'Range'  (TJSObject)
+  TJSRange = class {$IFDEF PAS2JS}external name 'Range'  (TJSObject){$ENDIF}
   private
-    FCollapsed: boolean; external name 'collapsed';
-    FcommonAncestorContainer: TJSNode; external name 'commonAncestorContainer';
-    FendContainer: TJSNode; external name 'endContainer';
-    FEndOffset: NativeInt; external name 'endOffset';
-    FstartContainer: TJSNode; external name 'startContainer';
-    FstartOffset: NativeInt; external name 'startOffset';
+    FCollapsed: boolean; {$IFDEF PAS2JS} external name 'collapsed';{$ENDIF}
+    FcommonAncestorContainer: TJSNode; {$IFDEF PAS2JS} external name 'commonAncestorContainer';{$ENDIF}
+    FendContainer: TJSNode; {$IFDEF PAS2JS} external name 'endContainer';{$ENDIF}
+    FEndOffset: NativeInt; {$IFDEF PAS2JS} external name 'endOffset';{$ENDIF}
+    FstartContainer: TJSNode; {$IFDEF PAS2JS} external name 'startContainer';{$ENDIF}
+    FstartOffset: NativeInt; {$IFDEF PAS2JS} external name 'startOffset';{$ENDIF}
   Public
     const
       END_TO_END     = 0;
@@ -537,13 +530,13 @@ TEventListenerEvent = class external name 'EventListener_Event' (TJSObject)
 
   { TJSTreeWalker }
 
-  TJSTreeWalker = class external name 'TreeWalker' (TJSObject)
+  TJSTreeWalker = class {$IFDEF PAS2JS}external name 'TreeWalker' (TJSObject){$ENDIF}
   private
-    FCurrentNode: TJSNode; external name 'currentNode';
-    FexpandEntityReference: Boolean; external name 'expandEntityReference';
-    FFilter: TJSNodeFilter; external name 'filter';
-    FRoot: TJSNode; external name 'root';
-    FWhatToShow: NativeInt; external name 'whatToShow';
+    FCurrentNode: TJSNode; {$IFDEF PAS2JS} external name 'currentNode';{$ENDIF}
+    FexpandEntityReference: Boolean; {$IFDEF PAS2JS} external name 'expandEntityReference';{$ENDIF}
+    FFilter: TJSNodeFilter; {$IFDEF PAS2JS} external name 'filter';{$ENDIF}
+    FRoot: TJSNode; {$IFDEF PAS2JS} external name 'root';{$ENDIF}
+    FWhatToShow: NativeInt; {$IFDEF PAS2JS} external name 'whatToShow';{$ENDIF}
   Public
     function firstChild : TJSNode;
     function lastChild : TJSNode;
@@ -560,7 +553,7 @@ TEventListenerEvent = class external name 'EventListener_Event' (TJSObject)
     property currentNode : TJSNode Read FCurrentNode;
   end;
 
-  TJSNodeFilter = class external name 'NodeFilter'  (TJSObject)
+  TJSNodeFilter = class {$IFDEF PAS2JS}external name 'NodeFilter'  (TJSObject){$ENDIF}
     const
       SHOW_ALL                    = -1;
       SHOW_ATTRIBUTE              = 2;
@@ -578,14 +571,14 @@ TEventListenerEvent = class external name 'EventListener_Event' (TJSObject)
     function acceptNode (aNode : TJSNode) : NativeInt;
   end;
 
-  TJSXPathResult = class external name 'XPathResult'  (TJSObject)
+  TJSXPathResult = class {$IFDEF PAS2JS}external name 'XPathResult'  (TJSObject){$ENDIF}
   private
-    FBooleanValue : Boolean; external name 'booleanValue';
-    FNumberValue : Double; external name 'numberValue';
-    FResultType : NativeInt; external name 'resultType';
-    FSingleNodeValue : TJSNode;  external name 'singleNodeValue';
-    FSnaphotLength : NativeInt; external name 'snapshotLength';
-    FStringValue : String; external name 'stringValue';
+    FBooleanValue : Boolean; {$IFDEF PAS2JS} external name 'booleanValue';{$ENDIF}
+    FNumberValue : Double; {$IFDEF PAS2JS} external name 'numberValue';{$ENDIF}
+    FResultType : NativeInt; {$IFDEF PAS2JS} external name 'resultType';{$ENDIF}
+    FSingleNodeValue : TJSNode; {$IFDEF PAS2JS} external name 'singleNodeValue';{$ENDIF}
+    FSnaphotLength : NativeInt; {$IFDEF PAS2JS} external name 'snapshotLength';{$ENDIF}
+    FStringValue : String; {$IFDEF PAS2JS} external name 'stringValue';{$ENDIF}
   public  
     Function iterateNext : TJSNode;
     Function snapshotItem(Index: NativeInt) : TJSNode;
@@ -597,15 +590,15 @@ TEventListenerEvent = class external name 'EventListener_Event' (TJSObject)
     property stringValue : String Read FStringValue;
   end;
 
-  TJSSelection = class external name 'Selection'  (TJSObject)
+  TJSSelection = class {$IFDEF PAS2JS}external name 'Selection'  (TJSObject){$ENDIF}
   Private
-    FanchorNode : TJSNode ; external name 'anchorNode';
-    FanchorOffset : NativeInt ; external name 'anchorOffset';
-    FfocusNode : TJSNode ; external name 'focusNode';
-    FfocusOffset : NativeInt ; external name 'focusOffset';
-    FisCollapsed : Boolean ; external name 'isCollapsed';
-    FrangeCount : NativeInt ; external name 'rangeCount';
-    Ftype : String ; external name 'type';
+    FanchorNode : TJSNode ; {$IFDEF PAS2JS} external name 'anchorNode';{$ENDIF}
+    FanchorOffset : NativeInt ; {$IFDEF PAS2JS} external name 'anchorOffset';{$ENDIF}
+    FfocusNode : TJSNode ; {$IFDEF PAS2JS} external name 'focusNode';{$ENDIF}
+    FfocusOffset : NativeInt ; {$IFDEF PAS2JS} external name 'focusOffset';{$ENDIF}
+    FisCollapsed : Boolean ; {$IFDEF PAS2JS} external name 'isCollapsed';{$ENDIF}
+    FrangeCount : NativeInt ; {$IFDEF PAS2JS} external name 'rangeCount';{$ENDIF}
+    Ftype : String ; {$IFDEF PAS2JS} external name 'type';{$ENDIF}
   Public
     function getRangeAt(aIndex : NativeInt) : TJSRange;
     procedure collapse(aParentNode : TJSNode; Offset : NativeInt);
@@ -634,12 +627,12 @@ TEventListenerEvent = class external name 'EventListener_Event' (TJSObject)
 
   { TJSDataTransferItem }
 
-  TJSDataTransferItemCallBack = reference to Procedure(aData : String); safecall;
+  TJSDataTransferItemCallBack = reference to Procedure(aData : String); {$IFDEF PAS2JS}{$IFDEF PAS2JS}safecall;{$ENDIF}{$ENDIF}
 
-  TJSDataTransferItem = class external name 'DataTransferItem'  (TJSObject)
+  TJSDataTransferItem = class {$IFDEF PAS2JS}external name 'DataTransferItem'  (TJSObject){$ENDIF}
   private
-    FKind: String; external name 'kind';
-    FType: string; external name 'type';
+    FKind: String; {$IFDEF PAS2JS} external name 'kind';{$ENDIF}
+    FType: string; {$IFDEF PAS2JS} external name 'type';{$ENDIF}
   Public
     function getAsFile : TJSHTMLFile;
     Procedure getAsString(aCallBack : TJSDataTransferItemCallBack);
@@ -647,10 +640,10 @@ TEventListenerEvent = class external name 'EventListener_Event' (TJSObject)
     property _Type : string read FType;
   end;
 
-  TJSDataTransferItemList = class external name 'DataTransferItemList'  (TJSObject)
+  TJSDataTransferItemList = class {$IFDEF PAS2JS}external name 'DataTransferItemList'  (TJSObject){$ENDIF}
   private
-    FLength: NativeInt; external name 'length';
-    function getitem(aIndex : nativeInt) : TJSDataTransferItem ; external name '[]';
+    FLength: NativeInt; {$IFDEF PAS2JS} external name 'length';{$ENDIF}
+    function getitem(aIndex : nativeInt) : TJSDataTransferItem ; {$IFDEF PAS2JS} external name '[]';{$ENDIF}
   Public
     Function add(aData : string; AType: string) : TJSDataTransferItem; overload;
     Function add(aFile : TJSHTMLFile) : TJSDataTransferItem; overload;
@@ -662,11 +655,11 @@ TEventListenerEvent = class external name 'EventListener_Event' (TJSObject)
 
   { TJSDataTransfer }
 
-  TJSDataTransfer = class external name 'DataTransfer'  (TJSObject)
+  TJSDataTransfer = class {$IFDEF PAS2JS}external name 'DataTransfer'  (TJSObject){$ENDIF}
   private
-    FFiles: TJSHTMLFileList; external name 'files';
-    FItems: TJSDataTransferItemList; external name 'items';
-    FTypes: TJSStringDynArray; external name 'types';
+    FFiles: TJSHTMLFileList; {$IFDEF PAS2JS} external name 'files';{$ENDIF}
+    FItems: TJSDataTransferItemList; {$IFDEF PAS2JS} external name 'items';{$ENDIF}
+    FTypes: TJSStringDynArray; {$IFDEF PAS2JS} external name 'types';{$ENDIF}
   Public
     dropEffect : string;
     effectAllowed : string;
@@ -682,20 +675,20 @@ TEventListenerEvent = class external name 'EventListener_Event' (TJSObject)
 
   { TJSDragEvent }
 
-  TJSDragEvent = class external name 'DragEvent' (TJSEvent)
+  TJSDragEvent = class {$IFDEF PAS2JS}external name 'DragEvent' (TJSEvent){$ENDIF}
   Private
-    FDataTransfer: TJSDataTransfer; external name 'dataTransfer';
-    FrelatedTarget : TJSEventTarget external name 'relatedTarget';
-    FscreenX : NativeInt external name 'screenX';
-    FscreenY : NativeInt external name 'screenY';
-    FclientX : NativeInt external name 'clientX';
-    FclientY : NativeInt external name 'clientY';
-    Fbutton : NativeInt external name 'button';
-    Fbuttons : NativeInt external name 'buttons';
-    FctrlKey : Boolean external name 'ctrlKey';
-    FshiftKey : Boolean external name 'shiftKey';
-    FaltKey  : Boolean external name 'altKey';
-    FmetaKey  : Boolean external name 'metaKey';
+    FDataTransfer: TJSDataTransfer; {$IFDEF PAS2JS} external name 'dataTransfer';{$ENDIF}
+    FrelatedTarget : TJSEventTarget; {$IFDEF PAS2JS}external name 'relatedTarget';{$ENDIF}
+    FscreenX : NativeInt; {$IFDEF PAS2JS}external name 'screenX';{$ENDIF}
+    FscreenY : NativeInt; {$IFDEF PAS2JS}external name 'screenY';{$ENDIF}
+    FclientX : NativeInt; {$IFDEF PAS2JS}external name 'clientX';{$ENDIF}
+    FclientY : NativeInt; {$IFDEF PAS2JS}external name 'clientY';{$ENDIF}
+    Fbutton : NativeInt; {$IFDEF PAS2JS}external name 'button';{$ENDIF}
+    Fbuttons : NativeInt; {$IFDEF PAS2JS}external name 'buttons';{$ENDIF}
+    FctrlKey : Boolean; {$IFDEF PAS2JS}external name 'ctrlKey';{$ENDIF}
+    FshiftKey : Boolean; {$IFDEF PAS2JS}external name 'shiftKey';{$ENDIF}
+    FaltKey  : Boolean; {$IFDEF PAS2JS}external name 'altKey';{$ENDIF}
+    FmetaKey  : Boolean; {$IFDEF PAS2JS}external name 'metaKey';{$ENDIF}
   Public
     Property relatedTarget : TJSEventTarget Read FRelatedTarget;
     Property screenX : NativeInt Read FScreenX;
@@ -710,8 +703,8 @@ TEventListenerEvent = class external name 'EventListener_Event' (TJSObject)
     Property metaKey  : Boolean Read FmetaKey;
     property dataTransfer : TJSDataTransfer Read FDataTransfer;
   end;
-  TJSDragDropEventHandler = reference to function(aEvent: TJSDragEvent) : Boolean; safecall;
-  THTMLClickEventHandler = reference to function(aEvent : TJSMouseEvent) : boolean; safecall;
+  TJSDragDropEventHandler = reference to function(aEvent: TJSDragEvent) : Boolean; {$IFDEF PAS2JS}{$IFDEF PAS2JS}safecall;{$ENDIF}{$ENDIF}
+  THTMLClickEventHandler = reference to function(aEvent : TJSMouseEvent) : boolean; {$IFDEF PAS2JS}{$IFDEF PAS2JS}safecall;{$ENDIF}{$ENDIF}
   { Various events }
 
 {$IFNDEF FIREFOX}
@@ -727,13 +720,13 @@ TEventListenerEvent = class external name 'EventListener_Event' (TJSObject)
   TJSAnimationEvent = Class(TJSEvent);
   TJSLoadEvent = Class(TJSEvent);
 
-  TJSErrorEvent = class external name 'ErrorEvent' (TJSEvent)
+  TJSErrorEvent = class {$IFDEF PAS2JS}external name 'ErrorEvent' (TJSEvent){$ENDIF}
   Private
-    Fmessage : String external name 'message';
-    Ffilename : string external name 'filename';
-    Flineno : integer external name 'lineno';
-    Fcolno : integer external name 'colno';
-    Ferror : TJSObject external name 'error';
+    Fmessage : String; {$IFDEF PAS2JS}external name 'message';{$ENDIF}
+    Ffilename : string; {$IFDEF PAS2JS}external name 'filename';{$ENDIF}
+    Flineno : integer; {$IFDEF PAS2JS}external name 'lineno';{$ENDIF}
+    Fcolno : integer; {$IFDEF PAS2JS}external name 'colno';{$ENDIF}
+    Ferror : TJSObject; {$IFDEF PAS2JS}external name 'error';{$ENDIF}
   Public
     Property message : String read FMessage;
     property filename : string Read FFileName;
@@ -745,29 +738,29 @@ TEventListenerEvent = class external name 'EventListener_Event' (TJSObject)
   TJSPageTransitionEvent = class(TJSEvent)
   end;
 
-  TJSHashChangeEvent = class external name 'HashChangeEvent' (TJSEvent)
+  TJSHashChangeEvent = class {$IFDEF PAS2JS}external name 'HashChangeEvent' (TJSEvent){$ENDIF}
   Private
-    FnewURL : String external name 'newURL';
-    FoldURL : String external name 'oldURL';
+    FnewURL : String; {$IFDEF PAS2JS}external name 'newURL';{$ENDIF}
+    FoldURL : String; {$IFDEF PAS2JS}external name 'oldURL';{$ENDIF}
   public
     property newURL : String Read FNewURL;
     property oldURL : String Read FOldURL;
   end;
 
-  TJSPopStateEvent = class external name 'PopStateEvent'  (TJSEvent)
+  TJSPopStateEvent = class {$IFDEF PAS2JS}external name 'PopStateEvent'  (TJSEvent){$ENDIF}
   Private
-    FState : JSValue; external name 'state';
+    FState : JSValue; {$IFDEF PAS2JS} external name 'state';{$ENDIF}
   Public
     property state : JSValue read FState;
   end;
 
-  TJSStorageEvent = class external name 'StorageEvent' (TJSEvent)
+  TJSStorageEvent = class {$IFDEF PAS2JS}external name 'StorageEvent' (TJSEvent){$ENDIF}
   private
-    Fkey : String external name 'key';
-    FoldValue : String external name 'oldValue';
-    FnewValue : String external name 'newValue';
-    Furl : String external name 'url';
-    FstorageArea : String external name 'storageArea';
+    Fkey : String; {$IFDEF PAS2JS}external name 'key';{$ENDIF}
+    FoldValue : String; {$IFDEF PAS2JS}external name 'oldValue';{$ENDIF}
+    FnewValue : String; {$IFDEF PAS2JS}external name 'newValue';{$ENDIF}
+    Furl : String; {$IFDEF PAS2JS}external name 'url';{$ENDIF}
+    FstorageArea : String; {$IFDEF PAS2JS}external name 'storageArea';{$ENDIF}
   public
     Property key : String Read FKey;
     Property oldValue : String Read FOldValue;
@@ -778,69 +771,69 @@ TEventListenerEvent = class external name 'EventListener_Event' (TJSObject)
 
   { TJSProgressEvent }
 
-  TJSProgressEvent = class external name 'ProgressEvent' (TJSEvent)
+  TJSProgressEvent = class {$IFDEF PAS2JS}external name 'ProgressEvent' (TJSEvent){$ENDIF}
   Private
-    FlengthComputable : Boolean external name 'lengthComputable';
-    Floaded : NativeUINT external name 'loaded';
-    FTotal : NativeUINT external name 'Total';
+    FlengthComputable : Boolean; {$IFDEF PAS2JS}external name 'lengthComputable';{$ENDIF}
+    Floaded : NativeUINT; {$IFDEF PAS2JS}external name 'loaded';{$ENDIF}
+    FTotal : NativeUINT; {$IFDEF PAS2JS}external name'Total';{$ENDIF}
   Public
     property lengthComputable : Boolean Read FlengthComputable;
     property loaded : NativeUINT Read FLoaded;
     property Total : NativeUINT Read FTotal;
   end;
 
-  TJSPageTransitionEventHandler = reference to function(aEvent : TJsPageTransitionEvent) : boolean; safecall;
-  TJSHashChangeEventhandler = reference to function(aEvent : TJSHashChangeEvent) : boolean; safecall;
-  TJSMouseWheelEventHandler = reference to function(aEvent : TJSWheelEvent) : boolean; safecall;
-  TJSMouseEventHandler = reference to function(aEvent : TJSMouseEvent) : boolean; safecall;
-  THTMLAnimationEventHandler = reference to function(aEvent : TJSAnimationEvent) : boolean; safecall;
-  TJSErrorEventHandler = reference to function(aEvent : TJSErrorEvent) : boolean; safecall;
-  TJSFocusEventHandler = reference to function(aEvent : TJSFocusEvent) : boolean; safecall;
-  TJSKeyEventhandler = reference to function (aEvent : TJSKeyBoardEvent) : boolean; safecall;
-  TJSLoadEventhandler = reference to function (aEvent : TJSLoadEvent) : boolean; safecall;
-  TJSPointerEventHandler = reference to function(aEvent : TJSPointerEvent) : boolean; safecall;
-  TJSUIEventHandler = reference to function(aEvent : TJSUIEvent) : Boolean; safecall;
-  TJSPopStateEventHandler = reference to function(aEvent : TJSPopStateEvent) : Boolean; safecall;
-  TJSStorageEventHandler = reference to function(aEvent : TJSStorageEvent) : Boolean; safecall;
-  TJSProgressEventhandler =  reference to function(aEvent : TJSProgressEvent) : Boolean; safecall;
-  TJSTouchEventHandler = reference to function(aEvent : TJSTouchEvent) : boolean; safecall;
+  TJSPageTransitionEventHandler = reference to function(aEvent : TJsPageTransitionEvent) : boolean; {$IFDEF PAS2JS}safecall;{$ENDIF}
+  TJSHashChangeEventhandler = reference to function(aEvent : TJSHashChangeEvent) : boolean; {$IFDEF PAS2JS}safecall;{$ENDIF}
+  TJSMouseWheelEventHandler = reference to function(aEvent : TJSWheelEvent) : boolean; {$IFDEF PAS2JS}safecall;{$ENDIF}
+  TJSMouseEventHandler = reference to function(aEvent : TJSMouseEvent) : boolean; {$IFDEF PAS2JS}safecall;{$ENDIF}
+  THTMLAnimationEventHandler = reference to function(aEvent : TJSAnimationEvent) : boolean; {$IFDEF PAS2JS}safecall;{$ENDIF}
+  TJSErrorEventHandler = reference to function(aEvent : TJSErrorEvent) : boolean; {$IFDEF PAS2JS}safecall;{$ENDIF}
+  TJSFocusEventHandler = reference to function(aEvent : TJSFocusEvent) : boolean; {$IFDEF PAS2JS}safecall;{$ENDIF}
+  TJSKeyEventhandler = reference to function (aEvent : TJSKeyBoardEvent) : boolean; {$IFDEF PAS2JS}safecall;{$ENDIF}
+  TJSLoadEventhandler = reference to function (aEvent : TJSLoadEvent) : boolean; {$IFDEF PAS2JS}safecall;{$ENDIF}
+  TJSPointerEventHandler = reference to function(aEvent : TJSPointerEvent) : boolean; {$IFDEF PAS2JS}safecall;{$ENDIF}
+  TJSUIEventHandler = reference to function(aEvent : TJSUIEvent) : Boolean; {$IFDEF PAS2JS}safecall;{$ENDIF}
+  TJSPopStateEventHandler = reference to function(aEvent : TJSPopStateEvent) : Boolean; {$IFDEF PAS2JS}safecall;{$ENDIF}
+  TJSStorageEventHandler = reference to function(aEvent : TJSStorageEvent) : Boolean; {$IFDEF PAS2JS}safecall;{$ENDIF}
+  TJSProgressEventhandler =  reference to function(aEvent : TJSProgressEvent) : Boolean; {$IFDEF PAS2JS}safecall;{$ENDIF}
+  TJSTouchEventHandler = reference to function(aEvent : TJSTouchEvent) : boolean; {$IFDEF PAS2JS}safecall;{$ENDIF}
 
-  TJSDocument = class external name 'Document' (TJSNode)
+  TJSDocument = class {$IFDEF PAS2JS}external name 'Document' (TJSNode){$ENDIF}
   Private
-    fActiveElement : TJSElement; external name 'activeElement';
-    FCharacterSet: String; external name 'characterSet';
-    FChildElementCount: NativeInt; external name 'childElementCount';
-    FCompatMode: String; external name 'compatMode';
-    FCurrentScript: TJSElement; external name 'currentScript';
-    FDefaultView: TJSWindow; external name 'defaultView';
-    FDocType: TJSDocumentType; external name 'docrype';
-    FDocumentElement: TJSElement; external name 'documentElement';
-    FDocumentURI: String; external name 'documentURI';
-    FEmbeds: TJSHTMLCollection; external name 'embeds';
-    FFirstElementChild : TJSElement; external name 'firstElementChild';
-    FForms: TJSHTMLCollection; external name 'forms';
-    FFullScreenElement: TJSElement; external name 'fullscreenElement';
-    FFullscreenEnabled: Boolean; external name 'fullscreenEnabled';
-    FHead: TJSElement; external name 'head';
-    FHidden: Boolean; external name 'hidden';
-    FImages: TJSHTMLCollection; external name 'images';
-    FImplementation: TJSDOMImplementation; external name 'implementation';
-    FLastElementChild : TJSElement; external name 'lastElementChild';
-    FLastModified: String; external name 'lastModified';
-    FLastStyleSheetSet: String; external name 'lastStyleSheetSet';
-    FLinks: TJSHTMLCollection; external name 'links';
-    FLocation: TJSLocation; external name 'location';
-    FLocationString: String; external name 'location';
-    FPlugins: TJSHTMLCollection; external name 'plugins';
-    FPointerLockElement: TJSElement; external name 'pointerLockElement';
-    FPreferredStyleSheetSet: String; external name 'preferredStyleSheetSet';
-    FReadyState: String; external name 'readyState';
-    FReferrer: String; external name 'referrer';
-    FScripts: TJSHTMLCollection; external name 'scripts';
-    FStyleSheets: TJSStyleSheetList; external name 'styleSheets';
-    FStyleSheetSets: TJSValueDynArray; external name 'styleSheetSets';
-    FURL: String; external name 'URL';
-    FVisibilityState: string; external name 'visibilityState';
+    fActiveElement : TJSElement; {$IFDEF PAS2JS} external name 'activeElement';{$ENDIF}
+    FCharacterSet: String; {$IFDEF PAS2JS} external name 'characterSet';{$ENDIF}
+    FChildElementCount: NativeInt; {$IFDEF PAS2JS} external name 'childElementCount';{$ENDIF}
+    FCompatMode: String; {$IFDEF PAS2JS} external name 'compatMode';{$ENDIF}
+    FCurrentScript: TJSElement; {$IFDEF PAS2JS} external name 'currentScript';{$ENDIF}
+    FDefaultView: TJSWindow; {$IFDEF PAS2JS} external name 'defaultView';{$ENDIF}
+    FDocType: TJSDocumentType; {$IFDEF PAS2JS} external name 'docrype';{$ENDIF}
+    FDocumentElement: TJSElement; {$IFDEF PAS2JS} external name 'documentElement';{$ENDIF}
+    FDocumentURI: String; {$IFDEF PAS2JS} external name 'documentURI';{$ENDIF}
+    FEmbeds: TJSHTMLCollection; {$IFDEF PAS2JS} external name 'embeds';{$ENDIF}
+    FFirstElementChild : TJSElement; {$IFDEF PAS2JS} external name 'firstElementChild';{$ENDIF}
+    FForms: TJSHTMLCollection; {$IFDEF PAS2JS} external name 'forms';{$ENDIF}
+    FFullScreenElement: TJSElement; {$IFDEF PAS2JS} external name 'fullscreenElement';{$ENDIF}
+    FFullscreenEnabled: Boolean; {$IFDEF PAS2JS} external name 'fullscreenEnabled';{$ENDIF}
+    FHead: TJSElement; {$IFDEF PAS2JS} external name 'head';{$ENDIF}
+    FHidden: Boolean; {$IFDEF PAS2JS} external name 'hidden';{$ENDIF}
+    FImages: TJSHTMLCollection; {$IFDEF PAS2JS} external name 'images';{$ENDIF}
+    FImplementation: TJSDOMImplementation; {$IFDEF PAS2JS} external name 'implementation';{$ENDIF}
+    FLastElementChild : TJSElement; {$IFDEF PAS2JS} external name 'lastElementChild';{$ENDIF}
+    FLastModified: String; {$IFDEF PAS2JS} external name 'lastModified';{$ENDIF}
+    FLastStyleSheetSet: String; {$IFDEF PAS2JS} external name 'lastStyleSheetSet';{$ENDIF}
+    FLinks: TJSHTMLCollection; {$IFDEF PAS2JS} external name 'links';{$ENDIF}
+    FLocation: TJSLocation; {$IFDEF PAS2JS} external name 'location';{$ENDIF}
+    FLocationString: String; {$IFDEF PAS2JS} external name 'location';{$ENDIF}
+    FPlugins: TJSHTMLCollection; {$IFDEF PAS2JS} external name 'plugins';{$ENDIF}
+    FPointerLockElement: TJSElement; {$IFDEF PAS2JS} external name 'pointerLockElement';{$ENDIF}
+    FPreferredStyleSheetSet: String; {$IFDEF PAS2JS} external name 'preferredStyleSheetSet';{$ENDIF}
+    FReadyState: String; {$IFDEF PAS2JS} external name 'readyState';{$ENDIF}
+    FReferrer: String; {$IFDEF PAS2JS} external name 'referrer';{$ENDIF}
+    FScripts: TJSHTMLCollection; {$IFDEF PAS2JS} external name 'scripts';{$ENDIF}
+    FStyleSheets: TJSStyleSheetList; {$IFDEF PAS2JS} external name 'styleSheets';{$ENDIF}
+    FStyleSheetSets: TJSValueDynArray; {$IFDEF PAS2JS} external name 'styleSheetSets';{$ENDIF}
+    FURL: String; {$IFDEF PAS2JS} external name 'URL';{$ENDIF}
+    FVisibilityState: string; {$IFDEF PAS2JS} external name 'visibilityState';{$ENDIF}
   Public
     function adoptNode(aExternalNode : TJSNode) : TJSNode;
     procedure close;
@@ -996,21 +989,21 @@ TEventListenerEvent = class external name 'EventListener_Event' (TJSObject)
     property visibilityState : string read FVisibilityState;
   end;
 
-  TJSConsole = class external name 'Console'  (TJSObject)
+  TJSConsole = class {$IFDEF PAS2JS}external name 'Console'  (TJSObject){$ENDIF}
   Public
-    procedure assert(anAssertion : string; Obj1 : JSValue); varargs;
+    procedure assert(anAssertion : string; Obj1 : JSValue); {$IFDEF PAS2JS}varargs;{$ENDIF}
     Procedure clear;  
     procedure count; overload;
     procedure count(aCounter : String); overload;
-    procedure debug(Obj1 : JSValue); varargs of JSValue;
-    procedure error(Obj1 : JSValue); varargs of JSValue;
+    procedure debug(Obj1 : JSValue); {$IFDEF PAS2JS}varargs of JSValue;{$ENDIF}
+    procedure error(Obj1 : JSValue); {$IFDEF PAS2JS}varargs of JSValue;{$ENDIF}
     procedure group; overload;
     procedure group(aLabel : String); overload;
     procedure groupCollapsed; overload;
     procedure groupCollapsed(aLabel : String);overload;
     procedure groupEnd;
-    procedure info(Obj1 : JSValue); varargs of JSValue;
-    procedure log(Obj1 : JSValue); varargs of JSValue;
+    procedure info(Obj1 : JSValue); {$IFDEF PAS2JS}varargs of JSValue;{$ENDIF}
+    procedure log(Obj1 : JSValue); {$IFDEF PAS2JS}varargs of JSValue;{$ENDIF}
     procedure table(args: array of JSValue); overload;
     procedure table(args: array of JSValue; Columns : Array of string); overload;
     procedure table(args: TJSObject); overload;
@@ -1018,11 +1011,11 @@ TEventListenerEvent = class external name 'EventListener_Event' (TJSObject)
     procedure time(aName : string);
     procedure timeEnd(aName : string);
     procedure trace;
-    procedure warn(Obj1 : JSValue); varargs of JSValue;
+    procedure warn(Obj1 : JSValue); {$IFDEF PAS2JS}varargs of JSValue;{$ENDIF}
   end;
 
-//  TJSBufferSource = class external name 'BufferSource' end;
-//  TJSTypedArray = class external name 'TypedArray' end;
+//  TJSBufferSource = class {$IFDEF PAS2JS}external name 'BufferSource' end;{$ENDIF}
+//  TJSTypedArray = class {$IFDEF PAS2JS}external name 'TypedArray' end;{$ENDIF}
 
   // Forward class definitions
   TJSCryptoKey = Class;
@@ -1057,9 +1050,9 @@ TEventListenerEvent = class external name 'EventListener_Event' (TJSObject)
   
   AesCtrParams = record
     counter : TJSBufferSource;
-    length_ : Byte;external name 'length';
+    length_ : Byte;{$IFDEF PAS2JS}external name  'length';{$ENDIF}
   end;
-  
+
   { --------------------------------------------------------------------
     AesGcmParams
     --------------------------------------------------------------------}
@@ -1101,7 +1094,7 @@ TEventListenerEvent = class external name 'EventListener_Event' (TJSObject)
     --------------------------------------------------------------------}
   
   AesKeyGenParams = record
-    length_ : Integer;external name 'length';
+    length_ : Integer;{$IFDEF PAS2JS}external name 'length';{$ENDIF}
   end;
   
   { --------------------------------------------------------------------
@@ -1110,7 +1103,7 @@ TEventListenerEvent = class external name 'EventListener_Event' (TJSObject)
   
   HmacKeyGenParams = record
     hash : AlgorithmIdentifier;
-    length_ : Integer;external name 'length';
+    length_ : Integer;{$IFDEF PAS2JS}external name 'length';{$ENDIF}
   end;
   
   { --------------------------------------------------------------------
@@ -1128,7 +1121,7 @@ TEventListenerEvent = class external name 'EventListener_Event' (TJSObject)
     --------------------------------------------------------------------}
   
   RsaOaepParams = record
-    label_ : TJSBufferSource;external name 'label';
+    label_ : TJSBufferSource;{$IFDEF PAS2JS}external name 'label';{$ENDIF}
   end;
   
   { --------------------------------------------------------------------
@@ -1153,7 +1146,7 @@ TEventListenerEvent = class external name 'EventListener_Event' (TJSObject)
     --------------------------------------------------------------------}
   
   EcKeyGenParams = record
-    _namedCurve : NamedCurve;external name 'namedCurve';
+    _namedCurve : NamedCurve;{$IFDEF PAS2JS}external name 'namedCurve';{$ENDIF}
   end;
   
   { --------------------------------------------------------------------
@@ -1161,7 +1154,7 @@ TEventListenerEvent = class external name 'EventListener_Event' (TJSObject)
     --------------------------------------------------------------------}
   
   AesDerivedKeyParams = record
-    length_ : Integer;external name 'length';
+    length_ : Integer;{$IFDEF PAS2JS}external name 'length';{$ENDIF}
   end;
   
   { --------------------------------------------------------------------
@@ -1169,7 +1162,7 @@ TEventListenerEvent = class external name 'EventListener_Event' (TJSObject)
     --------------------------------------------------------------------}
   
   HmacDerivedKeyParams = record
-    length_ : Integer;external name 'length';
+    length_ : Integer;{$IFDEF PAS2JS}external name 'length';{$ENDIF}
   end;
   
   { --------------------------------------------------------------------
@@ -1177,7 +1170,7 @@ TEventListenerEvent = class external name 'EventListener_Event' (TJSObject)
     --------------------------------------------------------------------}
   
   EcdhKeyDeriveParams = record
-    public_ : TJSCryptoKey; external name 'public';
+    public_ : TJSCryptoKey; {$IFDEF PAS2JS} external name 'public';{$ENDIF}
   end;
   
   { --------------------------------------------------------------------
@@ -1185,7 +1178,7 @@ TEventListenerEvent = class external name 'EventListener_Event' (TJSObject)
     --------------------------------------------------------------------}
   
   DhKeyDeriveParams = record
-    public_ : TJSCryptoKey;  external name 'public';
+    public_ : TJSCryptoKey;{$IFDEF PAS2JS}external name 'public';{$ENDIF}
   end;
   
   { --------------------------------------------------------------------
@@ -1210,7 +1203,7 @@ TEventListenerEvent = class external name 'EventListener_Event' (TJSObject)
     --------------------------------------------------------------------}
   
   EcKeyImportParams = record
-    _namedCurve : NamedCurve;external name 'namedCurve';
+    _namedCurve : NamedCurve;{$IFDEF PAS2JS}external name 'namedCurve';{$ENDIF}
   end;
   
   { --------------------------------------------------------------------
@@ -1274,12 +1267,12 @@ TEventListenerEvent = class external name 'EventListener_Event' (TJSObject)
     --------------------------------------------------------------------}
   
   TKeyUsageDynArray = Array of KeyUsage;
-  TJSCryptoKey = class external name 'CryptoKey' 
+  TJSCryptoKey = class {$IFDEF PAS2JS}external name 'CryptoKey'{$ENDIF}
   Private
-    Ftype_ : KeyType; external name 'type'; 
-    Fextractable : boolean; external name 'extractable'; 
-    Falgorithm : TJSObject; external name 'algorithm'; 
-    Fusages : TKeyUsageDynArray; external name 'usages'; 
+    Ftype_ : KeyType; {$IFDEF PAS2JS} external name 'type';{$ENDIF}
+    Fextractable : boolean; {$IFDEF PAS2JS} external name 'extractable';{$ENDIF}
+    Falgorithm : TJSObject; {$IFDEF PAS2JS} external name 'algorithm';{$ENDIF}
+    Fusages : TKeyUsageDynArray; {$IFDEF PAS2JS} external name 'usages';{$ENDIF}
   Public
     
     Property type_ : KeyType Read Ftype_; 
@@ -1292,7 +1285,7 @@ TEventListenerEvent = class external name 'EventListener_Event' (TJSObject)
     TJSSubtleCrypto
     --------------------------------------------------------------------}
   
-  TJSSubtleCrypto = class external name 'SubtleCrypto' 
+  TJSSubtleCrypto = class {$IFDEF PAS2JS}external name 'SubtleCrypto'{$ENDIF}
   Private
   Public
     function encrypt(algorithm : AlgorithmIdentifier; key : TJSCryptoKey; data : TJSBufferSource): TJSPromise;
@@ -1310,9 +1303,9 @@ TEventListenerEvent = class external name 'EventListener_Event' (TJSObject)
   end;
   { TJSCrypto }
 
-  TJSCrypto = class external name 'Crypto'  (TJSObject)
+  TJSCrypto = class {$IFDEF PAS2JS}external name 'Crypto'  (TJSObject){$ENDIF}
   private
-    Fsubtle: TJSSubtleCrypto; external name 'subtle';
+    Fsubtle: TJSSubtleCrypto; {$IFDEF PAS2JS} external name 'subtle';{$ENDIF}
   Public
     procedure getRandomValues (anArray : TJSTypedArray);
     property subtle : TJSSubtleCrypto Read Fsubtle;
@@ -1320,11 +1313,11 @@ TEventListenerEvent = class external name 'EventListener_Event' (TJSObject)
   
   { TJSHistory }
 
-  TJSHistory = class external name 'History'  (TJSObject)
+  TJSHistory = class {$IFDEF PAS2JS}external name 'History'  (TJSObject){$ENDIF}
   private
-    FLength: NativeInt; external name 'length';
+    FLength: NativeInt; {$IFDEF PAS2JS} external name 'length';{$ENDIF}
 {$IFDEF FIREFOX}
-    FState : JSValue; external name 'state';
+    FState : JSValue; {$IFDEF PAS2JS} external name 'state';{$ENDIF}
 {$ENDIF}
   Public
     procedure back;
@@ -1352,12 +1345,12 @@ TEventListenerEvent = class external name 'EventListener_Event' (TJSObject)
 
   { TJSIDBTransaction }
 
-  TJSIDBTransaction = class external name 'IDBTransaction'  (TJSEventTarget)
+  TJSIDBTransaction = class {$IFDEF PAS2JS}external name 'IDBTransaction'  (TJSEventTarget){$ENDIF}
   private
-    FDB : TIDBDatabase; external name 'db';
-    FError: JSValue; external name 'error';
-    FMode: String; external name 'mode';
-    FObjectStoreNames: TStringDynArray; external name 'objectStoreNames';
+    FDB : TIDBDatabase; {$IFDEF PAS2JS} external name 'db';{$ENDIF}
+    FError: JSValue; {$IFDEF PAS2JS} external name 'error';{$ENDIF}
+    FMode: String; {$IFDEF PAS2JS} external name 'mode';{$ENDIF}
+    FObjectStoreNames: TStringDynArray; {$IFDEF PAS2JS} external name 'objectStoreNames';{$ENDIF}
   public
     procedure abort;
     function objectStore(aName : String) : TJSIDBObjectStore;
@@ -1370,7 +1363,7 @@ TEventListenerEvent = class external name 'EventListener_Event' (TJSObject)
 
   { TJSIDBKeyRange }
 
-  TJSIDBKeyRange = class external name 'IDBKeyRange'  (TJSObject)
+  TJSIDBKeyRange = class {$IFDEF PAS2JS}external name 'IDBKeyRange'  (TJSObject){$ENDIF}
   private
     FLower: JSValue;
     FLowerOpen: Boolean;
@@ -1401,12 +1394,12 @@ TEventListenerEvent = class external name 'EventListener_Event' (TJSObject)
 
   { TJSIDBIndex }
 
-  TJSIDBIndex = class external name 'IDBIndex'  (TJSObject)
+  TJSIDBIndex = class {$IFDEF PAS2JS}external name 'IDBIndex'  (TJSObject){$ENDIF}
   private
-    FKeyPath: JSValue; external name 'keyPath';
-    FMultiEntry: Boolean; external name 'multiEntry';
-    FObjectStore: TJSIDBObjectStore; external name 'objectStore';
-    FUnique: boolean; external name 'unique';
+    FKeyPath: JSValue; {$IFDEF PAS2JS} external name 'keyPath';{$ENDIF}
+    FMultiEntry: Boolean; {$IFDEF PAS2JS} external name 'multiEntry';{$ENDIF}
+    FObjectStore: TJSIDBObjectStore; {$IFDEF PAS2JS} external name 'objectStore';{$ENDIF}
+    FUnique: boolean; {$IFDEF PAS2JS} external name 'unique';{$ENDIF}
   public
     name : string;
     function count : TJSIDBRequest;
@@ -1433,7 +1426,7 @@ TEventListenerEvent = class external name 'EventListener_Event' (TJSObject)
     property unique : boolean read FUnique;
   end;
 
-  TJSIDBCursorDirection = class external name 'IDBCursorDirection'  (TJSObject)
+  TJSIDBCursorDirection = class {$IFDEF PAS2JS}external name 'IDBCursorDirection'  (TJSObject){$ENDIF}
   Const
     next = 'next';
     nextUnique = 'nextUnique';
@@ -1444,15 +1437,15 @@ TEventListenerEvent = class external name 'EventListener_Event' (TJSObject)
 
   { TJSIDBCursor }
 
-  TJSIDBCursor = class external name 'IDBCursor'  (TJSObject)
+  TJSIDBCursor = class {$IFDEF PAS2JS}external name 'IDBCursor'  (TJSObject){$ENDIF}
   private
-    FDirection: string; external name 'direction';
-    FKey: JSValue; external name 'key';
-    FValue : JSValue; external name 'value';
-    FPrimaryKey: JSValue; external name 'primaryKey';
-    FSource: JSValue; external name 'source';
-    FSourceAsIndex: TJSIDBIndex; external name 'source';
-    FSourceAsStore: TJSIDBObjectStore; external name 'source';
+    FDirection: string; {$IFDEF PAS2JS} external name 'direction';{$ENDIF}
+    FKey: JSValue; {$IFDEF PAS2JS} external name 'key';{$ENDIF}
+    FValue : JSValue; {$IFDEF PAS2JS} external name 'value';{$ENDIF}
+    FPrimaryKey: JSValue; {$IFDEF PAS2JS} external name 'primaryKey';{$ENDIF}
+    FSource: JSValue; {$IFDEF PAS2JS} external name 'source';{$ENDIF}
+    FSourceAsIndex: TJSIDBIndex; {$IFDEF PAS2JS} external name 'source';{$ENDIF}
+    FSourceAsStore: TJSIDBObjectStore; {$IFDEF PAS2JS} external name 'source';{$ENDIF}
   Public
     procedure advance(aCount : NativeInt); overload;
     procedure advance(aKey : JSValue); overload;
@@ -1471,7 +1464,7 @@ TEventListenerEvent = class external name 'EventListener_Event' (TJSObject)
     property direction : string read FDirection;
   end;
 
-  TJSIDBObjectStore = class external name 'IDBObjectStore'  (TJSEventTarget)
+  TJSIDBObjectStore = class {$IFDEF PAS2JS}external name 'IDBObjectStore'  (TJSEventTarget){$ENDIF}
   public
     function add(aValue : JSValue; aKey : String) : TJSIDBRequest; overload;
     function add(aValue : JSValue) : TJSIDBRequest; overload;
@@ -1517,21 +1510,21 @@ TEventListenerEvent = class external name 'EventListener_Event' (TJSObject)
 
   { TJSIDBRequest }
 
-  TJSIDBRequest = class external name 'IDBRequest'  (TJSEventTarget)
+  TJSIDBRequest = class {$IFDEF PAS2JS}external name 'IDBRequest'  (TJSEventTarget){$ENDIF}
   private
-    Ferror : JSValue; external name 'error'; // standards are not quite clear on this one
-    FReadyState: string; external name 'readyState';
-    FResult: JSValue; external name 'result';
-    FResultDatabase: TIDBDatabase; external name 'result';
-    FResultIndex: TJSIDBIndex; external name 'result';
-    FResultObjectStore : TJSIDBObjectStore; external name 'result';
-    FResultCursor : TJSIDBCursor; external name 'result';
-    FSourceDatabase: TIDBDatabase; external name 'source';
-    FSourceIndex: TJSIDBIndex; external name 'source';
-    FSourceObjectStore : TJSIDBObjectStore; external name 'source';
-    FSourceCursor : TJSIDBCursor; external name 'source';
-    FSource: JSValue; external name 'source';
-    FTransaction: TJSIDBTransaction; external name 'transaction';
+    Ferror : JSValue; {$IFDEF PAS2JS} external name 'error';{$ENDIF}
+    FReadyState: string; {$IFDEF PAS2JS} external name 'readyState';{$ENDIF}
+    FResult: JSValue; {$IFDEF PAS2JS} external name 'result';{$ENDIF}
+    FResultDatabase: TIDBDatabase; {$IFDEF PAS2JS} external name 'result';{$ENDIF}
+    FResultIndex: TJSIDBIndex; {$IFDEF PAS2JS} external name 'result';{$ENDIF}
+    FResultObjectStore : TJSIDBObjectStore; {$IFDEF PAS2JS} external name 'result';{$ENDIF}
+    FResultCursor : TJSIDBCursor; {$IFDEF PAS2JS} external name 'result';{$ENDIF}
+    FSourceDatabase: TIDBDatabase; {$IFDEF PAS2JS} external name 'source';{$ENDIF}
+    FSourceIndex: TJSIDBIndex; {$IFDEF PAS2JS} external name 'source';{$ENDIF}
+    FSourceObjectStore : TJSIDBObjectStore; {$IFDEF PAS2JS} external name 'source';{$ENDIF}
+    FSourceCursor : TJSIDBCursor; {$IFDEF PAS2JS} external name 'source';{$ENDIF}
+    FSource: JSValue; {$IFDEF PAS2JS} external name 'source';{$ENDIF}
+    FTransaction: TJSIDBTransaction; {$IFDEF PAS2JS} external name 'transaction';{$ENDIF}
   Public
     onerror : TJSEventHandler;
     onsuccess : TJSEventHandler;
@@ -1553,7 +1546,7 @@ TEventListenerEvent = class external name 'EventListener_Event' (TJSObject)
     property transaction : TJSIDBTransaction read FTransaction;
   end;
 
-  TJSIDBOpenDBRequest = class external name 'IDBOpenDBRequest' (TJSIDBRequest)
+  TJSIDBOpenDBRequest = class {$IFDEF PAS2JS}external name 'IDBOpenDBRequest' (TJSIDBRequest){$ENDIF}
   Public
     onblocked : TJSEventHandler;
     onupgradeneeded : TJSEventHandler;
@@ -1566,11 +1559,11 @@ TEventListenerEvent = class external name 'EventListener_Event' (TJSObject)
 
   { TIDBDatabase }
 
-  TIDBDatabase = class external name 'IDBDatabase' (TJSEventTarget)
+  TIDBDatabase = class {$IFDEF PAS2JS}external name 'IDBDatabase' (TJSEventTarget){$ENDIF}
   private
-    FName: string; external name 'name';
-    FobjectStoreNames: TStringDynArray; external name 'objectStoreNames';
-    FVersion: integer; external name 'version';
+    FName: string; {$IFDEF PAS2JS} external name 'name';{$ENDIF}
+    FobjectStoreNames: TStringDynArray; {$IFDEF PAS2JS} external name 'objectStoreNames';{$ENDIF}
+    FVersion: integer; {$IFDEF PAS2JS} external name 'version';{$ENDIF}
   public
     procedure close;
     function createObjectStore(aName : string) : TJSIDBObjectStore; overload;
@@ -1583,7 +1576,7 @@ TEventListenerEvent = class external name 'EventListener_Event' (TJSObject)
     property objectStoreNames : TStringDynArray read FobjectStoreNames;
   end;
 
-  TJSIDBFactory = class external name 'IDBFactory' (TJSEventTarget)
+  TJSIDBFactory = class {$IFDEF PAS2JS}external name 'IDBFactory' (TJSEventTarget){$ENDIF}
   public
     function open(aName : string) : TJSIDBOpenDBRequest; overload;
     function open(aName : string; aVersion : Integer) : TJSIDBOpenDBRequest; overload;
@@ -1593,9 +1586,9 @@ TEventListenerEvent = class external name 'EventListener_Event' (TJSObject)
   
   { TJSStorage }
 
-  TJSStorage = class external name 'Storage' (TJSEventTarget)
+  TJSStorage = class {$IFDEF PAS2JS}external name 'Storage' (TJSEventTarget){$ENDIF}
   private
-    FLength: NativeInt; external name 'length';
+    FLength: NativeInt; {$IFDEF PAS2JS} external name 'length';{$ENDIF}
   public
     function key(aIndex : Integer) : String;
     function getItem(aKeyName : string) : string;
@@ -1608,18 +1601,23 @@ TEventListenerEvent = class external name 'EventListener_Event' (TJSObject)
   end;
 
   // Fake object, used for objects whose visible can be checked
-  TJSVisibleItem = class external name 'IVisible'  (TJSObject)
+  TJSVisibleItem = class {$IFDEF PAS2JS}external name 'IVisible'  (TJSObject){$ENDIF}
   Private
-    FVisible : boolean; external name 'visible';
+    FVisible : boolean; {$IFDEF PAS2JS} external name 'visible';{$ENDIF}
   Public
     Property visible : boolean read FVisible;
   end;
   
-  TJSLocationBar = class external name 'LocationBar' (TJSVisibleItem);
-  TJSMenuBar = class external name 'MenuBar' (TJSVisibleItem);
-  TJSToolBar = class external name 'ToolBar' (TJSVisibleItem);
-  TJSPersonalBar = class external name 'PersonalBar' (TJSVisibleItem);
-  TJSScrollBars = class external name 'ScrollBars' (TJSVisibleItem);
+  TJSLocationBar = class {$IFDEF PAS2JS}external name 'LocationBar' (TJSVisibleItem);{$ENDIF}
+  end;
+  TJSMenuBar = class {$IFDEF PAS2JS}external name 'MenuBar' (TJSVisibleItem);{$ENDIF}
+  end;
+  TJSToolBar = class {$IFDEF PAS2JS}external name 'ToolBar' (TJSVisibleItem);{$ENDIF}
+  end;
+  TJSPersonalBar = class {$IFDEF PAS2JS}external name 'PersonalBar' (TJSVisibleItem);{$ENDIF}
+  end;
+  TJSScrollBars = class {$IFDEF PAS2JS}external name 'ScrollBars' (TJSVisibleItem);{$ENDIF}
+  end;
 
   TJSPositionError = record
     code : integer;
@@ -1652,7 +1650,7 @@ TEventListenerEvent = class external name 'EventListener_Event' (TJSObject)
   TJSGeoLocationErrorCallback = procedure (aValue : TJSPositionError);
   TJSGeoLocationErrorEvent = procedure (aValue : TJSPositionError) of object;
 
-  TJSGeoLocation  = class external name 'GeoLocation'  (TJSObject)
+  TJSGeoLocation  = class {$IFDEF PAS2JS}external name 'GeoLocation'  (TJSObject){$ENDIF}
   Public
     Procedure getCurrentPosition(ASuccess : TJSGeoLocationCallback); overload;
     Procedure getCurrentPosition(ASuccess : TJSGeoLocationCallback;aError : TJSGeoLocationErrorCallback); overload;
@@ -1663,20 +1661,20 @@ TEventListenerEvent = class external name 'EventListener_Event' (TJSObject)
     procedure clearWatch(AID : NativeInt);
   end;
 
-  TJSMediaStreamTrack = class external name 'MediaStreamTrack' (TJSEventTarget)
+  TJSMediaStreamTrack = class {$IFDEF PAS2JS}external name 'MediaStreamTrack' (TJSEventTarget){$ENDIF}
   end;
 
-  TJSMediaDevices = class external name 'MediaDevices' (TJSEventTarget)
+  TJSMediaDevices = class {$IFDEF PAS2JS}external name 'MediaDevices' (TJSEventTarget){$ENDIF}
   end;
 
-  TJSWorker = class external name 'Worker' (TJSEventTarget)
+  TJSWorker = class {$IFDEF PAS2JS}external name 'Worker' (TJSEventTarget){$ENDIF}
   public
     constructor new(aURL : string);
     procedure postMessage(aValue : JSValue); overload;
     procedure postMessage(aValue : JSValue; aList : TJSValueDynArray); overload;
   end;
 
-  TJSMessagePort = class external name 'MessagePort' (TJSEventTarget)
+  TJSMessagePort = class {$IFDEF PAS2JS}external name 'MessagePort' (TJSEventTarget){$ENDIF}
   Public
     procedure close;
     procedure postMessage(aValue : JSValue); overload;
@@ -1686,9 +1684,9 @@ TEventListenerEvent = class external name 'EventListener_Event' (TJSObject)
 
   { TJSSharedWorker }
 
-  TJSSharedWorker = class external name 'SharedWorker' (TJSEventTarget)
+  TJSSharedWorker = class {$IFDEF PAS2JS}external name 'SharedWorker' (TJSEventTarget){$ENDIF}
   private
-    FPort: TJSMessagePort; external name 'port';
+    FPort: TJSMessagePort; {$IFDEF PAS2JS} external name 'port';{$ENDIF}
   Public
     constructor new(aURL : String); overload;
     constructor new(aURL : String; aName : string); overload;
@@ -1697,10 +1695,10 @@ TEventListenerEvent = class external name 'EventListener_Event' (TJSObject)
 
   { TJSServiceWorker }
 
-  TJSServiceWorker = class external name 'ServiceWorker' (TJSWorker)
+  TJSServiceWorker = class {$IFDEF PAS2JS}external name 'ServiceWorker' (TJSWorker){$ENDIF}
   private
-    FscriptURL: String;  external name 'scriptURL';
-    FState: string;  external name 'state';
+    FscriptURL: String;{$IFDEF PAS2JS}external name 'scriptURL';{$ENDIF}
+    FState: string;{$IFDEF PAS2JS}external name 'state';{$ENDIF}
   Public
     property state : string read FState;
     property scriptURL : String Read FscriptURL;
@@ -1708,12 +1706,12 @@ TEventListenerEvent = class external name 'EventListener_Event' (TJSObject)
 
   { TJSServiceWorkerRegistration }
 
-  TJSServiceWorkerRegistration = class external name 'ServiceWorkerRegistration'  (TJSObject)
+  TJSServiceWorkerRegistration = class {$IFDEF PAS2JS}external name 'ServiceWorkerRegistration'  (TJSObject){$ENDIF}
   private
-    FActive: TJSServiceWorker; external name 'active';
-    FInstalling: TJSServiceWorker; external name 'installing';
-    FScope: string; external name 'scope';
-    FWaiting: TJSServiceWorker; external name 'waiting';
+    FActive: TJSServiceWorker; {$IFDEF PAS2JS} external name 'active';{$ENDIF}
+    FInstalling: TJSServiceWorker; {$IFDEF PAS2JS} external name 'installing';{$ENDIF}
+    FScope: string; {$IFDEF PAS2JS} external name 'scope';{$ENDIF}
+    FWaiting: TJSServiceWorker; {$IFDEF PAS2JS} external name 'waiting';{$ENDIF}
   public
     function unregister : TJSPromise;
     procedure update;
@@ -1729,10 +1727,10 @@ TEventListenerEvent = class external name 'EventListener_Event' (TJSObject)
 
   { TJSServiceWorkerContainer }
 
-  TJSServiceWorkerContainer = class external name 'ServiceWorkerContainer'  (TJSObject)
+  TJSServiceWorkerContainer = class {$IFDEF PAS2JS}external name 'ServiceWorkerContainer'  (TJSObject){$ENDIF}
   private
-    FController: TJSServiceWorker; external name 'controller';
-    FReady: TJSPromise; external name 'ready';
+    FController: TJSServiceWorker; {$IFDEF PAS2JS} external name 'controller';{$ENDIF}
+    FReady: TJSPromise; {$IFDEF PAS2JS} external name 'ready';{$ENDIF}
   Public
     function register(aURL : String) : TJSPromise; overload;
     function register(aURL : String; aOptions : TJSServiceWorkerContainerOptions) : TJSPromise; overload;
@@ -1746,23 +1744,23 @@ TEventListenerEvent = class external name 'EventListener_Event' (TJSObject)
 
   { TJSNavigator }
 
-  TJSNavigator = class external name 'Navigator'  (TJSObject)
+  TJSNavigator = class {$IFDEF PAS2JS}external name 'Navigator'  (TJSObject){$ENDIF}
 {$IFDEF FIREFOX}
-    FbuildID : String ; external name 'buildID';
-    FOSCPU : String ; external name 'oscpu';
-    FproductSub : string; external name 'productSub';
-    FVendor : string; external name 'vendor';
+    FbuildID : String ; {$IFDEF PAS2JS} external name 'buildID';{$ENDIF}
+    FOSCPU : String ; {$IFDEF PAS2JS} external name 'oscpu';{$ENDIF}
+    FproductSub : string; {$IFDEF PAS2JS} external name 'productSub';{$ENDIF}
+    FVendor : string; {$IFDEF PAS2JS} external name 'vendor';{$ENDIF}
 {$ENDIF}
   private
-    FCookieEnabled: Boolean; external name 'cookieEnabled';
-    FGeoLocation: TJSGeoLocation; external name 'geolocation';
-    FLanguage: String; external name 'language';
-    FMaxTouchPoints: NativeInt; external name 'maxTouchPoints';
-    FMediaDevices: TJSMediaDevices; external name 'mediaDevices';
-    FOnline: boolean; external name 'onLine';
-    FPlatform: string; external name 'platform';
-    FServiceWorker: TJSServiceWorkerContainer; external name 'serviceWorker';
-    FUserAgent: string; external name 'userAgent';
+    FCookieEnabled: Boolean; {$IFDEF PAS2JS} external name 'cookieEnabled';{$ENDIF}
+    FGeoLocation: TJSGeoLocation; {$IFDEF PAS2JS} external name 'geolocation';{$ENDIF}
+    FLanguage: String; {$IFDEF PAS2JS} external name 'language';{$ENDIF}
+    FMaxTouchPoints: NativeInt; {$IFDEF PAS2JS} external name 'maxTouchPoints';{$ENDIF}
+    FMediaDevices: TJSMediaDevices; {$IFDEF PAS2JS} external name 'mediaDevices';{$ENDIF}
+    FOnline: boolean; {$IFDEF PAS2JS} external name 'onLine';{$ENDIF}
+    FPlatform: string; {$IFDEF PAS2JS} external name 'platform';{$ENDIF}
+    FServiceWorker: TJSServiceWorkerContainer; {$IFDEF PAS2JS} external name 'serviceWorker';{$ENDIF}
+    FUserAgent: string; {$IFDEF PAS2JS} external name 'userAgent';{$ENDIF}
   public
     function getBattery : TJSPromise;
     function requestMediaKeySystemAccess(aKeySystem : String; supportedConfigurations : TJSValueDynArray) : TJSPromise;
@@ -1790,16 +1788,16 @@ TEventListenerEvent = class external name 'EventListener_Event' (TJSObject)
   { TJSTouchEvent }
   TTouchCoord = longint;
 
-  TJSTouch = class external name 'Touch'  (TJSObject)
+  TJSTouch = class {$IFDEF PAS2JS}external name 'Touch'  (TJSObject){$ENDIF}
   private
-    FClientX: TTouchCoord; external name 'clientX';
-    FClientY: TTouchCoord; external name 'clientY';
-    FIDentifier: longint; external name 'identifier';
-    FPageX: TTouchCoord; external name 'pageX';
-    FPageY: TTouchCoord; external name 'pageY';
-    FScreenX: TTouchCoord; external name 'screenX';
-    FScreenY: TTouchCoord; external name 'screenY';
-    FTarget: TJSElement; external name 'target';
+    FClientX: TTouchCoord; {$IFDEF PAS2JS} external name 'clientX';{$ENDIF}
+    FClientY: TTouchCoord; {$IFDEF PAS2JS} external name 'clientY';{$ENDIF}
+    FIDentifier: longint; {$IFDEF PAS2JS} external name 'identifier';{$ENDIF}
+    FPageX: TTouchCoord; {$IFDEF PAS2JS} external name 'pageX';{$ENDIF}
+    FPageY: TTouchCoord; {$IFDEF PAS2JS} external name 'pageY';{$ENDIF}
+    FScreenX: TTouchCoord; {$IFDEF PAS2JS} external name 'screenX';{$ENDIF}
+    FScreenY: TTouchCoord; {$IFDEF PAS2JS} external name 'screenY';{$ENDIF}
+    FTarget: TJSElement; {$IFDEF PAS2JS} external name 'target';{$ENDIF}
   Public
     Property identifier : longint read FIDentifier;
     Property ScreenX : TTouchCoord Read FScreenX;
@@ -1813,9 +1811,9 @@ TEventListenerEvent = class external name 'EventListener_Event' (TJSObject)
 
   { TJSTouchList }
 
-  TJSTouchList = class external name 'TouchList' (TJSObject)
+  TJSTouchList = class {$IFDEF PAS2JS}external name 'TouchList' (TJSObject){$ENDIF}
   private
-    FLength: NativeInt; external name 'length';
+    FLength: NativeInt; {$IFDEF PAS2JS} external name 'length';{$ENDIF}
   Public
     function item (aIndex : Integer) : TJSTouch;
     property length : NativeInt Read FLength;
@@ -1823,16 +1821,17 @@ TEventListenerEvent = class external name 'EventListener_Event' (TJSObject)
   end;
 
 
-  TJSPerformance = class external name 'Performance' (TJSObject);
+  TJSPerformance = class {$IFDEF PAS2JS}external name 'Performance' (TJSObject);{$ENDIF}
+  end;
 
-  TJSScreen = class external name 'Screen' (TJSObject)
+  TJSScreen = class {$IFDEF PAS2JS}external name 'Screen' (TJSObject){$ENDIF}
   private
-    FavailHeight: Integer; external name 'availHeight';
-    FavailWidth: Integer; external name 'availWidth';
-    FcolorDepth: Integer; external name 'colorDepth';
-    FPixelDepth: Integer; external name 'pixelDepth';
-    Fheight: Integer; external name 'height';
-    Fwidth: Integer; external name 'width';
+    FavailHeight: Integer; {$IFDEF PAS2JS} external name 'availHeight';{$ENDIF}
+    FavailWidth: Integer; {$IFDEF PAS2JS} external name 'availWidth';{$ENDIF}
+    FcolorDepth: Integer; {$IFDEF PAS2JS} external name 'colorDepth';{$ENDIF}
+    FPixelDepth: Integer; {$IFDEF PAS2JS} external name 'pixelDepth';{$ENDIF}
+    Fheight: Integer; {$IFDEF PAS2JS} external name 'height';{$ENDIF}
+    Fwidth: Integer; {$IFDEF PAS2JS} external name 'width';{$ENDIF}
   public
   { Properties declarations }
     property availHeight: Integer read FavailHeight;
@@ -1846,7 +1845,7 @@ TEventListenerEvent = class external name 'EventListener_Event' (TJSObject)
   TJSBlob = class;
 
   TJSParamEnumCallBack = reference to procedure (const aKey,aValue : string);
-  TJSURLSearchParams = class external name 'URLSearchParams' (TJSObject)
+  TJSURLSearchParams = class {$IFDEF PAS2JS}external name 'URLSearchParams' (TJSObject){$ENDIF}
   Public
     Procedure append(const aName,aValue : string);
     Procedure delete(const aName : string);
@@ -1854,19 +1853,19 @@ TEventListenerEvent = class external name 'EventListener_Event' (TJSObject)
     Procedure foreach(aEnumCallBack : TJSParamEnumCallBack);
     function get(const aName : string) : JSValue;
     // If you're sure the value exists...
-    function getString(const aName : string) : string; external name 'get';
+    function getString(const aName : string) : string; {$IFDEF PAS2JS} external name 'get';{$ENDIF}
     function getAll(const aName : string) : TStringDynArray;
     function has(const aName : string) : Boolean;
     Function keys : TJSIterator; reintroduce;
-    Procedure set_(const aName,aValue : string); external name 'set';
+    Procedure set_(const aName,aValue : string); {$IFDEF PAS2JS} external name 'set';{$ENDIF}
     Procedure sort;
     Function values : TJSIterator; reintroduce;
   end;
 
-  TJSURL = class external name 'URL' (TJSObject)
+  TJSURL = class {$IFDEF PAS2JS}external name 'URL' (TJSObject){$ENDIF}
   Private
-    FOrigin : String; external name 'origin';
-    FSearchParams : TJSURLSearchParams; external name 'searchParams';
+    FOrigin : String; {$IFDEF PAS2JS} external name 'origin';{$ENDIF}
+    FSearchParams : TJSURLSearchParams; {$IFDEF PAS2JS} external name 'searchParams';{$ENDIF}
   public
     hash : string;
     host : string;
@@ -1889,11 +1888,11 @@ TEventListenerEvent = class external name 'EventListener_Event' (TJSObject)
 
   TJSCSSStyleDeclaration = class; // forward
 
-  TJSTimerCallBack = reference to procedure; safecall;
+  TJSTimerCallBack = reference to procedure; {$IFDEF PAS2JS}safecall;{$ENDIF}
   Theader = Array [0..1] of String;
   THeaderArray = Array of Theader;
 
-  TJSHTMLHeaders = Class external name 'Headers' (TJSObject)
+  TJSHTMLHeaders = class {$IFDEF PAS2JS}external name 'Headers' (TJSObject){$ENDIF}
   Public
     constructor new(values : THeaderArray); overload;
     procedure append(aName, aValue : String);
@@ -1910,18 +1909,18 @@ TEventListenerEvent = class external name 'EventListener_Event' (TJSObject)
 
   { TJSMediaQueryList }
 
-  TJSMediaQueryList = class external name 'MediaQueryList' (TJSObject)
+  TJSMediaQueryList = class {$IFDEF PAS2JS}external name 'MediaQueryList' (TJSObject){$ENDIF}
   private
-    FMatches: Boolean; external name 'matches';
-    FMedia: String; external name 'media';
+    FMatches: Boolean; {$IFDEF PAS2JS} external name 'matches';{$ENDIF}
+    FMedia: String; {$IFDEF PAS2JS} external name 'media';{$ENDIF}
   Public
     Property matches : Boolean Read FMatches;
     Property media : String Read FMedia;
   end;
 
-  TJSReadableStream = class external name 'ReadableStream' (TJSObject)
+  TJSReadableStream = class {$IFDEF PAS2JS}external name 'ReadableStream' (TJSObject){$ENDIF}
   private
-    flocked: Boolean; external name 'locked';
+    flocked: Boolean; {$IFDEF PAS2JS} external name 'locked';{$ENDIF}
   public
     property locked: Boolean read flocked;
     constructor new(underlyingSource: TJSObject); overload;
@@ -1936,31 +1935,31 @@ TEventListenerEvent = class external name 'EventListener_Event' (TJSObject)
     function tee(): TJSArray; // array containing two TJSReadableStream instances
   end;
 
-  TJSBody = class external name 'Body' (TJSObject)
+  TJSBody = class {$IFDEF PAS2JS}external name 'Body' (TJSObject){$ENDIF}
   private
-    fbody: TJSReadableStream; external name 'body';
-    fbodyUsed: Boolean; external name 'bodyUsed';
+    fbody: TJSReadableStream; {$IFDEF PAS2JS} external name 'body';{$ENDIF}
+    fbodyUsed: Boolean; {$IFDEF PAS2JS} external name 'bodyUsed';{$ENDIF}
   public
     property body: TJSReadableStream read fbody;
     property bodyUsed: Boolean read fbodyUsed;
     function arrayBuffer(): TJSPromise; // resolves to TJSArrayBuffer
     //function blob(): TJSPromise; // resolves to TJSBlob
-    function blob: TJSBlob; {$IFNDEF SkipAsync}async;{$ENDIF}
+    function blob: TJSBlob; {$IFDEF PAS2JS}{$IFDEF PAS2JS}{$IFNDEF SkipAsync}async;{$ENDIF}{$ENDIF}{$ENDIF}
     function json(): TJSPromise; // resolves to JSON / TJSValue
     //function text(): TJSPromise; // resolves to USVString, always decoded using UTF-8
-    function text(): string; {$IFNDEF SkipAsync}async;{$ENDIF}
+    function text(): string; {$IFDEF PAS2JS}{$IFNDEF SkipAsync}async;{$ENDIF}{$ENDIF}
   end;
 
-  TJSResponse = class external name 'Response' (TJSBody)
+  TJSResponse = class {$IFDEF PAS2JS}external name 'Response' (TJSBody){$ENDIF}
   private
-    fheaders: TJSObject;external name 'headers';
-    fok: Boolean; external name 'ok';
-    fredirected: Boolean; external name 'redirected';
-    fstatus: NativeInt; external name 'status';
-    fstatusText: String; external name 'statusText';
-    ftype: String; external name 'type';
-    furl: String; external name 'url';
-    fuseFinalUrl: Boolean; external name 'useFinalUrl';
+    fheaders: TJSObject;{$IFDEF PAS2JS}external name 'headers';{$ENDIF}
+    fok: Boolean; {$IFDEF PAS2JS} external name 'ok';{$ENDIF}
+    fredirected: Boolean; {$IFDEF PAS2JS} external name 'redirected';{$ENDIF}
+    fstatus: NativeInt; {$IFDEF PAS2JS} external name 'status';{$ENDIF}
+    fstatusText: String; {$IFDEF PAS2JS} external name 'statusText';{$ENDIF}
+    ftype: String; {$IFDEF PAS2JS} external name 'type';{$ENDIF}
+    furl: String; {$IFDEF PAS2JS} external name 'url';{$ENDIF}
+    fuseFinalUrl: Boolean; {$IFDEF PAS2JS} external name 'useFinalUrl';{$ENDIF}
   public
     property headers: TJSObject read fheaders; //
     property ok: Boolean read fok;
@@ -1970,7 +1969,7 @@ TEventListenerEvent = class external name 'EventListener_Event' (TJSObject)
     property type_: String read ftype; //
     property url: String read furl; //
     property useFinalUrl: Boolean read fuseFinalUrl write fuseFinalUrl;
-    constructor new(body: TJSObject; init: TJSObject); varargs; external name 'new';
+    constructor new(body: TJSObject; init: TJSObject); {$IFDEF PAS2JS}varargs;{$ENDIF} {$IFDEF PAS2JS} external name 'new';{$ENDIF}
     function clone(): TJSResponse;
     function error(): TJSResponse;
     function redirect(url: String; Status: NativeInt): TJSResponse;
@@ -1980,49 +1979,49 @@ TEventListenerEvent = class external name 'EventListener_Event' (TJSObject)
   TJSDOMHighResTimeStamp = Double;
   TFrameRequestCallback = procedure (aTime: TJSDOMHighResTimeStamp);
 
-  TJSPostMessageOptions = class external name 'Object' (TJSObject)
+  TJSPostMessageOptions = class {$IFDEF PAS2JS}external name 'Object' (TJSObject){$ENDIF}
     targetOrigin : string;
     transfer : TJSValueDynArray;
   end;
 
   TJSWindowArray = Array of TJSWindow;
-  TJSWindow = class external name 'Window' (TJSObject)
+  TJSWindow = class {$IFDEF PAS2JS}external name 'Window' (TJSObject){$ENDIF}
   Private
-    FClosed: boolean; external name 'closed';
-    FConsole : TJSConsole;  external name 'console';
-    FCrypto: TJSCrypto; external name 'crypto';
-    FDevicePixelRatio: Double; external name 'devicePixelRatio';
-    FDocument: TJSDocument; external name 'document';
-    FFrameElement: TJSElement; external name 'frameElement';
-    FFrames: TJSWindowArray; external name 'frames';
-    FHistory: TJSHistory; external name 'history';
-    FIndexedDB: TJSIDBFactory; external name 'indexedDB';
-    FInnerheight: NativeInt; external name 'innerHeight';
-    FInnerWidth: NativeInt; external name 'innerWidth';
-    FLength: NativeInt; external name 'length';
-    FLocalStorage: TJSStorage; external name 'localStorage';
-    FLocation: TJSLocation; external name 'location';
-    FLocationBar: TJSLocationBar; external name 'locationbar';
-    FLocationString: string; external name 'location';
-    FMenuBar: TJSMenuBar; external name 'menubar';
-    FNavigator: TJSNavigator; external name 'navigator';
-    FOpener: TJSWindow; external name 'opener';
-    FOuterheight: NativeInt; external name 'outerHeight';
-    FOuterWidth: NativeInt; external name 'outerWidth';
-    FParent: TJSWindow; external name 'parent';
-    FPerformance: TJSPerformance; external name 'Performance';
-    FPersonalBar: TJSPersonalBar; external name 'personalbar';
-    FScreen: TJSScreen; external name 'screen';
-    FScreenX: NativeInt; external name 'screenX';
-    FScreenY: NativeInt; external name 'screenY';
-    FScrollbar: TJSScrollBars; external name 'scrollbar';
-    FScrollX: NativeInt; external name 'scrollX';
-    FScrollY: NativeInt; external name 'scrollY';
-    FSelf: TJSWindow; external name 'self';
-    FSessionStorage: TJSStorage; external name 'sessionStorage';
-    FToolBar: TJSToolBar; external name 'toolbar';
-    FTop: TJSWindow; external name 'top';
-    FURL: TJSURL; external name 'URL';
+    FClosed: boolean; {$IFDEF PAS2JS} external name 'closed';{$ENDIF}
+    FConsole : TJSConsole;{$IFDEF PAS2JS}external name 'console';{$ENDIF}
+    FCrypto: TJSCrypto; {$IFDEF PAS2JS} external name 'crypto';{$ENDIF}
+    FDevicePixelRatio: Double; {$IFDEF PAS2JS} external name 'devicePixelRatio';{$ENDIF}
+    FDocument: TJSDocument; {$IFDEF PAS2JS} external name 'document';{$ENDIF}
+    FFrameElement: TJSElement; {$IFDEF PAS2JS} external name 'frameElement';{$ENDIF}
+    FFrames: TJSWindowArray; {$IFDEF PAS2JS} external name 'frames';{$ENDIF}
+    FHistory: TJSHistory; {$IFDEF PAS2JS} external name 'history';{$ENDIF}
+    FIndexedDB: TJSIDBFactory; {$IFDEF PAS2JS} external name 'indexedDB';{$ENDIF}
+    FInnerheight: NativeInt; {$IFDEF PAS2JS} external name 'innerHeight';{$ENDIF}
+    FInnerWidth: NativeInt; {$IFDEF PAS2JS} external name 'innerWidth';{$ENDIF}
+    FLength: NativeInt; {$IFDEF PAS2JS} external name 'length';{$ENDIF}
+    FLocalStorage: TJSStorage; {$IFDEF PAS2JS} external name 'localStorage';{$ENDIF}
+    FLocation: TJSLocation; {$IFDEF PAS2JS} external name 'location';{$ENDIF}
+    FLocationBar: TJSLocationBar; {$IFDEF PAS2JS} external name 'locationbar';{$ENDIF}
+    FLocationString: string; {$IFDEF PAS2JS} external name 'location';{$ENDIF}
+    FMenuBar: TJSMenuBar; {$IFDEF PAS2JS} external name 'menubar';{$ENDIF}
+    FNavigator: TJSNavigator; {$IFDEF PAS2JS} external name 'navigator';{$ENDIF}
+    FOpener: TJSWindow; {$IFDEF PAS2JS} external name 'opener';{$ENDIF}
+    FOuterheight: NativeInt; {$IFDEF PAS2JS} external name 'outerHeight';{$ENDIF}
+    FOuterWidth: NativeInt; {$IFDEF PAS2JS} external name 'outerWidth';{$ENDIF}
+    FParent: TJSWindow; {$IFDEF PAS2JS} external name 'parent';{$ENDIF}
+    FPerformance: TJSPerformance; {$IFDEF PAS2JS} external name 'Performance';{$ENDIF}
+    FPersonalBar: TJSPersonalBar; {$IFDEF PAS2JS} external name 'personalbar';{$ENDIF}
+    FScreen: TJSScreen; {$IFDEF PAS2JS} external name 'screen';{$ENDIF}
+    FScreenX: NativeInt; {$IFDEF PAS2JS} external name 'screenX';{$ENDIF}
+    FScreenY: NativeInt; {$IFDEF PAS2JS} external name 'screenY';{$ENDIF}
+    FScrollbar: TJSScrollBars; {$IFDEF PAS2JS} external name 'scrollbar';{$ENDIF}
+    FScrollX: NativeInt; {$IFDEF PAS2JS} external name 'scrollX';{$ENDIF}
+    FScrollY: NativeInt; {$IFDEF PAS2JS} external name 'scrollY';{$ENDIF}
+    FSelf: TJSWindow; {$IFDEF PAS2JS} external name 'self';{$ENDIF}
+    FSessionStorage: TJSStorage; {$IFDEF PAS2JS} external name 'sessionStorage';{$ENDIF}
+    FToolBar: TJSToolBar; {$IFDEF PAS2JS} external name 'toolbar';{$ENDIF}
+    FTop: TJSWindow; {$IFDEF PAS2JS} external name 'top';{$ENDIF}
+    FURL: TJSURL; {$IFDEF PAS2JS} external name 'URL';{$ENDIF}
   Public
     fullSreen : Boolean;   
     name : string;
@@ -2097,11 +2096,11 @@ TEventListenerEvent = class external name 'EventListener_Event' (TJSObject)
     procedure cancelAnimationFrame(aHandle: Integer);
     Procedure close;
     Function confirm(Const aMsg : String) :  boolean;
-    function fetch(resource: String; init: TJSObject): TJSPromise; overload; external name 'fetch';
-    //function fetch(resource: String): TJSPromise; overload; external name 'fetch';
-    function fetch(resource: String): TJSResponse; {$IFNDEF SkipAsync}async;{$ENDIF} overload; external name 'fetch';
-    function fetch(resource: TJSObject; init: TJSObject): TJSPromise; overload; external name 'fetch';
-    function fetch(resource: TJSObject): TJSPromise; overload; external name 'fetch';
+    function fetch(resource: String; init: TJSObject): TJSPromise; overload; {$IFDEF PAS2JS} external name 'fetch';{$ENDIF}
+    //function fetch(resource: String): TJSPromise; overload; {$IFDEF PAS2JS} external name 'fetch';{$ENDIF}
+    function fetch(resource: String): TJSResponse; {$IFDEF PAS2JS}{$IFNDEF SkipAsync}async;{$ENDIF}{$ENDIF} overload; {$IFDEF PAS2JS} external name 'fetch';{$ENDIF}
+    function fetch(resource: TJSObject; init: TJSObject): TJSPromise; overload; {$IFDEF PAS2JS} external name 'fetch';{$ENDIF}
+    function fetch(resource: TJSObject): TJSPromise; overload; {$IFDEF PAS2JS} external name 'fetch';{$ENDIF}
     procedure focus;
     Function getComputedStyle(aElement : TJSElement) : TJSCSSStyleDeclaration; overload;
     Function getComputedStyle(aElement,aPseudoElement : TJSElement) : TJSCSSStyleDeclaration; overload;
@@ -2127,8 +2126,8 @@ TEventListenerEvent = class external name 'EventListener_Event' (TJSObject)
     procedure resizeTo(aWidth,aHeight : NativeInt);
     procedure scrollBy(x,y : NativeInt);
     procedure scrollTo(x,y : NativeInt);
-    Function setInterval(ahandler : TJSTimerCallBack; aInterval : NativeUInt) : NativeInt; varargs;
-    Function setTimeout(ahandler : TJSTimerCallBack; aTimeout : NativeUInt) : NativeInt; varargs; overload;
+    Function setInterval(ahandler : TJSTimerCallBack; aInterval : NativeUInt) : NativeInt; {$IFDEF PAS2JS}varargs;{$ENDIF}
+    Function setTimeout(ahandler : TJSTimerCallBack; aTimeout : NativeUInt) : NativeInt; {$IFDEF PAS2JS}varargs;{$ENDIF} overload;
     Function setTimeout(ahandler : TJSTimerCallBack) : NativeInt; overload;
     procedure stop;
     { public properties }
@@ -2171,10 +2170,10 @@ TEventListenerEvent = class external name 'EventListener_Event' (TJSObject)
 
   { TJSCSSStyleDeclaration }
 
-  TJSCSSStyleDeclaration = class external name 'CSSStyleDeclaration'  (TJSObject)
+  TJSCSSStyleDeclaration = class {$IFDEF PAS2JS}external name 'CSSStyleDeclaration'  (TJSObject){$ENDIF}
   private
-    FLength: NativeInt; external name 'length';
-    FParentRule: TJSCSSRule; external name 'parentRule';
+    FLength: NativeInt; {$IFDEF PAS2JS} external name 'length';{$ENDIF}
+    FParentRule: TJSCSSRule; {$IFDEF PAS2JS} external name 'parentRule';{$ENDIF}
   public
     cssText : string;
     function item(aIndex : Integer) : string;
@@ -2192,15 +2191,15 @@ TEventListenerEvent = class external name 'EventListener_Event' (TJSObject)
 
 
   { TJSHTMLElement }
-  TJSHTMLElement = class external name 'HTMLElement' (TJSElement)
+  TJSHTMLElement = class {$IFDEF PAS2JS}external name 'HTMLElement' (TJSElement){$ENDIF}
   private
-    FDataset: TJSObject ; external name 'dataset';
-    FIsContentEditable: Boolean ; external name 'isContentEditable';
-    FOffsetHeight: Double; external name 'offsetHeight';
-    FOffsetLeft: Double; external name 'offsetLeft';
-    FOffsetParent: TJSElement; external name 'offsetParent';
-    FOffsetTop: Double; external name 'offsetTop';
-    FOffsetWidth: Double; external name 'offsetWidth';
+    FDataset: TJSObject ; {$IFDEF PAS2JS} external name 'dataset';{$ENDIF}
+    FIsContentEditable: Boolean ; {$IFDEF PAS2JS} external name 'isContentEditable';{$ENDIF}
+    FOffsetHeight: Double; {$IFDEF PAS2JS} external name 'offsetHeight';{$ENDIF}
+    FOffsetLeft: Double; {$IFDEF PAS2JS} external name 'offsetLeft';{$ENDIF}
+    FOffsetParent: TJSElement; {$IFDEF PAS2JS} external name 'offsetParent';{$ENDIF}
+    FOffsetTop: Double; {$IFDEF PAS2JS} external name 'offsetTop';{$ENDIF}
+    FOffsetWidth: Double; {$IFDEF PAS2JS} external name 'offsetWidth';{$ENDIF}
   Public
     accessKey : string;
     contentEditable : string;
@@ -2302,23 +2301,19 @@ TEventListenerEvent = class external name 'EventListener_Event' (TJSObject)
     property offsetParent : TJSElement Read FOffsetParent;
   end;
 
-  TJSHTMLFormControlsCollection = class external name 'HTMLFormControlsCollection' (TJSHTMLCollection)
+  TJSHTMLFormControlsCollection = class {$IFDEF PAS2JS}external name 'HTMLFormControlsCollection' (TJSHTMLCollection){$ENDIF}
   Public
-    function namedItem(S : String) : TJSElement; reintroduce; external name 'namedItem';
+    function namedItem(S : String) : TJSElement; reintroduce; {$IFDEF PAS2JS} external name 'namedItem';{$ENDIF}
     property Items[S : String] : TJSElement read namedItem; default;
   end;
 
   { TJSHTMLFormElement }
 
-  TJSHTMLFormElement = class external name 'HTMLFormElement' (TJSHTMLElement)
+  TJSHTMLFormElement = class {$IFDEF PAS2JS}external name 'HTMLFormElement' (TJSHTMLElement){$ENDIF}
   private
-    FElements: TJSHTMLFormControlsCollection; external name 'elements';
-    FLength: NativeInt; external name 'length';
+    FElements: TJSHTMLFormControlsCollection; {$IFDEF PAS2JS} external name 'elements';{$ENDIF}
+    FLength: NativeInt; {$IFDEF PAS2JS} external name 'length';{$ENDIF}
   Public
-    Procedure reset;
-    function reportValidity : Boolean;
-    function checkValidity : Boolean;
-    procedure submit;
     method : string;
     target : string;
     action : string;
@@ -2327,25 +2322,29 @@ TEventListenerEvent = class external name 'EventListener_Event' (TJSObject)
     acceptCharset :  string;
     autocomplete : string;
     noValidate : boolean;
+    Procedure reset;
+    function reportValidity : Boolean;
+    function checkValidity : Boolean;
+    procedure submit;
     property elements : TJSHTMLFormControlsCollection read FElements;
     Property length : NativeInt Read FLength;
   end;
 
   { TJSValidityState }
 
-  TJSValidityState = class external name 'ValidityState'  (TJSObject)
+  TJSValidityState = class {$IFDEF PAS2JS}external name 'ValidityState'  (TJSObject){$ENDIF}
   private
-    FBadInput: Boolean; external name 'badInput';
-    FCustomError: Boolean; external name 'customError';
-    FPatternMismatch: Boolean; external name 'patternMisMatch';
-    FRangeOverflow: Boolean; external name 'rangeOverflow';
-    FRangeUnderflow: Boolean; external name 'rangeUnderflow';
-    FStepMismatch: Boolean; external name 'stepMismatch';
-    FTooLong: Boolean; external name 'tooLong';
-    FTooShort: Boolean; external name 'tooShort';
-    FTypeMismatch: Boolean; external name 'typeMisMatch';
-    FValid: Boolean; external name 'valid';
-    FValueMissing: Boolean; external name 'valueMissing';
+    FBadInput: Boolean; {$IFDEF PAS2JS} external name 'badInput';{$ENDIF}
+    FCustomError: Boolean; {$IFDEF PAS2JS} external name 'customError';{$ENDIF}
+    FPatternMismatch: Boolean; {$IFDEF PAS2JS} external name 'patternMisMatch';{$ENDIF}
+    FRangeOverflow: Boolean; {$IFDEF PAS2JS} external name 'rangeOverflow';{$ENDIF}
+    FRangeUnderflow: Boolean; {$IFDEF PAS2JS} external name 'rangeUnderflow';{$ENDIF}
+    FStepMismatch: Boolean; {$IFDEF PAS2JS} external name 'stepMismatch';{$ENDIF}
+    FTooLong: Boolean; {$IFDEF PAS2JS} external name 'tooLong';{$ENDIF}
+    FTooShort: Boolean; {$IFDEF PAS2JS} external name 'tooShort';{$ENDIF}
+    FTypeMismatch: Boolean; {$IFDEF PAS2JS} external name 'typeMisMatch';{$ENDIF}
+    FValid: Boolean; {$IFDEF PAS2JS} external name 'valid';{$ENDIF}
+    FValueMissing: Boolean; {$IFDEF PAS2JS} external name 'valueMissing';{$ENDIF}
   public
     property badInput : Boolean read FBadInput;
     property customError : Boolean read FCustomError;
@@ -2362,10 +2361,10 @@ TEventListenerEvent = class external name 'EventListener_Event' (TJSObject)
 
   { TJSBlob }
 
-  TJSBlob = class external name 'Blob' (TJSEventTarget)
+  TJSBlob = class {$IFDEF PAS2JS}external name 'Blob' (TJSEventTarget){$ENDIF}
   private
-    FSize: NativeInt; external name 'size';
-    FType: string; external name  'type';
+    FSize: NativeInt; {$IFDEF PAS2JS} external name 'size';{$ENDIF}
+    FType: string; {$IFDEF PAS2JS} external name  'type';{$ENDIF}
   Public
     procedure close;
     function slice : TJSBlob; overload;
@@ -2379,11 +2378,11 @@ TEventListenerEvent = class external name 'EventListener_Event' (TJSObject)
 
   { TJSHTMLFile }
 
-  TJSHTMLFile = class external name 'File' (TJSBlob)
+  TJSHTMLFile = class {$IFDEF PAS2JS}external name 'File' (TJSBlob){$ENDIF}
   private
-    FLastModified: NativeInt; external name 'lastModified';
-    FLastModifiedDate: TJSDate; external name 'lastModifiedDate';
-    FName: string; external name 'name';
+    FLastModified: NativeInt; {$IFDEF PAS2JS} external name 'lastModified';{$ENDIF}
+    FLastModifiedDate: TJSDate; {$IFDEF PAS2JS} external name 'lastModifiedDate';{$ENDIF}
+    FName: string; {$IFDEF PAS2JS} external name 'name';{$ENDIF}
   Public
     property name : string read FName;
     property lastModified : NativeInt read FLastModified;
@@ -2392,9 +2391,9 @@ TEventListenerEvent = class external name 'EventListener_Event' (TJSObject)
 
   { TJSHTMLFileList }
 
-  TJSHTMLFileList = class external name 'FileList' (TJSEventTarget)
+  TJSHTMLFileList = class {$IFDEF PAS2JS}external name 'FileList' (TJSEventTarget){$ENDIF}
   private
-    FLength: NativeInt; external name 'length';
+    FLength: NativeInt; {$IFDEF PAS2JS} external name 'length';{$ENDIF}
   Public
     function item(aIndex : NativeInt) : TJSHTMLFile;
     property length : NativeInt read FLength;
@@ -2404,15 +2403,15 @@ TEventListenerEvent = class external name 'EventListener_Event' (TJSObject)
    { TJSHTMLInputElement }
   // https://html.spec.whatwg.org/multipage/forms.html#the-input-element
 
-  TJSHTMLInputElement = class external name 'HTMLInputElement' (TJSHTMLElement)
+  TJSHTMLInputElement = class {$IFDEF PAS2JS}external name 'HTMLInputElement' (TJSHTMLElement){$ENDIF}
   private
-    FFiles: TJSHTMLFileList; external name 'files';
-    FForm: TJSHTMLFormElement; external name 'form';
-    FLabels: TJSNodeList; external name 'labels';
-    FList: TJSHTMLElement; external name 'list';
-    FValidationmMessage: string; external name 'validationMessage';
-    FValidity: TJSValidityState; external name 'validity';
-    FWillValidate: boolean; external name 'willValidate';
+    FFiles: TJSHTMLFileList; {$IFDEF PAS2JS} external name 'files';{$ENDIF}
+    FForm: TJSHTMLFormElement; {$IFDEF PAS2JS} external name 'form';{$ENDIF}
+    FLabels: TJSNodeList; {$IFDEF PAS2JS} external name 'labels';{$ENDIF}
+    FList: TJSHTMLElement; {$IFDEF PAS2JS} external name 'list';{$ENDIF}
+    FValidationmMessage: string; {$IFDEF PAS2JS} external name 'validationMessage';{$ENDIF}
+    FValidity: TJSValidityState; {$IFDEF PAS2JS} external name 'validity';{$ENDIF}
+    FWillValidate: boolean; {$IFDEF PAS2JS} external name 'willValidate';{$ENDIF}
   Public
     procedure select;
     procedure setCustomValidity(aText : string);
@@ -2457,7 +2456,7 @@ TEventListenerEvent = class external name 'EventListener_Event' (TJSObject)
     size : NativeInt;
     src : string;
     step : string;
-    _type : string; external name 'type';
+    _type : string; {$IFDEF PAS2JS} external name 'type';{$ENDIF}
     selectionStart : NativeInt;
     selectionEnd : NativeInt;
     selectionDirection : string;
@@ -2473,23 +2472,23 @@ TEventListenerEvent = class external name 'EventListener_Event' (TJSObject)
     property validity : TJSValidityState read FValidity;
   end;
 
-  TJSDOMSettableTokenList = class external name 'DOMSettableTokenList' (TJSDOMTokenList)
+  TJSDOMSettableTokenList = class {$IFDEF PAS2JS}external name 'DOMSettableTokenList' (TJSDOMTokenList){$ENDIF}
   private
-    fvalue: TJSDOMString; external name 'value';
+    fvalue: TJSDOMString; {$IFDEF PAS2JS} external name 'value';{$ENDIF}
   public
     property value: TJSDOMString read fvalue; // readonly
   end;
 
-  TJSHTMLOutputElement = class external name 'HTMLOutputElement' (TJSHTMLElement)
+  TJSHTMLOutputElement = class {$IFDEF PAS2JS}external name 'HTMLOutputElement' (TJSHTMLElement){$ENDIF}
   private
-    flabels: TJSNodeList; external name 'labels';
-    fform: TJSHTMLFormElement; external name 'form';
-    ftype: TJSDOMString; external name 'type';
-    fdefaultValue: TJSDOMString; external name 'defaultValue';
-    fvalue: TJSDOMString; external name 'value';
-    fwillValidate: Boolean; external name 'willValidate';
-    fvalidity: TJSValidityState; external name 'validity';
-    fvalidationMessage: TJSDOMString; external name 'validationMessage';
+    flabels: TJSNodeList; {$IFDEF PAS2JS} external name 'labels';{$ENDIF}
+    fform: TJSHTMLFormElement; {$IFDEF PAS2JS} external name 'form';{$ENDIF}
+    ftype: TJSDOMString; {$IFDEF PAS2JS} external name 'type';{$ENDIF}
+    fdefaultValue: TJSDOMString; {$IFDEF PAS2JS} external name 'defaultValue';{$ENDIF}
+    fvalue: TJSDOMString; {$IFDEF PAS2JS} external name 'value';{$ENDIF}
+    fwillValidate: Boolean; {$IFDEF PAS2JS} external name 'willValidate';{$ENDIF}
+    fvalidity: TJSValidityState; {$IFDEF PAS2JS} external name 'validity';{$ENDIF}
+    fvalidationMessage: TJSDOMString; {$IFDEF PAS2JS} external name 'validationMessage';{$ENDIF}
   public
     htmlFor: TJSDOMSettableTokenList;
     function checkValidity: Boolean;
@@ -2508,16 +2507,15 @@ TEventListenerEvent = class external name 'EventListener_Event' (TJSObject)
 
   { TJSHTMLImageElement }
 
-  TJSHTMLImageElement = class external name 'Image' (TJSHTMLElement)
+  TJSHTMLImageElement = class {$IFDEF PAS2JS}external name 'Image' (TJSHTMLElement){$ENDIF}
   Private
-    FComplete: boolean; external name 'complete';
-    FCurrentSrc: String; external name 'currentSrc';
-    FNaturalHeight: NativeUInt; external name 'naturalHeight';
-    FNaturalWidth: NativeUInt; external name 'naturalWidth';
-    FX: NativeInt; external name 'x';
-    FY: NativeInt; external name 'y';
+    FComplete: boolean; {$IFDEF PAS2JS} external name 'complete';{$ENDIF}
+    FCurrentSrc: String; {$IFDEF PAS2JS} external name 'currentSrc';{$ENDIF}
+    FNaturalHeight: NativeUInt; {$IFDEF PAS2JS} external name 'naturalHeight';{$ENDIF}
+    FNaturalWidth: NativeUInt; {$IFDEF PAS2JS} external name 'naturalWidth';{$ENDIF}
+    FX: NativeInt; {$IFDEF PAS2JS} external name 'x';{$ENDIF}
+    FY: NativeInt; {$IFDEF PAS2JS} external name 'y';{$ENDIF}
   Public
-    constructor New(x,y : Cardinal); overload;
     alt: String;
     crossOrigin: String;
     decoding: String;
@@ -2529,6 +2527,7 @@ TEventListenerEvent = class external name 'EventListener_Event' (TJSObject)
     srcset: String;
     useMap: String;
     width: NativeUInt;
+    constructor New(x,y : Cardinal); overload;
     function decode : TJSPromise;
     property complete: boolean read FComplete;
     property currentSrc: String read FCurrentSrc;
@@ -2538,19 +2537,19 @@ TEventListenerEvent = class external name 'EventListener_Event' (TJSObject)
     property y: NativeInt read FY;
   end;
 
-  TJSHTMLLinkElement = class external name 'HTMLLinkElement'(TJSHTMLElement)
+  TJSHTMLLinkElement = class {$IFDEF PAS2JS}external name 'HTMLLinkElement'(TJSHTMLElement){$ENDIF}
   Private
-    frelList: TJSDOMTokenList; external name 'relList';
-    fsizes: TJSDOMSettableTokenList {TJSDOMTokenList}; external name 'sizes';
+    frelList: TJSDOMTokenList; {$IFDEF PAS2JS} external name 'relList';{$ENDIF}
+    fsizes: TJSDOMSettableTokenList {TJSDOMTokenList}; {$IFDEF PAS2JS} external name 'sizes';{$ENDIF}
   Public
     href: string;
     crossOrigin: string;
     rel: string;
-    as_: string; external name 'as';
+    as_: string; {$IFDEF PAS2JS} external name 'as';{$ENDIF}
     media: string;
     integrity: string;
     hreflang: string;
-    type_: string external name 'type';
+    type_: string; {$IFDEF PAS2JS} external name 'type';{$ENDIF}
     imageSrcset: string;
     imageSizes: string;
     referrerPolicy: string;
@@ -2564,10 +2563,10 @@ TEventListenerEvent = class external name 'EventListener_Event' (TJSObject)
 
   { TJSHTMLAnchorElement }
 
-  TJSHTMLAnchorElement = class external name 'HTMLAnchorElement' (TJSHTMLElement)
+  TJSHTMLAnchorElement = class {$IFDEF PAS2JS}external name 'HTMLAnchorElement' (TJSHTMLElement){$ENDIF}
   Private
-    FOrigin: string;external name 'origin';
-    frelList: TJSDOMTokenList; external name 'relList';
+    FOrigin: string;{$IFDEF PAS2JS}external name 'origin';{$ENDIF}
+    frelList: TJSDOMTokenList; {$IFDEF PAS2JS} external name 'relList';{$ENDIF}
   Public
     href: string;
     download: string;
@@ -2583,7 +2582,7 @@ TEventListenerEvent = class external name 'EventListener_Event' (TJSObject)
     rev: string deprecated; // obsolete property
     target: string ;
     text : string;
-    type_ : string external name 'type';
+    type_ : string; {$IFDEF PAS2JS} external name 'type';{$ENDIF}
     username : string;
     Property relList: TJSDOMTokenList read frelList;
     Property origin: string Read FOrigin;
@@ -2591,18 +2590,18 @@ TEventListenerEvent = class external name 'EventListener_Event' (TJSObject)
 
   { TJSHTMLMenuElement }
 
-  TJSHTMLMenuElement = class external name 'HTMLMenuElement' (TJSHTMLElement) //  uhm... should it be declared? it is experimental at Mozilla docs...
+  TJSHTMLMenuElement = class {$IFDEF PAS2JS}external name 'HTMLMenuElement' (TJSHTMLElement){$ENDIF}
   end;
 
   { TJSHTMLButtonElement }
 
-  TJSHTMLButtonElement = class external name 'HTMLButtonElement' (TJSHTMLElement)
+  TJSHTMLButtonElement = class {$IFDEF PAS2JS}external name 'HTMLButtonElement' (TJSHTMLElement){$ENDIF}
   private
-    FForm: TJSHTMLFormElement; external name 'form';
-    FLabels: TJSNodeList; external name 'labels';
-    FValidationmMessage: String; external name 'validationMessage';
-    FValidity: TJSValidityState; external name 'validity';
-    FWillValidate: boolean; external name 'willValidate';
+    FForm: TJSHTMLFormElement; {$IFDEF PAS2JS} external name 'form';{$ENDIF}
+    FLabels: TJSNodeList; {$IFDEF PAS2JS} external name 'labels';{$ENDIF}
+    FValidationmMessage: String; {$IFDEF PAS2JS} external name 'validationMessage';{$ENDIF}
+    FValidity: TJSValidityState; {$IFDEF PAS2JS} external name 'validity';{$ENDIF}
+    FWillValidate: boolean; {$IFDEF PAS2JS} external name 'willValidate';{$ENDIF}
   Public
     autofocus : boolean;
     disabled : boolean;
@@ -2612,7 +2611,7 @@ TEventListenerEvent = class external name 'EventListener_Event' (TJSObject)
     formNoValidate : Boolean;
     formTarget : String;
     menu: TJSHTMLMenuElement;
-    _type : String; external name 'type';
+    _type : String; {$IFDEF PAS2JS} external name 'type';{$ENDIF}
     value : string;
   Public
     property form : TJSHTMLFormElement Read FForm;
@@ -2622,22 +2621,22 @@ TEventListenerEvent = class external name 'EventListener_Event' (TJSObject)
     property willValidate : boolean read FWillValidate;
   end;
 
-  TJSHTMLLabelElement = class external name 'HTMLLabelElement' (TJSHTMLElement)
+  TJSHTMLLabelElement = class {$IFDEF PAS2JS}external name 'HTMLLabelElement' (TJSHTMLElement){$ENDIF}
   Public
-    For_ : String; external name 'for';
+    For_ : String; {$IFDEF PAS2JS} external name 'for';{$ENDIF}
     form : String;
   end;
 
   { TJSHTMLTextAreaElement }
 
-  TJSHTMLTextAreaElement = class external name 'HTMLTextAreaElement' (TJSHTMLElement)
+  TJSHTMLTextAreaElement = class {$IFDEF PAS2JS}external name 'HTMLTextAreaElement' (TJSHTMLElement){$ENDIF}
   private
-    FForm: TJSHTMLFormElement; external name 'form';
-    FTextLength: NativeInt; external name 'textKength';
-    FType: String; external name 'type';
-    FValidationMessage: String; external name 'validationMessage';
-    FValidity: TJSValidityState;  external name 'validity';
-    FWillValidate: boolean; external name 'willValidate';
+    FForm: TJSHTMLFormElement; {$IFDEF PAS2JS} external name 'form';{$ENDIF}
+    FTextLength: NativeInt; {$IFDEF PAS2JS} external name 'textKength';{$ENDIF}
+    FType: String; {$IFDEF PAS2JS} external name 'type';{$ENDIF}
+    FValidationMessage: String; {$IFDEF PAS2JS} external name 'validationMessage';{$ENDIF}
+    FValidity: TJSValidityState;{$IFDEF PAS2JS}external name 'validity';{$ENDIF}
+    FWillValidate: boolean; {$IFDEF PAS2JS} external name 'willValidate';{$ENDIF}
   Public
     defaultValue : string;
     value : string;
@@ -2662,20 +2661,20 @@ TEventListenerEvent = class external name 'EventListener_Event' (TJSObject)
 
   { TJSHTMLEmbedElement }
 
-  TJSHTMLEmbedElement = class external name 'HTMLEmbedElement' (TJSHTMLElement)
+  TJSHTMLEmbedElement = class {$IFDEF PAS2JS}external name 'HTMLEmbedElement' (TJSHTMLElement){$ENDIF}
   Public
     height: String;
     src: String;
-    _type : String; external name 'type';
+    _type : String; {$IFDEF PAS2JS} external name 'type';{$ENDIF}
     width: String;
   end;
 
   { TJSHTMLOptionElement }
 
-  TJSHTMLOptionElement = class external name 'Option' (TJSHTMLElement)
+  TJSHTMLOptionElement = class {$IFDEF PAS2JS}external name 'Option' (TJSHTMLElement){$ENDIF}
   private
-    FForm: TJSHTMLFormElement; external name 'form';
-    FIndex: NativeInt; external name 'index';
+    FForm: TJSHTMLFormElement; {$IFDEF PAS2JS} external name 'form';{$ENDIF}
+    FIndex: NativeInt; {$IFDEF PAS2JS} external name 'index';{$ENDIF}
   Public
     Constructor New; overload;
     Constructor New(aText : String); overload;
@@ -2685,7 +2684,7 @@ TEventListenerEvent = class external name 'EventListener_Event' (TJSObject)
   Public
     defaultSelected : boolean;
     disabled : boolean;
-    _label : string ; external name 'label';
+    _label : string ; {$IFDEF PAS2JS} external name 'label';{$ENDIF}
     selected : boolean;
     text : string;
     value : string;
@@ -2693,25 +2692,25 @@ TEventListenerEvent = class external name 'EventListener_Event' (TJSObject)
     property form : TJSHTMLFormElement Read FForm;
   end;
 
-  TJSHTMLOptGroupElement = class external name 'HTMLOptGroupElement' (TJSHTMLElement)
+  TJSHTMLOptGroupElement = class {$IFDEF PAS2JS}external name 'HTMLOptGroupElement' (TJSHTMLElement){$ENDIF}
   end;
 
-  TJSHTMLOptionsCollection = class external name 'HTMLOptionsCollection' (TJSHTMLCollection)
+  TJSHTMLOptionsCollection = class {$IFDEF PAS2JS}external name 'HTMLOptionsCollection' (TJSHTMLCollection){$ENDIF}
   end;
 
   { TJSHTMLSelectElement }
 
-  TJSHTMLSelectElement = Class external name 'HTMLSelectElement' (TJSHTMLElement)
+  TJSHTMLSelectElement = class {$IFDEF PAS2JS}external name 'HTMLSelectElement' (TJSHTMLElement){$ENDIF}
   private
-    FForm: TJSHTMLFormElement; external name 'form';
-    FLabels: TJSNodeList; external name 'labels';
-    FLength: NativeInt; external name 'length';
-    FOptions: TJSHTMLOptionsCollection; external name 'options';
-    FSelectedOptions: TJSHTMLCollection; external name 'selectedOptions';
-    FType: String; external name 'type';
-    FValidationMessage: string; external name 'validationMessage';
-    FValidity: TJSValidityState; external name 'validity';
-    fwillValidate: Boolean; external name 'willValidate';
+    FForm: TJSHTMLFormElement; {$IFDEF PAS2JS} external name 'form';{$ENDIF}
+    FLabels: TJSNodeList; {$IFDEF PAS2JS} external name 'labels';{$ENDIF}
+    FLength: NativeInt; {$IFDEF PAS2JS} external name 'length';{$ENDIF}
+    FOptions: TJSHTMLOptionsCollection; {$IFDEF PAS2JS} external name 'options';{$ENDIF}
+    FSelectedOptions: TJSHTMLCollection; {$IFDEF PAS2JS} external name 'selectedOptions';{$ENDIF}
+    FType: String; {$IFDEF PAS2JS} external name 'type';{$ENDIF}
+    FValidationMessage: string; {$IFDEF PAS2JS} external name 'validationMessage';{$ENDIF}
+    FValidity: TJSValidityState; {$IFDEF PAS2JS} external name 'validity';{$ENDIF}
+    fwillValidate: Boolean; {$IFDEF PAS2JS} external name 'willValidate';{$ENDIF}
   Public
     Procedure add(anItem : TJSHTMLOptionElement); overload;
     Procedure add(anItem, before : TJSHTMLOptionElement); overload;
@@ -2744,22 +2743,22 @@ TEventListenerEvent = class external name 'EventListener_Event' (TJSObject)
   TJSHTMLTableSectionElement = class;
   TJSHTMLTableRowElement = class;
 
-  TJSHTMLTableElement = Class external name 'HTMLTableElement'(TJSHTMLElement)
+  TJSHTMLTableElement = class {$IFDEF PAS2JS}external name 'HTMLTableElement'(TJSHTMLElement){$ENDIF}
   private
-    FAlign: String; external name 'align';
-    FBGColor: String; external name 'bgColor';
-    FBorder: String; external name 'border';
-    FCaption: TJSHTMLElement; external name 'caption';
-    FCellPadding: String; external name 'cellPadding';
-    FCellSpacing: String; external name 'cellSpacing';
-    FFrame: String; external name 'frame';
-    FRows: TJSHTMLCollection; external name 'rows';
-    FRules: String; external name 'rules';
-    FSummary: String; external name 'summary';
-    FTBodies: TJSHTMLCollection; external name 'tBodies';
-    FTfoot: TJSHTMLTableSectionElement; external name 'tfoot';
-    FTHead: TJSHTMLTableSectionElement; external name 'tHead';
-    FWidth: String; external name 'width';
+    FAlign: String; {$IFDEF PAS2JS} external name 'align';{$ENDIF}
+    FBGColor: String; {$IFDEF PAS2JS} external name 'bgColor';{$ENDIF}
+    FBorder: String; {$IFDEF PAS2JS} external name 'border';{$ENDIF}
+    FCaption: TJSHTMLElement; {$IFDEF PAS2JS} external name 'caption';{$ENDIF}
+    FCellPadding: String; {$IFDEF PAS2JS} external name 'cellPadding';{$ENDIF}
+    FCellSpacing: String; {$IFDEF PAS2JS} external name 'cellSpacing';{$ENDIF}
+    FFrame: String; {$IFDEF PAS2JS} external name 'frame';{$ENDIF}
+    FRows: TJSHTMLCollection; {$IFDEF PAS2JS} external name 'rows';{$ENDIF}
+    FRules: String; {$IFDEF PAS2JS} external name 'rules';{$ENDIF}
+    FSummary: String; {$IFDEF PAS2JS} external name 'summary';{$ENDIF}
+    FTBodies: TJSHTMLCollection; {$IFDEF PAS2JS} external name 'tBodies';{$ENDIF}
+    FTfoot: TJSHTMLTableSectionElement; {$IFDEF PAS2JS} external name 'tfoot';{$ENDIF}
+    FTHead: TJSHTMLTableSectionElement; {$IFDEF PAS2JS} external name 'tHead';{$ENDIF}
+    FWidth: String; {$IFDEF PAS2JS} external name 'width';{$ENDIF}
   public
   { Methods }
     function createCaption: TJSHTMLElement;
@@ -2789,13 +2788,13 @@ TEventListenerEvent = class external name 'EventListener_Event' (TJSObject)
 
   { TJSHTMLTableSectionElement }
 
-  TJSHTMLTableSectionElement = Class external name 'HTMLTableSectionElement' (TJSHTMLElement)
+  TJSHTMLTableSectionElement = class {$IFDEF PAS2JS}external name 'HTMLTableSectionElement' (TJSHTMLElement){$ENDIF}
   private
-    Falign: String; external name 'align';
-    Frows: TJSHTMLCollection external name 'rows';
-    Fch: String; external name 'ch';
-    FchOff: String; external name 'chOff';
-    FvAlign: String; external name 'vAlign';
+    Falign: String; {$IFDEF PAS2JS} external name 'align';{$ENDIF}
+    Frows: TJSHTMLCollection; {$IFDEF PAS2JS} external name 'rows';{$ENDIF}
+    Fch: String; {$IFDEF PAS2JS} external name 'ch';{$ENDIF}
+    FchOff: String; {$IFDEF PAS2JS} external name 'chOff';{$ENDIF}
+    FvAlign: String; {$IFDEF PAS2JS} external name 'vAlign';{$ENDIF}
   public
   { Methods }
     procedure deleteRow(index: Integer);
@@ -2810,23 +2809,23 @@ TEventListenerEvent = class external name 'EventListener_Event' (TJSObject)
 
   { TJSHTMLTableCellElement }
 
-  TJSHTMLTableCellElement = Class external name 'HTMLTableCellElement' (TJSHTMLElement)
+  TJSHTMLTableCellElement = class {$IFDEF PAS2JS}external name 'HTMLTableCellElement' (TJSHTMLElement){$ENDIF}
   private
-    Fabbr: String; external name 'abbr';
-    Falign: String; external name 'align';
-    Faxis: String; external name 'axis';
-    FbgColor: String; external name 'bgColor';
-    FcellIndex: Integer; external name 'cellIndex';
-    Fch: String; external name 'ch';
-    FchOff: String; external name 'chOff';
-    FcolSpan: Integer; external name 'colSpan';
-    Fheaders: String; external name 'headers';
-    Fheight: String; external name 'height';
-    FnoWrap: Boolean; external name 'noWrap';
-    FrowSpan: Integer; external name 'rowSpan';
-    Fscope: String; external name 'scope';
-    FvAlign: String; external name 'vAlign';
-    Fwidth: String; external name 'width';
+    Fabbr: String; {$IFDEF PAS2JS} external name 'abbr';{$ENDIF}
+    Falign: String; {$IFDEF PAS2JS} external name 'align';{$ENDIF}
+    Faxis: String; {$IFDEF PAS2JS} external name 'axis';{$ENDIF}
+    FbgColor: String; {$IFDEF PAS2JS} external name 'bgColor';{$ENDIF}
+    FcellIndex: Integer; {$IFDEF PAS2JS} external name 'cellIndex';{$ENDIF}
+    Fch: String; {$IFDEF PAS2JS} external name 'ch';{$ENDIF}
+    FchOff: String; {$IFDEF PAS2JS} external name 'chOff';{$ENDIF}
+    FcolSpan: Integer; {$IFDEF PAS2JS} external name 'colSpan';{$ENDIF}
+    Fheaders: String; {$IFDEF PAS2JS} external name 'headers';{$ENDIF}
+    Fheight: String; {$IFDEF PAS2JS} external name 'height';{$ENDIF}
+    FnoWrap: Boolean; {$IFDEF PAS2JS} external name 'noWrap';{$ENDIF}
+    FrowSpan: Integer; {$IFDEF PAS2JS} external name 'rowSpan';{$ENDIF}
+    Fscope: String; {$IFDEF PAS2JS} external name 'scope';{$ENDIF}
+    FvAlign: String; {$IFDEF PAS2JS} external name 'vAlign';{$ENDIF}
+    Fwidth: String; {$IFDEF PAS2JS} external name 'width';{$ENDIF}
   public
   { Properties }
     property abbr: String read Fabbr write Fabbr;
@@ -2848,16 +2847,16 @@ TEventListenerEvent = class external name 'EventListener_Event' (TJSObject)
 
   { TJSHTMLTableRowElement }
 
-  TJSHTMLTableRowElement = Class external name 'HTMLTableRowElement' (TJSHTMLElement)
+  TJSHTMLTableRowElement = class {$IFDEF PAS2JS}external name 'HTMLTableRowElement' (TJSHTMLElement){$ENDIF}
   private
-    Falign: String; external name 'align';
-    FbgColor: String; external name 'bgColor';
-    Fcells: TJSHTMLCollection; external name 'cells';
-    Fch: String; external name 'ch';
-    FchOff: String; external name 'chOff';
-    FrowIndex: Integer; external name 'rowIndex';
-    FsectionRowIndex: Integer; external name 'sectionRowIndex';
-    FvAlign: String; external name 'vAlign';
+    Falign: String; {$IFDEF PAS2JS} external name 'align';{$ENDIF}
+    FbgColor: String; {$IFDEF PAS2JS} external name 'bgColor';{$ENDIF}
+    Fcells: TJSHTMLCollection; {$IFDEF PAS2JS} external name 'cells';{$ENDIF}
+    Fch: String; {$IFDEF PAS2JS} external name 'ch';{$ENDIF}
+    FchOff: String; {$IFDEF PAS2JS} external name 'chOff';{$ENDIF}
+    FrowIndex: Integer; {$IFDEF PAS2JS} external name 'rowIndex';{$ENDIF}
+    FsectionRowIndex: Integer; {$IFDEF PAS2JS} external name 'sectionRowIndex';{$ENDIF}
+    FvAlign: String; {$IFDEF PAS2JS} external name 'vAlign';{$ENDIF}
   public
   { Methods }
     procedure deleteCell(index: Integer);
@@ -2875,27 +2874,26 @@ TEventListenerEvent = class external name 'EventListener_Event' (TJSObject)
 
   { TJSHTMLTableDataCellElement }
 
-  TJSHTMLTableDataCellElement = Class external name 'HTMLTableDataCellElement' (TJSHTMLElement)
+  TJSCanvasRenderingContext2D = Class;
+
+  TJSHTMLTableDataCellElement = class {$IFDEF PAS2JS}external name 'HTMLTableDataCellElement' (TJSHTMLElement){$ENDIF}
   private
-    Fabbr: String; external name 'abbr';
+    Fabbr: String; {$IFDEF PAS2JS} external name 'abbr';{$ENDIF}
   public
   { Properties }
     property abbr: String read Fabbr write Fabbr;
   end;
 
+  THTMLCanvasToBlobCallback = Reference to function (aBlob : TJSBlob) : boolean; {$IFDEF PAS2JS}safecall;{$ENDIF}
 
-  TJSCanvasRenderingContext2D = Class;
-
-  THTMLCanvasToBlobCallback = Reference to function (aBlob : TJSBlob) : boolean; safecall;
-
-  TJSHTMLCanvasElement = Class external name 'HTMLCanvasElement' (TJSHTMLElement)
+  TJSHTMLCanvasElement = class {$IFDEF PAS2JS}external name 'HTMLCanvasElement' (TJSHTMLElement){$ENDIF}
   Public
     height : integer;
     width : integer;
     Function getContext(contextType : string) : TJSObject; overload;
     Function getContext(contextType : string; contextAttributes : TJSObject) : TJSObject; overload;
-    Function getContextAs2DContext(contextType : string; contextAttributes : TJSObject) : TJSCanvasRenderingContext2D; external name 'getContext'; overload;
-    Function getContextAs2DContext(contextType : string) : TJSCanvasRenderingContext2D; external name 'getContext'; overload;
+    Function getContextAs2DContext(contextType : string; contextAttributes : TJSObject) : TJSCanvasRenderingContext2D; overload; {$IFDEF PAS2JS} external name 'getContext';{$ENDIF}
+    Function getContextAs2DContext(contextType : string) : TJSCanvasRenderingContext2D; overload;{$IFDEF PAS2JS} external name 'getContext';{$ENDIF}
     Procedure toBlob (aCallBack : THTMLCanvasToBlobCallback; aMimeType : String); overload;
     Procedure toBlob (aCallBack : THTMLCanvasToBlobCallback; aMimeType : String; aQuality : Double); overload;
     Function toDataURL : String; overload;
@@ -2903,25 +2901,24 @@ TEventListenerEvent = class external name 'EventListener_Event' (TJSObject)
     Function toDataURL(aMimeType : String; aQuality : Double) : String; overload;
   end;
 
-  TJSHTMLProgressElement = class external name 'HTMLProgressElement' (TJSHTMLElement)
+  TJSHTMLProgressElement = class {$IFDEF PAS2JS}external name 'HTMLProgressElement' (TJSHTMLElement){$ENDIF}
   private
-    Fposition: Double; external name 'position';
-    Flabels: TJSNodeList; external name 'labels';
+    Fposition: Double; {$IFDEF PAS2JS} external name 'position';{$ENDIF}
+    Flabels: TJSNodeList; {$IFDEF PAS2JS} external name 'labels';{$ENDIF}
   public
     max: Double;
     value: Double;
     property position: Double read Fposition;
     property labels: TJSNodeList read Flabels;
   end;
-  Type
 
   { TJSDOMException }
 
-  TJSDOMException = class external name 'DOMException' (TJSObject)
+  TJSDOMException = class {$IFDEF PAS2JS}external name 'DOMException' (TJSObject){$ENDIF}
   private
-    FCode: Integer; external name 'code';
-    FMessage: String; external name 'message';
-    FName: string; external name 'name';
+    FCode: Integer; {$IFDEF PAS2JS} external name 'code';{$ENDIF}
+    FMessage: String; {$IFDEF PAS2JS} external name 'message';{$ENDIF}
+    FName: string; {$IFDEF PAS2JS} external name 'name';{$ENDIF}
   Public
     Property code : Integer Read FCode;
     Property Message : String Read FMessage;
@@ -2930,15 +2927,15 @@ TEventListenerEvent = class external name 'EventListener_Event' (TJSObject)
 
   { TJSFileReader }
 
-  TJSFileReader = class external name 'FileReader' (TJSEventTarget)
+  TJSFileReader = class {$IFDEF PAS2JS}external name 'FileReader' (TJSEventTarget){$ENDIF}
   private
-    FError: TJSDOMException; external name 'error';
-    fReadyState: Integer; external name 'readyState';
-    FResult: JSValue; external name 'result';
+    FError: TJSDOMException; {$IFDEF PAS2JS} external name 'error';{$ENDIF}
+    fReadyState: Integer; {$IFDEF PAS2JS} external name 'readyState';{$ENDIF}
+    FResult: JSValue; {$IFDEF PAS2JS} external name 'result';{$ENDIF}
   Public
-    Const EMPTY : Integer;
-    Const LOADING : Integer;
-    Const DONE : Integer;
+    EMPTY : Integer;
+    LOADING : Integer;
+    DONE : Integer;
   Public
     onabort : TJSEventHandler;
     onerror : TJSEventHandler;
@@ -2962,13 +2959,13 @@ TEventListenerEvent = class external name 'EventListener_Event' (TJSObject)
   TCanvasCoordType = double; // Is in fact a number.
 
   // Opaque objects
-  TJSCanvasGradient = class external name 'CanvasGradient'  (TJSObject)
+  TJSCanvasGradient = class {$IFDEF PAS2JS}external name 'CanvasGradient'  (TJSObject){$ENDIF}
   end;
 
-  TJSCanvasPattern = class external name 'CanvasPattern'  (TJSObject)
+  TJSCanvasPattern = class {$IFDEF PAS2JS}external name 'CanvasPattern'  (TJSObject){$ENDIF}
   end;
 
-  TJSPath2D = class external name 'Path2D'  (TJSObject)
+  TJSPath2D = class {$IFDEF PAS2JS}external name 'Path2D'  (TJSObject){$ENDIF}
   Public
     constructor new; overload;
     constructor new(aPath : TJSPath2D); overload;
@@ -2989,11 +2986,11 @@ TEventListenerEvent = class external name 'EventListener_Event' (TJSObject)
 
   { TJSImageData }
 
-  TJSImageData = class external name 'ImageData'  (TJSObject)
+  TJSImageData = class {$IFDEF PAS2JS}external name 'ImageData'  (TJSObject){$ENDIF}
   private
-    FData: TJSUint8ClampedArray; external name 'data';
-    FHeight: Integer; external name 'height';
-    FWidth: Integer; external name 'width';
+    FData: TJSUint8ClampedArray; {$IFDEF PAS2JS} external name 'data';{$ENDIF}
+    FHeight: Integer; {$IFDEF PAS2JS} external name 'height';{$ENDIF}
+    FWidth: Integer; {$IFDEF PAS2JS} external name 'width';{$ENDIF}
   Public
     constructor new(awidth,aheight : integer); overload;
     constructor new(anArray :TJSUint8ClampedArray; awidth,aheight : integer); overload;
@@ -3003,7 +3000,7 @@ TEventListenerEvent = class external name 'EventListener_Event' (TJSObject)
   end;
 
 
-  TJSTextMetrics = class external name 'TextMetrics' (TJSObject)
+  TJSTextMetrics = class {$IFDEF PAS2JS}external name 'TextMetrics' (TJSObject){$ENDIF}
     width : TCanvasCoordType;
     actualBoundingBoxLeft : TCanvasCoordType;
     actualBoundingBoxRight : TCanvasCoordType;
@@ -3019,15 +3016,15 @@ TEventListenerEvent = class external name 'EventListener_Event' (TJSObject)
   end;
 
   { TJSCanvasRenderingContext2D }
-  TJSCanvasRenderingContext2D = class external name 'CanvasRenderingContext2D'  (TJSObject)
+  TJSCanvasRenderingContext2D = class {$IFDEF PAS2JS}external name 'CanvasRenderingContext2D'  (TJSObject){$ENDIF}
   private
-    FCanvas: TJSHTMLCanvasElement; external name 'canvas';
-    FfillStyleColor: String; external name 'fillStyle';
-    FfillStyleGradient: TJSCanvasGradient; external name 'fillStyle';
-    FfillStylePattern: TJSCanvasPattern; external name 'fillStyle';
-    FstrokeStyleColor: String; external name 'strokeStyle';
-    FstrokeStyleGradient: TJSCanvasGradient; external name 'strokeStyle';
-    FstrokeStylePattern: TJSCanvasPattern; external name 'strokeStyle';
+    FCanvas: TJSHTMLCanvasElement; {$IFDEF PAS2JS} external name 'canvas';{$ENDIF}
+    FfillStyleColor: String; {$IFDEF PAS2JS} external name 'fillStyle';{$ENDIF}
+    FfillStyleGradient: TJSCanvasGradient; {$IFDEF PAS2JS} external name 'fillStyle';{$ENDIF}
+    FfillStylePattern: TJSCanvasPattern; {$IFDEF PAS2JS} external name 'fillStyle';{$ENDIF}
+    FstrokeStyleColor: String; {$IFDEF PAS2JS} external name 'strokeStyle';{$ENDIF}
+    FstrokeStyleGradient: TJSCanvasGradient; {$IFDEF PAS2JS} external name 'strokeStyle';{$ENDIF}
+    FstrokeStylePattern: TJSCanvasPattern; {$IFDEF PAS2JS} external name 'strokeStyle';{$ENDIF}
   Public
     fillStyle : JSValue;
     font : string;
@@ -3115,12 +3112,12 @@ TEventListenerEvent = class external name 'EventListener_Event' (TJSObject)
 
   { TJSHTMLIFrameElement }
 
-  TJSHTMLIFrameElement = Class external name 'HTMLIFrameElement' (TJSHTMLElement)
+  TJSHTMLIFrameElement = class {$IFDEF PAS2JS}external name 'HTMLIFrameElement' (TJSHTMLElement){$ENDIF}
   private
-    FAllowPaymentRequest: Boolean; external name 'allowPaymentRequest';
-    FContentDocument: TJSDocument; external name 'contentDocument';
-    FContentWindow: TJSWindow; external name 'contentWindow';
-    FSandbox: string; external name 'sandbox';
+    FAllowPaymentRequest: Boolean; {$IFDEF PAS2JS} external name 'allowPaymentRequest';{$ENDIF}
+    FContentDocument: TJSDocument; {$IFDEF PAS2JS} external name 'contentDocument';{$ENDIF}
+    FContentWindow: TJSWindow; {$IFDEF PAS2JS} external name 'contentWindow';{$ENDIF}
+    FSandbox: string; {$IFDEF PAS2JS} external name 'sandbox';{$ENDIF}
   Public
     height : string;
     src : string;
@@ -3132,9 +3129,9 @@ TEventListenerEvent = class external name 'EventListener_Event' (TJSObject)
     property sandbox : string read FSandbox;
   end;
 
-  TJSHTMLScriptElement = Class external name 'HTMLScriptElement' (TJSHTMLElement)
+  TJSHTMLScriptElement = class {$IFDEF PAS2JS}external name 'HTMLScriptElement' (TJSHTMLElement){$ENDIF}
   Public
-    type_ : String external name 'type';
+    type_ : String; {$IFDEF PAS2JS}external name 'type';{$ENDIF}
     src : String;
     charset : string;
     integrity : string;
@@ -3149,26 +3146,26 @@ TEventListenerEvent = class external name 'EventListener_Event' (TJSObject)
 
 
 
-  TJSXMLHttpRequestEventTarget = class external name 'XMLHttpRequestEventTarget' (TJSEventTarget)
+  TJSXMLHttpRequestEventTarget = class {$IFDEF PAS2JS}external name 'XMLHttpRequestEventTarget' (TJSEventTarget){$ENDIF}
   end;
 
-  TJSXMLHttpRequestUpload = class external name 'XMLHttpRequestUpload' (TJSXMLHttpRequestEventTarget)
+  TJSXMLHttpRequestUpload = class {$IFDEF PAS2JS}external name 'XMLHttpRequestUpload' (TJSXMLHttpRequestEventTarget){$ENDIF}
   end;
 
   { TJSXMLHttpRequest }
-  TJSOnReadyStateChangeHandler = reference to procedure; safecall;
+  TJSOnReadyStateChangeHandler = reference to procedure; {$IFDEF PAS2JS}safecall;{$ENDIF}
 
-  TJSXMLHttpRequest = class external name 'XMLHttpRequest' (TJSXMLHttpRequestEventTarget)
+  TJSXMLHttpRequest = class {$IFDEF PAS2JS}external name 'XMLHttpRequest' (TJSXMLHttpRequestEventTarget){$ENDIF}
   private
-    FReadyState: NativeInt; external name 'readyState';
-    FResponse: JSValue; external name 'response';
-    FResponseText: string; external name 'responseText';
-    FResponseType: string; external name 'responseType';
-    FresponseURL: string; external name 'responseURL';
-    FresponseXML: TJSDocument; external name 'responseXML';
-    FUpload: TJSXMLHttpRequestUpload; external name 'upload';
-    FStatus : integer; external name 'status';
-    FStatusText : string; external name 'statusText';
+    FReadyState: NativeInt; {$IFDEF PAS2JS} external name 'readyState';{$ENDIF}
+    FResponse: JSValue; {$IFDEF PAS2JS} external name 'response';{$ENDIF}
+    FResponseText: string; {$IFDEF PAS2JS} external name 'responseText';{$ENDIF}
+    FResponseType: string; {$IFDEF PAS2JS} external name 'responseType';{$ENDIF}
+    FresponseURL: string; {$IFDEF PAS2JS} external name 'responseURL';{$ENDIF}
+    FresponseXML: TJSDocument; {$IFDEF PAS2JS} external name 'responseXML';{$ENDIF}
+    FUpload: TJSXMLHttpRequestUpload; {$IFDEF PAS2JS} external name 'upload';{$ENDIF}
+    FStatus : integer; {$IFDEF PAS2JS} external name 'status';{$ENDIF}
+    FStatusText : string; {$IFDEF PAS2JS} external name 'statusText';{$ENDIF}
   public
     const
       UNSENT           = 0;
@@ -3208,10 +3205,10 @@ TEventListenerEvent = class external name 'EventListener_Event' (TJSObject)
 
   { TJSUIEvent }
 
-  TJSUIEvent = class external name 'UIEvent' (TJSEvent)
+  TJSUIEvent = class {$IFDEF PAS2JS}external name 'UIEvent' (TJSEvent){$ENDIF}
   private
-    FDetail: NativeInt; external name 'detail';
-    FView: TJSWindow; external name 'view';
+    FDetail: NativeInt; {$IFDEF PAS2JS} external name 'detail';{$ENDIF}
+    FView: TJSWindow; {$IFDEF PAS2JS} external name 'view';{$ENDIF}
   Public
     property detail : NativeInt read FDetail;
     property view : TJSWindow read FView;
@@ -3219,24 +3216,24 @@ TEventListenerEvent = class external name 'EventListener_Event' (TJSObject)
 
   { TJSMouseEvent }
 
-  TJSMouseEvent = class external name 'MouseEvent' (TJSUIevent)
+  TJSMouseEvent = class {$IFDEF PAS2JS}external name 'MouseEvent' (TJSUIevent){$ENDIF}
   private
-    FAltKey: Boolean; external name 'altKey';
-    FBUtton: NativeInt; external name 'button';
-    FBUttons: NativeInt; external name 'buttons';
-    FClientX: Double; external name 'clientX';
-    FClientY: Double; external name 'clientY';
-    FCtrlKey: Boolean; external name 'ctrlKey';
-    FMetaKey: Boolean; external name 'metaKey';
-    FmovementX: Double; external name 'movementX';
-    FmovementY: Double; external name 'movementY';
-    FoffsetX: Double; external name 'offsetX';
-    FoffsetY: Double; external name 'offsetY';
-    FRegion: String; external name 'region';
-    FRelatedTarget: TJSEventTarget; external name 'relatedTarget';
-    FscreenX: Double; external name 'screenX';
-    FscreenY: Double; external name 'screenY';
-    FShiftKey: Boolean; external name 'shiftKey';
+    FAltKey: Boolean; {$IFDEF PAS2JS} external name 'altKey';{$ENDIF}
+    FBUtton: NativeInt; {$IFDEF PAS2JS} external name 'button';{$ENDIF}
+    FBUttons: NativeInt; {$IFDEF PAS2JS} external name 'buttons';{$ENDIF}
+    FClientX: Double; {$IFDEF PAS2JS} external name 'clientX';{$ENDIF}
+    FClientY: Double; {$IFDEF PAS2JS} external name 'clientY';{$ENDIF}
+    FCtrlKey: Boolean; {$IFDEF PAS2JS} external name 'ctrlKey';{$ENDIF}
+    FMetaKey: Boolean; {$IFDEF PAS2JS} external name 'metaKey';{$ENDIF}
+    FmovementX: Double; {$IFDEF PAS2JS} external name 'movementX';{$ENDIF}
+    FmovementY: Double; {$IFDEF PAS2JS} external name 'movementY';{$ENDIF}
+    FoffsetX: Double; {$IFDEF PAS2JS} external name 'offsetX';{$ENDIF}
+    FoffsetY: Double; {$IFDEF PAS2JS} external name 'offsetY';{$ENDIF}
+    FRegion: String; {$IFDEF PAS2JS} external name 'region';{$ENDIF}
+    FRelatedTarget: TJSEventTarget; {$IFDEF PAS2JS} external name 'relatedTarget';{$ENDIF}
+    FscreenX: Double; {$IFDEF PAS2JS} external name 'screenX';{$ENDIF}
+    FscreenY: Double; {$IFDEF PAS2JS} external name 'screenY';{$ENDIF}
+    FShiftKey: Boolean; {$IFDEF PAS2JS} external name 'shiftKey';{$ENDIF}
   Public
     function getModifierState(keyArg: String): boolean;
     Property altKey : Boolean read FAltKey;
@@ -3271,12 +3268,12 @@ TEventListenerEvent = class external name 'EventListener_Event' (TJSObject)
     deltaMode : NativeInt;
   end;
 
-  TJSWheelEvent = class external name 'WheelEvent' (TJSMouseEvent)
+  TJSWheelEvent = class {$IFDEF PAS2JS}external name 'WheelEvent' (TJSMouseEvent){$ENDIF}
   private
-    FDeltaMode: NativeInt; external name 'deltaMode';
-    FDeltaX: Double; external name 'deltaX';
-    FDeltaY: Double; external name 'deltaY';
-    FDeltaZ: Double; external name 'deltaZ';
+    FDeltaMode: NativeInt; {$IFDEF PAS2JS} external name 'deltaMode';{$ENDIF}
+    FDeltaX: Double; {$IFDEF PAS2JS} external name 'deltaX';{$ENDIF}
+    FDeltaY: Double; {$IFDEF PAS2JS} external name 'deltaY';{$ENDIF}
+    FDeltaZ: Double; {$IFDEF PAS2JS} external name 'deltaZ';{$ENDIF}
   Public
     constructor new(atype : String); overload;
     constructor new(atype : String; aInit : TJSWheelEventInit); overload;
@@ -3286,17 +3283,18 @@ TEventListenerEvent = class external name 'EventListener_Event' (TJSObject)
     Property deltaMode : NativeInt Read FDeltaMode;
   end;
 
-  TJSPointerEvent = Class external name 'PointerEvent' (TJSMouseEvent);
+  TJSPointerEvent = class {$IFDEF PAS2JS}external name 'PointerEvent' (TJSMouseEvent);{$ENDIF}
+  end;
 
-  TJSTouchEvent = Class external name 'TouchEvent'(TJSUIEvent)
+  TJSTouchEvent = class {$IFDEF PAS2JS}external name 'TouchEvent'(TJSUIEvent){$ENDIF}
   private
-    FAltKey: Boolean; external name 'altKey';
-    FChangedTouches: TJSTouchList; external name 'changedTouches';
-    FCtrlKey: Boolean; external name 'ctrlKey';
-    FMetaKey: Boolean; external name 'metaKey';
-    FShiftKey: Boolean; external name 'shiftKey';
-    FTargetTouches: TJSTouchList; external name 'targetTouches';
-    FTouches: TJSTouchList; external name 'touches';
+    FAltKey: Boolean; {$IFDEF PAS2JS} external name 'altKey';{$ENDIF}
+    FChangedTouches: TJSTouchList; {$IFDEF PAS2JS} external name 'changedTouches';{$ENDIF}
+    FCtrlKey: Boolean; {$IFDEF PAS2JS} external name 'ctrlKey';{$ENDIF}
+    FMetaKey: Boolean; {$IFDEF PAS2JS} external name 'metaKey';{$ENDIF}
+    FShiftKey: Boolean; {$IFDEF PAS2JS} external name 'shiftKey';{$ENDIF}
+    FTargetTouches: TJSTouchList; {$IFDEF PAS2JS} external name 'targetTouches';{$ENDIF}
+    FTouches: TJSTouchList; {$IFDEF PAS2JS} external name 'touches';{$ENDIF}
   Public
     Property altKey : Boolean Read FAltKey;
     Property ctrlKey : Boolean Read FCtrlKey;
@@ -3462,18 +3460,18 @@ TEventListenerEvent = class external name 'EventListener_Event' (TJSObject)
 
   { TJSKeyboardEvent }
 
-  TJSKeyboardEvent = class external name 'KeyboardEvent' (TJSUIEvent)
+  TJSKeyboardEvent = class {$IFDEF PAS2JS}external name 'KeyboardEvent' (TJSUIEvent){$ENDIF}
   private
-    FAltKey: Boolean; external name 'altKey';
-    FCode: string; external name 'code';
-    FCtrlKey: Boolean; external name 'ctrlKey';
-    FIsComposing: Boolean;  external name 'isComposing';
-    FKey: String; external name 'key';
-    FLocale: string; external name 'locale';
-    FLocation: NativeInt; external name 'location';
-    FMetaKey: Boolean; external name 'metaKey';
-    FRepeat: Boolean; external name 'repeat';
-    FShiftKey: Boolean; external name 'shiftKey';
+    FAltKey: Boolean; {$IFDEF PAS2JS} external name 'altKey';{$ENDIF}
+    FCode: string; {$IFDEF PAS2JS} external name 'code';{$ENDIF}
+    FCtrlKey: Boolean; {$IFDEF PAS2JS} external name 'ctrlKey';{$ENDIF}
+    FIsComposing: Boolean;{$IFDEF PAS2JS}external name 'isComposing';{$ENDIF}
+    FKey: String; {$IFDEF PAS2JS} external name 'key';{$ENDIF}
+    FLocale: string; {$IFDEF PAS2JS} external name 'locale';{$ENDIF}
+    FLocation: NativeInt; {$IFDEF PAS2JS} external name 'location';{$ENDIF}
+    FMetaKey: Boolean; {$IFDEF PAS2JS} external name 'metaKey';{$ENDIF}
+    FRepeat: Boolean; {$IFDEF PAS2JS} external name 'repeat';{$ENDIF}
+    FShiftKey: Boolean; {$IFDEF PAS2JS} external name 'shiftKey';{$ENDIF}
   Public
     function getModifierState(aKey : string) : Boolean;
     property code : string read FCode;
@@ -3505,7 +3503,7 @@ TEventListenerEvent = class external name 'EventListener_Event' (TJSObject)
   end;
 
   TJSMutationRecordArray = array of TJSMutationRecord;
-  TJSMutationCallback = reference to procedure(mutations: TJSMutationRecordArray; observer: TJSMutationObserver); safecall;
+  TJSMutationCallback = reference to procedure(mutations: TJSMutationRecordArray; observer: TJSMutationObserver); {$IFDEF PAS2JS}safecall;{$ENDIF}
 
   TJSMutationObserverInit = record
     attributes: boolean;
@@ -3517,7 +3515,7 @@ TEventListenerEvent = class external name 'EventListener_Event' (TJSObject)
     attributeFilter: TJSArray;
   end;
 
-  TJSMutationObserver = class external name 'MutationObserver' (TJSObject)
+  TJSMutationObserver = class {$IFDEF PAS2JS}external name 'MutationObserver' (TJSObject){$ENDIF}
   public
     { constructor }
     constructor new(mutationCallback: TJSMutationCallback); overload;
@@ -3537,12 +3535,12 @@ TEventListenerEvent = class external name 'EventListener_Event' (TJSObject)
 
   { TJSMessageEvent }
 
-  TJSMessageEvent = class external name 'MessageEvent' (TEventListenerEvent)
+  TJSMessageEvent = class {$IFDEF PAS2JS}external name 'MessageEvent' (TEventListenerEvent){$ENDIF}
   private
-    FData: JSValue; external name 'data';
-    FLastEventID: String; external name 'lastEventID';
-    FOrigin: String;  external name 'origin';
-    FPorts: TJSMessagePortArray; external name 'ports';
+    FData: JSValue; {$IFDEF PAS2JS} external name 'data';{$ENDIF}
+    FLastEventID: String; {$IFDEF PAS2JS} external name 'lastEventID';{$ENDIF}
+    FOrigin: String;{$IFDEF PAS2JS}external name 'origin';{$ENDIF}
+    FPorts: TJSMessagePortArray; {$IFDEF PAS2JS} external name 'ports';{$ENDIF}
   Public
     Property Data : JSValue Read FData;
     Property LastEventID : String Read FLastEventID;
@@ -3550,13 +3548,13 @@ TEventListenerEvent = class external name 'EventListener_Event' (TJSObject)
     Property Ports : TJSMessagePortArray Read FPorts;
   end;
 
-  TJSWebSocket = class external name 'WebSocket'  (TJSEventTarget)
+  TJSWebSocket = class {$IFDEF PAS2JS}external name 'WebSocket'  (TJSEventTarget){$ENDIF}
   Private
-    Furl : String; external name 'url';
-    FreadyState : Cardinal; external name 'readyState';
-    FbufferedAmount : NativeInt; external name 'bufferedAmount';
-    Fextensions : String; external name 'extensions';
-    Fprotocol : String; external name 'protocol';
+    Furl : String; {$IFDEF PAS2JS} external name 'url';{$ENDIF}
+    FreadyState : Cardinal; {$IFDEF PAS2JS} external name 'readyState';{$ENDIF}
+    FbufferedAmount : NativeInt; {$IFDEF PAS2JS} external name 'bufferedAmount';{$ENDIF}
+    Fextensions : String; {$IFDEF PAS2JS} external name 'extensions';{$ENDIF}
+    Fprotocol : String; {$IFDEF PAS2JS} external name 'protocol';{$ENDIF}
   Public
     Const
       CONNECTING = 0;
@@ -3586,12 +3584,12 @@ TEventListenerEvent = class external name 'EventListener_Event' (TJSObject)
     Property protocol : String Read Fprotocol;
   end;
 
-  TJSHTMLAudioTrack = class external name 'AudioTrack' (TJSObject)
+  TJSHTMLAudioTrack = class {$IFDEF PAS2JS}external name 'AudioTrack' (TJSObject){$ENDIF}
   end;
 
-  TJSHTMLAudioTrackList = class external name 'AudioTrackList' (TJSObject)
-    FLength : Integer; external name 'length';
-    function getitem(aIndex : nativeInt) : TJSHTMLAudioTrack ; external name '[]';
+  TJSHTMLAudioTrackList = class {$IFDEF PAS2JS}external name 'AudioTrackList' (TJSObject){$ENDIF}
+    FLength : Integer; {$IFDEF PAS2JS} external name 'length';{$ENDIF}
+    function getitem(aIndex : nativeInt) : TJSHTMLAudioTrack ; {$IFDEF PAS2JS} external name '[]';{$ENDIF}
   Public
     onaddtrack : TJSEventHandler;
     onchange : TJSEventHandler;
@@ -3600,12 +3598,12 @@ TEventListenerEvent = class external name 'EventListener_Event' (TJSObject)
     Property tracks [aIndex : NativeInt] : TJSHTMLAudioTrack read Getitem;
   end;
 
-  TJSHTMLVideoTrack = class external name 'VideoTrack' (TJSObject)
+  TJSHTMLVideoTrack = class {$IFDEF PAS2JS}external name 'VideoTrack' (TJSObject){$ENDIF}
   end;
 
-  TJSHTMLVideoTrackList = class external name 'VideoTrackList' (TJSObject)
-    FLength : Integer; external name 'length';
-    function getitem(aIndex : nativeInt) : TJSHTMLVideoTrack ; external name '[]';
+  TJSHTMLVideoTrackList = class {$IFDEF PAS2JS}external name 'VideoTrackList' (TJSObject){$ENDIF}
+    FLength : Integer; {$IFDEF PAS2JS} external name 'length';{$ENDIF}
+    function getitem(aIndex : nativeInt) : TJSHTMLVideoTrack ; {$IFDEF PAS2JS} external name '[]';{$ENDIF}
   Public
     onaddtrack : TJSEventHandler;
     onchange : TJSEventHandler;
@@ -3614,12 +3612,12 @@ TEventListenerEvent = class external name 'EventListener_Event' (TJSObject)
     Property tracks [aIndex : NativeInt] : TJSHTMLVideoTrack read Getitem;
   end;
 
-  TJSHTMLTextTrack = class external name 'TextTrack' (TJSObject)
+  TJSHTMLTextTrack = class {$IFDEF PAS2JS}external name 'TextTrack' (TJSObject){$ENDIF}
   end;
 
-  TJSHTMLTextTrackList = class external name 'TextTrackList' (TJSObject)
-    FLength : Integer; external name 'length';
-    function getitem(aIndex : nativeInt) : TJSHTMLTextTrack ; external name '[]';
+  TJSHTMLTextTrackList = class {$IFDEF PAS2JS}external name 'TextTrackList' (TJSObject){$ENDIF}
+    FLength : Integer; {$IFDEF PAS2JS} external name 'length';{$ENDIF}
+    function getitem(aIndex : nativeInt) : TJSHTMLTextTrack ; {$IFDEF PAS2JS} external name '[]';{$ENDIF}
   Public
     onaddtrack : TJSEventHandler;
     onchange : TJSEventHandler;
@@ -3630,30 +3628,32 @@ TEventListenerEvent = class external name 'EventListener_Event' (TJSObject)
 
 
   { TJSHTMLMediaElement }
-  TJSMEdiaError = class external name 'MediaError' (TJSObject)
+  TJSMEdiaError = class {$IFDEF PAS2JS}external name 'MediaError' (TJSObject){$ENDIF}
     code : NativeInt;
     message : string;
   end;
 
-  TJSHTMLMediaStream = class external name 'MediaStream' (TJSObject);
+  TJSHTMLMediaStream = class {$IFDEF PAS2JS}external name 'MediaStream' (TJSObject);{$ENDIF}
+  end;
 
-  TJSHTMLMediaController = class external name 'MediaController' (TJSObject);
+  TJSHTMLMediaController = class {$IFDEF PAS2JS}external name 'MediaController' (TJSObject);{$ENDIF}
+  end;
 
-  TJSHTMLMediaElement = Class external name 'HTMLMediaElement' (TJSHTMLElement)
+  TJSHTMLMediaElement = class {$IFDEF PAS2JS}external name 'HTMLMediaElement' (TJSHTMLElement){$ENDIF}
   private
-    FAudioTracks: TJSHTMLAudioTrackList; external name 'audioTracks';
-    FVideoTracks: TJSHTMLVideoTrackList; external name 'videoTracks';
-    FTextTracks: TJSHTMLTextTrackList; external name 'textTracks';
-    FControlsList: TJSDOMTokenList; external name 'controlslist';
-    FCurrentSrc: String; external name 'currentSrc';
-    FDuration: Double; external name 'duration';
-    FEnded: Boolean;external name 'ended';
-    FError: TJSMEdiaError; external name 'error';
-    FNetworkState: NativeInt; external name 'networkState';
-    FPaused: boolean; external name 'paused';
-    FReadyState: NativeInt; external name 'readyState';
-    FSeeking: boolean; external name 'seeking';
-    FSinkID: string; external name 'sinkId';
+    FAudioTracks: TJSHTMLAudioTrackList; {$IFDEF PAS2JS} external name 'audioTracks';{$ENDIF}
+    FVideoTracks: TJSHTMLVideoTrackList; {$IFDEF PAS2JS} external name 'videoTracks';{$ENDIF}
+    FTextTracks: TJSHTMLTextTrackList; {$IFDEF PAS2JS} external name 'textTracks';{$ENDIF}
+    FControlsList: TJSDOMTokenList; {$IFDEF PAS2JS} external name 'controlslist';{$ENDIF}
+    FCurrentSrc: String; {$IFDEF PAS2JS} external name 'currentSrc';{$ENDIF}
+    FDuration: Double; {$IFDEF PAS2JS} external name 'duration';{$ENDIF}
+    FEnded: Boolean;{$IFDEF PAS2JS}external name 'ended';{$ENDIF}
+    FError: TJSMEdiaError; {$IFDEF PAS2JS} external name 'error';{$ENDIF}
+    FNetworkState: NativeInt; {$IFDEF PAS2JS} external name 'networkState';{$ENDIF}
+    FPaused: boolean; {$IFDEF PAS2JS} external name 'paused';{$ENDIF}
+    FReadyState: NativeInt; {$IFDEF PAS2JS} external name 'readyState';{$ENDIF}
+    FSeeking: boolean; {$IFDEF PAS2JS} external name 'seeking';{$ENDIF}
+    FSinkID: string; {$IFDEF PAS2JS} external name 'sinkId';{$ENDIF}
   Public
     autoplay : Boolean;
     buffered : Boolean;
@@ -3695,14 +3695,14 @@ TEventListenerEvent = class external name 'EventListener_Event' (TJSObject)
     Property VideoTracks : TJSHTMLVideoTrackList Read FVideoTracks;
   end;
 
-  TJSHTMLAudioElement = Class external name 'HTMLAudioElement' (TJSHTMLMediaElement)
+  TJSHTMLAudioElement = class {$IFDEF PAS2JS}external name 'HTMLAudioElement' (TJSHTMLMediaElement){$ENDIF}
 
   end;
 
   TJSFormDataEntryValue = String;
   TJSFormDataEntryValueArray = Array of TJSFormDataEntryValue;
 
-  TJSFormData = Class external name 'FormData' (TJSObject)
+  TJSFormData = class {$IFDEF PAS2JS}external name 'FormData' (TJSObject){$ENDIF}
     constructor new; overload;
     constructor new(aForm : TJSHTMLElement); overload;
     Procedure append(const aName,aValue : String); overload;
@@ -3712,23 +3712,3505 @@ TEventListenerEvent = class external name 'EventListener_Event' (TJSObject)
     Function get(const aName : String): TJSFormDataEntryValue;
     function has(const aName : String): Boolean;
     Function keys : TStringDynArray; reintroduce;
-    Procedure set_(const aName,aValue : String); external name 'set'; overload;
-    Procedure set_(const aName : String; aBlob : TJSBlob); external name 'set'; overload;
+    Procedure set_(const aName,aValue : String); {$IFDEF PAS2JS} external name 'set';{$ENDIF} overload;
+    Procedure set_(const aName : String; aBlob : TJSBlob); {$IFDEF PAS2JS} external name 'set';{$ENDIF} overload;
     Function getAll(const aName : String) : TJSFormDataEntryValueArray;
     Function values : TJSValueDynArray; reintroduce;
-    Property Entry[aIndex : String] : TJSFormDataEntryValue read Get;
+    Property Entry[const aIndex : String] : TJSFormDataEntryValue read get;
   end;
 
-  TJSHTMLTemplateElement = class external name 'HTMLTemplateElement' (TJSHTMLElement)
+  TJSHTMLTemplateElement = class {$IFDEF PAS2JS}external name 'HTMLTemplateElement' (TJSHTMLElement){$ENDIF}
     content : TJSHTMLElement;
   end;
 
 
 var
-  document : TJSDocument; external name 'document';
-  window : TJSWindow; external name 'window';
-  console : TJSConsole; external name 'window.console';
+  document : TJSDocument; {$IFDEF PAS2JS} external name 'document';{$ENDIF}
+  window : TJSWindow; {$IFDEF PAS2JS} external name 'window';{$ENDIF}
+  console : TJSConsole; {$IFDEF PAS2JS} external name 'window.console';{$ENDIF}
 
 implementation
     
+{ TJSEventTarget }
+
+{$IFDEF DCC}
+procedure TJSEventTarget.addEventListener(aname: string; aListener: JSValue);
+begin
+
+end;
+
+procedure TJSEventTarget.addEventListener(aname: string;
+  aListener: TJSRawEventHandler);
+begin
+
+end;
+
+procedure TJSEventTarget.addEventListener(aname: string;
+  aListener: TJSEventHandler);
+begin
+
+end;
+
+function TJSEventTarget.dispatchEvent(event: JSValue): Boolean;
+begin
+  Result := False;
+end;
+
+procedure TJSEventTarget.removeEventListener(aname: string; aListener: JSValue);
+begin
+
+end;
+
+procedure TJSEventTarget.removeEventListener(aname: string;
+  aListener: TJSRawEventHandler);
+begin
+
+end;
+
+procedure TJSEventTarget.removeEventListener(aname: string;
+  aListener: TJSEventHandler);
+begin
+
+end;
+
+{ TJSNode }
+
+function TJSNode.appendChild(aChild: TJSNode): TJSNode;
+begin
+  Result := nil;
+end;
+
+function TJSNode.cloneNode(deep: boolean): TJSNode;
+begin
+  Result := nil;
+end;
+
+function TJSNode.compareDocumentPosition(aNode: TJSNode): NativeInt;
+begin
+  Result := 0;
+end;
+
+function TJSNode.contains(aNode: TJSNode): boolean;
+begin
+  Result := False;
+end;
+
+function TJSNode.hasChildNodes: boolean;
+begin
+  Result := False;
+end;
+
+function TJSNode.insertBefore(newNode, referenceNode: TJSNode): TJSNode;
+begin
+  Result := nil;
+end;
+
+function TJSNode.isDefaultNameSpace(aNameSpaceURI: String): Boolean;
+begin
+  Result := False;
+end;
+
+function TJSNode.isEqualNode(aNode: TJSNode): boolean;
+begin
+  Result := False;
+end;
+
+function TJSNode.isSameNode(aNode: TJSNode): boolean;
+begin
+  Result := False;
+end;
+
+function TJSNode.lookupNamespaceURI(aPrefix: string): string;
+begin
+  Result := '';
+end;
+
+function TJSNode.lookupPrefix(aPrefix: string): string;
+begin
+  Result := '';
+end;
+
+procedure TJSNode.normalize;
+begin
+
+end;
+
+function TJSNode.removeChild(aChild: TJSNode): TJSNode;
+begin
+  Result := nil;
+end;
+
+function TJSNode.replaceChild(aNewChild, aOldChild: TJSNode): TJSNode;
+begin
+  Result := nil;
+end;
+
+{ TJSNodeList }
+
+procedure TJSNodeList.forEach(const aCallBack: TJSNodeListCallBack);
+begin
+
+end;
+
+procedure TJSNodeList.forEach(const aCallBack: TJSNodeListEvent);
+begin
+
+end;
+
+function TJSNodeList.item(aIndex: NativeInt): TJSNode;
+begin
+  Result := nil;
+end;
+
+{ TJSNamedNodeMap }
+
+function TJSNamedNodeMap.getNamedItem(aName: string): TJSAttr;
+begin
+  Result := nil;
+end;
+
+{ TJSHTMLCollection }
+
+function TJSHTMLCollection.item(aIndex: Integer): TJSNode;
+begin
+  Result := nil;
+end;
+
+function TJSHTMLCollection.namedItem(aName: string): TJSNode;
+begin
+  Result := nil;
+end;
+
+{ TJSDOMTokenList }
+
+procedure TJSDOMTokenList.add(aToken: TJSDOMString);
+begin
+
+end;
+
+function TJSDOMTokenList.contains(aToken: TJSDOMString): Boolean;
+begin
+  Result := False;
+end;
+
+procedure TJSDOMTokenList.forEach(const callback: TDOMTokenlistCallBack);
+begin
+
+end;
+
+function TJSDOMTokenList.item(aIndex: NativeInt): String;
+begin
+  Result := '';
+end;
+
+procedure TJSDOMTokenList.remove(aToken: TJSDOMString);
+begin
+
+end;
+
+procedure TJSDOMTokenList.replace(aOldToken, ANewToken: TJSDOMString);
+begin
+
+end;
+
+function TJSDOMTokenList.supports(aToken: TJSDOMString): Boolean;
+begin
+  Result := False;
+end;
+
+function TJSDOMTokenList.toggle(aToken: TJSDOMString): Boolean;
+begin
+  Result := False;
+end;
+
+{ TJSElement }
+
+procedure TJSElement.append(aNode: TJSElement);
+begin
+
+end;
+
+procedure TJSElement.append(aText: String; aNode: TJSElement);
+begin
+
+end;
+
+procedure TJSElement.append(aNode1, aNode2: TJSElement);
+begin
+
+end;
+
+procedure TJSElement.append(aText: String);
+begin
+
+end;
+
+function TJSElement.getAttribute(aName: string): string;
+begin
+  Result := '';
+end;
+
+function TJSElement.getAttributeNode(aName: string): TJSAttr;
+begin
+  Result := nil;
+end;
+
+function TJSElement.getAttributeNodeNS(aNameSpace, aName: string): TJSAttr;
+begin
+  Result := nil;
+end;
+
+function TJSElement.getAttributeNS(aNameSpace, aName: string): string;
+begin
+  Result := '';
+end;
+
+function TJSElement.getBoundingClientRect: TJSDOMRect;
+begin
+  Result := nil;
+end;
+
+function TJSElement.getClientRects: TJSClientRectArray;
+begin
+  Result := nil;
+end;
+
+function TJSElement.getElementsByClassName(
+  aClassName: string): TJSHTMLCollection;
+begin
+  Result := nil;
+end;
+
+function TJSElement.getElementsByTagName(aTagName: String): TJSHTMLCollection;
+begin
+  Result := nil;
+end;
+
+function TJSElement.getElementsByTagNameNS(aNameSpace,
+  aTagName: String): TJSHTMLCollection;
+begin
+  Result := nil;
+end;
+
+function TJSElement.hasAttribute(aName: String): Boolean;
+begin
+  Result := False;
+end;
+
+function TJSElement.hasAttributeNS(aNameSpace, aName: String): Boolean;
+begin
+  Result := False;
+end;
+
+function TJSElement.hasAttributes: Boolean;
+begin
+  Result := False;
+end;
+
+function TJSElement.insertAdjacentElement(aPosition: string;
+  aElement: TJSElement): TJSElement;
+begin
+  Result := nil;
+end;
+
+procedure TJSElement.insertAdjacentHTML(aPosition, aHTML: string);
+begin
+
+end;
+
+procedure TJSElement.insertAdjacentText(aPosition, aText: string);
+begin
+
+end;
+
+function TJSElement.matches(aSelectorString: String): Boolean;
+begin
+  Result := False;
+end;
+
+function TJSElement.querySelector(aSelectors: String): TJSElement;
+begin
+  Result := nil;
+end;
+
+function TJSElement.querySelectorAll(aSelectors: String): TJSNodeList;
+begin
+  Result := nil;
+end;
+
+procedure TJSElement.releasePointerCapture(evID: JSValue);
+begin
+
+end;
+
+procedure TJSElement.removeAttribute(aName: string);
+begin
+
+end;
+
+function TJSElement.removeAttributeNode(aAttr: TJSAttr): TJSAttr;
+begin
+  Result := nil;
+end;
+
+procedure TJSElement.removeAttributeNS(aNameSpace, aName: string);
+begin
+
+end;
+
+procedure TJSElement.requestFullScreen;
+begin
+
+end;
+
+procedure TJSElement.setAttribute(aName, AValue: String);
+begin
+
+end;
+
+function TJSElement.setAttributeNode(aNode: TJSAttr): TJSAttr;
+begin
+  Result := nil;
+end;
+
+function TJSElement.setAttributeNodeNS(aNode: TJSAttr): TJSAttr;
+begin
+  Result := nil;
+end;
+
+procedure TJSElement.setAttributeNS(aNameSpace, aName, AValue: String);
+begin
+
+end;
+
+procedure TJSElement.setCapture(retargetToElement: Boolean);
+begin
+
+end;
+
+procedure TJSElement.setPointerCapture(pointerID: JSValue);
+begin
+
+end;
+
+{ TJSDOMImplementation }
+
+function TJSDOMImplementation.createDocument(aNamespaceURI,
+  aQualifiedNameStr: String; aDocumentType: TJSDocumentType): TJSDocument;
+begin
+  Result := nil;
+end;
+
+function TJSDOMImplementation.createDocumentType(aQualifiedNameStr, aPublicId,
+  aSystemId: String): TJSDocumentType;
+begin
+  Result := nil;
+end;
+
+function TJSDOMImplementation.createHTMLDocument(aTitle: String): TJSDocument;
+begin
+  Result := nil;
+end;
+
+{ TJSLocation }
+
+procedure TJSLocation.assign(aURL: String);
+begin
+
+end;
+
+procedure TJSLocation.reload(aForce: Boolean);
+begin
+
+end;
+
+procedure TJSLocation.replace(aURL: String);
+begin
+
+end;
+
+{ TJSCSSRuleList }
+
+function TJSCSSRuleList.item(index: NativeInt): TJSCSSRule;
+begin
+  Result := nil;
+end;
+
+{ TJSCSSStyleSheet }
+
+procedure TJSCSSStyleSheet.deleteRule(aIndex: NativeInt);
+begin
+
+end;
+
+function TJSCSSStyleSheet.insertRule(aRule: String;
+  aIndex: NativeInt): NativeInt;
+begin
+  Result := 0;
+end;
+
+{ TJSStyleSheetList }
+
+function TJSStyleSheetList.item(index: NativeInt): TJSStyleSheet;
+begin
+  Result := nil;
+end;
+
+{ TJSDocumentFragment }
+
+constructor TJSDocumentFragment.new;
+begin
+
+end;
+
+function TJSDocumentFragment.querySelector(aSelector: String): TJSElement;
+begin
+  Result := nil;
+end;
+
+function TJSDocumentFragment.querySelectorAll(aSelector: String): TJSNodeList;
+begin
+  Result := nil;
+end;
+
+{ TJSEvent }
+
+constructor TJSEvent.new(aType: String; const aInit: TJSEventInit);
+begin
+
+end;
+
+constructor TJSEvent.new(aType: String);
+begin
+
+end;
+
+procedure TJSEvent.preventDefault;
+begin
+
+end;
+
+procedure TJSEvent.stopImmediatePropagation;
+begin
+
+end;
+
+procedure TJSEvent.stopPropagation;
+begin
+
+end;
+
+{ TJSXPathExpression }
+
+function TJSXPathExpression.evaluate(contextNode: TJSNode; aType: NativeInt;
+  aResult: TJSXPathResult): TJSXPathResult;
+begin
+  Result := nil;
+end;
+
+function TJSXPathExpression.evaluateWithContext(contextNode: TJSNode; aPosition,
+  aSize, aType: NativeInt; aResult: TJSXPathResult): TJSXPathResult;
+begin
+  Result := nil;
+end;
+
+{ TJSXPathNSResolver }
+
+function TJSXPathNSResolver.lookupNamespaceURI(prefix: string): string;
+begin
+  Result := '';
+end;
+
+{ TJSRange }
+
+function TJSRange.cloneContents: TJSDocumentFragment;
+begin
+  Result := nil;
+end;
+
+function TJSRange.cloneRange: TJSRange;
+begin
+  Result := nil;
+end;
+
+procedure TJSRange.collapse;
+begin
+
+end;
+
+function TJSRange.compareBoundaryPoints(aHow: NativeInt): NativeInt;
+begin
+  Result := 0;
+end;
+
+function TJSRange.createContextualFragment(
+  aTagstring: String): TJSDocumentFragment;
+begin
+  Result := nil;
+end;
+
+procedure TJSRange.deleteContents;
+begin
+
+end;
+
+procedure TJSRange.detach;
+begin
+
+end;
+
+function TJSRange.extractContents: TJSDocumentFragment;
+begin
+  Result := nil;
+end;
+
+procedure TJSRange.insertNode(aNode: TJSNode);
+begin
+
+end;
+
+constructor TJSRange.new;
+begin
+
+end;
+
+procedure TJSRange.selectNode(aNode: TJSNode);
+begin
+
+end;
+
+procedure TJSRange.selectNodeContents(aNode: TJSNode);
+begin
+
+end;
+
+procedure TJSRange.setEnd(aEndNode: TJSNode; aEndOffset: NativeInt);
+begin
+
+end;
+
+procedure TJSRange.setEndAfter(aEndNode: TJSNode);
+begin
+
+end;
+
+procedure TJSRange.setEndBefore(aEndNode: TJSNode);
+begin
+
+end;
+
+procedure TJSRange.setStart(aStartNode: TJSNode; aStartOffset: NativeInt);
+begin
+
+end;
+
+procedure TJSRange.setStartAfter(aStartNode: TJSNode);
+begin
+
+end;
+
+procedure TJSRange.setStartBefore(aStartNode: TJSNode);
+begin
+
+end;
+
+procedure TJSRange.surroundContents(aNode: TJSNode);
+begin
+
+end;
+
+{ TJSTreeWalker }
+
+function TJSTreeWalker.firstChild: TJSNode;
+begin
+  Result := nil;
+end;
+
+function TJSTreeWalker.lastChild: TJSNode;
+begin
+  Result := nil;
+end;
+
+function TJSTreeWalker.nextNode: TJSNode;
+begin
+  Result := nil;
+end;
+
+function TJSTreeWalker.nextSibling: TJSNode;
+begin
+  Result := nil;
+end;
+
+function TJSTreeWalker.parentNode: TJSNode;
+begin
+  Result := nil;
+end;
+
+function TJSTreeWalker.previousNode: TJSNode;
+begin
+  Result := nil;
+end;
+
+function TJSTreeWalker.previousSibling: TJSNode;
+begin
+  Result := nil;
+end;
+
+{ TJSNodeFilter }
+
+function TJSNodeFilter.acceptNode(aNode: TJSNode): NativeInt;
+begin
+  Result := 0;
+end;
+
+{ TJSXPathResult }
+
+function TJSXPathResult.iterateNext: TJSNode;
+begin
+  Result := nil;
+end;
+
+function TJSXPathResult.snapshotItem(Index: NativeInt): TJSNode;
+begin
+  Result := nil;
+end;
+
+{ TJSSelection }
+
+procedure TJSSelection.addRange(aRange: TJSRange);
+begin
+
+end;
+
+procedure TJSSelection.collapse(aParentNode: TJSNode; Offset: NativeInt);
+begin
+
+end;
+
+procedure TJSSelection.collapseToEnd;
+begin
+
+end;
+
+procedure TJSSelection.collapseToStart;
+begin
+
+end;
+
+function TJSSelection.containsNode(aNode: TJSNode;
+  aPartlyContained: Boolean): Boolean;
+begin
+  Result := False;
+end;
+
+procedure TJSSelection.deleteFromDocument;
+begin
+
+end;
+
+procedure TJSSelection.extend(aParentNode: TJSNode; Offset: NativeInt);
+begin
+
+end;
+
+function TJSSelection.getRangeAt(aIndex: NativeInt): TJSRange;
+begin
+  Result := nil;
+end;
+
+procedure TJSSelection.removeAllRanges;
+begin
+
+end;
+
+procedure TJSSelection.removeRange(aRange: TJSRange);
+begin
+
+end;
+
+procedure TJSSelection.selectAllChildren(aParentNode: TJSNode);
+begin
+
+end;
+
+procedure TJSSelection.setBaseAndExtent(aAnchorNode: TJSNode;
+  aAnchorOffset: NativeInt; aFocusNode: TJSNode; aFocusOffset: NativeInt);
+begin
+
+end;
+
+{ TJSDataTransferItem }
+
+function TJSDataTransferItem.getAsFile: TJSHTMLFile;
+begin
+  Result := nil;
+end;
+
+procedure TJSDataTransferItem.getAsString(
+  aCallBack: TJSDataTransferItemCallBack);
+begin
+
+end;
+
+{ TJSDataTransferItemList }
+
+function TJSDataTransferItemList.add(aData, AType: string): TJSDataTransferItem;
+begin
+  Result := nil;
+end;
+
+function TJSDataTransferItemList.add(aFile: TJSHTMLFile): TJSDataTransferItem;
+begin
+  Result := nil;
+end;
+
+procedure TJSDataTransferItemList.clear;
+begin
+
+end;
+
+function TJSDataTransferItemList.getitem(
+  aIndex: nativeInt): TJSDataTransferItem;
+begin
+  Result := nil;
+end;
+
+procedure TJSDataTransferItemList.remove(aIndex: integer);
+begin
+
+end;
+
+{ TJSDataTransfer }
+
+procedure TJSDataTransfer.clearData;
+begin
+
+end;
+
+procedure TJSDataTransfer.clearData(aFormat: string);
+begin
+
+end;
+
+function TJSDataTransfer.getData(aFormat: string): String;
+begin
+  Result := '';
+end;
+
+procedure TJSDataTransfer.setData(aFormat, aData: String);
+begin
+
+end;
+
+procedure TJSDataTransfer.setDragImage(aImage: TJSElement; xOffset,
+  yOffset: integer);
+begin
+
+end;
+
+{ TJSDocument }
+
+function TJSDocument.adoptNode(aExternalNode: TJSNode): TJSNode;
+begin
+  Result := nil;
+end;
+
+procedure TJSDocument.close;
+begin
+
+end;
+
+function TJSDocument.createAttribute(aName: string): TJSAttr;
+begin
+  Result := nil;
+end;
+
+function TJSDocument.createCDATASection(S: String): TJSNode;
+begin
+  Result := nil;
+end;
+
+function TJSDocument.createComment(S: String): TJSNode;
+begin
+  Result := nil;
+end;
+
+function TJSDocument.createDocumentFragment: TJSDocumentFragment;
+begin
+  Result := nil;
+end;
+
+function TJSDocument.createElement(tagName: string;
+  const options: TJSElementCreationOptions): TJSElement;
+begin
+  Result := nil;
+end;
+
+function TJSDocument.createElement(tagName: string): TJSElement;
+begin
+  Result := nil;
+end;
+
+function TJSDocument.createElementNS(aNameSpace, tagName: string;
+  const options: TJSElementCreationOptions): TJSElement;
+begin
+  Result := nil;
+end;
+
+function TJSDocument.createElementNS(aNameSpace, tagName: string): TJSElement;
+begin
+  Result := nil;
+end;
+
+function TJSDocument.createEvent(aType: string): TJSEvent;
+begin
+  Result := nil;
+end;
+
+function TJSDocument.createExpression(xPathText: String;
+  aNameSpaceMapper: TJSNameSpaceMapperCallback): TJSXPathExpression;
+begin
+  Result := nil;
+end;
+
+function TJSDocument.createNSResolver(aNode: TJSNode): TJSXPathNSResolver;
+begin
+  Result := nil;
+end;
+
+function TJSDocument.createProcessingInstruction(target,
+  data: String): TJSProcessingInstruction;
+begin
+  Result := nil;
+end;
+
+function TJSDocument.createRange: TJSRange;
+begin
+  Result := nil;
+end;
+
+function TJSDocument.createTextNode(S: String): TJSNode;
+begin
+  Result := nil;
+end;
+
+function TJSDocument.createTreeWalker(root: TJSNode; whatToShow: NativeInt;
+  filter: TJSNodeFilter): TJSTreeWalker;
+begin
+  Result := nil;
+end;
+
+function TJSDocument.elementFromPoint(x, y: integer): TJSElement;
+begin
+  Result := nil;
+end;
+
+procedure TJSDocument.enableStyleSheetsForSet(aSet: String);
+begin
+
+end;
+
+function TJSDocument.evaluate(xpathExpression: String; ContextNode: TJSNode;
+  NameSpaceResolver: TJSNamespaceMapperCallBack; resultType: NativeInt;
+  aResult: TJSXPathResult): TJSXPathResult;
+begin
+  Result := nil;
+end;
+
+function TJSDocument.execCommand(aCommandName: String; aShowDefaultUI: Boolean;
+  AValueArgument: String): boolean;
+begin
+  Result := False;
+end;
+
+function TJSDocument.execCommand(aCommandName: String;
+  aShowDefaultUI: Boolean): boolean;
+begin
+  Result := False;
+end;
+
+procedure TJSDocument.exitFullScreen;
+begin
+
+end;
+
+function TJSDocument.getElementById(aID: String): TJSElement;
+begin
+  Result := nil;
+end;
+
+function TJSDocument.getElementsByClassName(aNames: string): TJSHTMLCollection;
+begin
+  Result := nil;
+end;
+
+function TJSDocument.getElementsByName(aName: String): TJSNodeList;
+begin
+  Result := nil;
+end;
+
+function TJSDocument.getElementsByTagName(aName: String): TJSHTMLCollection;
+begin
+  Result := nil;
+end;
+
+function TJSDocument.getElementsByTagNameNS(aNameSpace,
+  aName: String): TJSHTMLCollection;
+begin
+  Result := nil;
+end;
+
+function TJSDocument.getSelection: TJSSelection;
+begin
+  Result := nil;
+end;
+
+function TJSDocument.hasFocus: boolean;
+begin
+  Result := False;
+end;
+
+function TJSDocument.importNode(aExternalNode: TJSNode; Deep: boolean): TJSNode;
+begin
+  Result := nil;
+end;
+
+procedure TJSDocument.open;
+begin
+
+end;
+
+function TJSDocument.querySelector(aSelectors: String): TJSElement;
+begin
+  Result := nil;
+end;
+
+function TJSDocument.querySelectorAll(aSelectors: String): TJSNodeList;
+begin
+  Result := nil;
+end;
+
+procedure TJSDocument.releaseCapture;
+begin
+
+end;
+
+procedure TJSDocument.write(aLine: string);
+begin
+
+end;
+
+procedure TJSDocument.writeln(aLine: String);
+begin
+
+end;
+
+{ TJSConsole }
+
+procedure TJSConsole.assert(anAssertion: string; Obj1: JSValue);
+begin
+
+end;
+
+procedure TJSConsole.clear;
+begin
+
+end;
+
+procedure TJSConsole.count(aCounter: String);
+begin
+
+end;
+
+procedure TJSConsole.count;
+begin
+
+end;
+
+procedure TJSConsole.debug(Obj1: JSValue);
+begin
+
+end;
+
+procedure TJSConsole.error(Obj1: JSValue);
+begin
+
+end;
+
+procedure TJSConsole.group(aLabel: String);
+begin
+
+end;
+
+procedure TJSConsole.group;
+begin
+
+end;
+
+procedure TJSConsole.groupCollapsed(aLabel: String);
+begin
+
+end;
+
+procedure TJSConsole.groupCollapsed;
+begin
+
+end;
+
+procedure TJSConsole.groupEnd;
+begin
+
+end;
+
+procedure TJSConsole.info(Obj1: JSValue);
+begin
+
+end;
+
+procedure TJSConsole.log(Obj1: JSValue);
+begin
+
+end;
+
+procedure TJSConsole.table(args: array of JSValue);
+begin
+
+end;
+
+procedure TJSConsole.table(args: array of JSValue; Columns: array of string);
+begin
+
+end;
+
+procedure TJSConsole.table(args: TJSObject);
+begin
+
+end;
+
+procedure TJSConsole.table(args: TJSObject; Columns: array of string);
+begin
+
+end;
+
+procedure TJSConsole.time(aName: string);
+begin
+
+end;
+
+procedure TJSConsole.timeEnd(aName: string);
+begin
+
+end;
+
+procedure TJSConsole.trace;
+begin
+
+end;
+
+procedure TJSConsole.warn(Obj1: JSValue);
+begin
+
+end;
+
+{ TJSSubtleCrypto }
+
+function TJSSubtleCrypto.decrypt(algorithm: AlgorithmIdentifier;
+  key: TJSCryptoKey; data: TJSBufferSource): TJSPromise;
+begin
+  Result := nil;
+end;
+
+function TJSSubtleCrypto.deriveBits(algorithm: AlgorithmIdentifier;
+  baseKey: TJSCryptoKey; length_: NativeInt): TJSPromise;
+begin
+  Result := nil;
+end;
+
+function TJSSubtleCrypto.deriveKey(algorithm: AlgorithmIdentifier;
+  baseKey: TJSCryptoKey; derivedKeyType: AlgorithmIdentifier;
+  extractable: boolean; keyUsages: TKeyUsageDynArray): TJSPromise;
+begin
+  Result := nil;
+end;
+
+function TJSSubtleCrypto.digest(algorithm: AlgorithmIdentifier;
+  data: TJSBufferSource): TJSPromise;
+begin
+  Result := nil;
+end;
+
+function TJSSubtleCrypto.encrypt(algorithm: AlgorithmIdentifier;
+  key: TJSCryptoKey; data: TJSBufferSource): TJSPromise;
+begin
+  Result := nil;
+end;
+
+function TJSSubtleCrypto.exportKey(format: KeyFormat;
+  key: TJSCryptoKey): TJSPromise;
+begin
+  Result := nil;
+end;
+
+function TJSSubtleCrypto.generateKey(algorithm: AlgorithmIdentifier;
+  extractable: boolean; keyUsages: TKeyUsageDynArray): TJSPromise;
+begin
+  Result := nil;
+end;
+
+function TJSSubtleCrypto.importKey(format: KeyFormat; keyData: TJSObject;
+  algorithm: AlgorithmIdentifier; extractable: boolean;
+  keyUsages: TKeyUsageDynArray): TJSPromise;
+begin
+  Result := nil;
+end;
+
+function TJSSubtleCrypto.sign(algorithm: AlgorithmIdentifier; key: TJSCryptoKey;
+  data: TJSBufferSource): TJSPromise;
+begin
+  Result := nil;
+end;
+
+function TJSSubtleCrypto.unwrapKey(format: KeyFormat;
+  wrappedKey: TJSBufferSource; unwrappingKey: TJSCryptoKey; unwrapAlgorithm,
+  unwrappedKeyAlgorithm: AlgorithmIdentifier; extractable: boolean;
+  keyUsages: TKeyUsageDynArray): TJSPromise;
+begin
+  Result := nil;
+end;
+
+function TJSSubtleCrypto.verify(algorithm: AlgorithmIdentifier;
+  key: TJSCryptoKey; signature, data: TJSBufferSource): TJSPromise;
+begin
+  Result := nil;
+end;
+
+function TJSSubtleCrypto.wrapKey(format: KeyFormat; key,
+  wrappingKey: TJSCryptoKey; wrapAlgorithm: AlgorithmIdentifier): TJSPromise;
+begin
+  Result := nil;
+end;
+
+{ TJSCrypto }
+
+procedure TJSCrypto.getRandomValues(anArray: TJSTypedArray);
+begin
+
+end;
+
+{ TJSHistory }
+
+procedure TJSHistory.back;
+begin
+
+end;
+
+procedure TJSHistory.forward;
+begin
+
+end;
+
+procedure TJSHistory.go(aIndex: NativeInt);
+begin
+
+end;
+
+procedure TJSHistory.go;
+begin
+
+end;
+
+procedure TJSHistory.pushState(aState: jsValue; aTitle, AURL: String);
+begin
+
+end;
+
+procedure TJSHistory.pushState(aState: jsValue; aTitle: String);
+begin
+
+end;
+
+procedure TJSHistory.replaceState(aState: jsValue);
+begin
+
+end;
+
+procedure TJSHistory.replaceState(aState: jsValue; aTitle: String);
+begin
+
+end;
+
+procedure TJSHistory.replaceState(aState: jsValue; aTitle, AURL: String);
+begin
+
+end;
+
+{ TJSIDBTransaction }
+
+procedure TJSIDBTransaction.abort;
+begin
+
+end;
+
+function TJSIDBTransaction.objectStore(aName: String): TJSIDBObjectStore;
+begin
+  Result := nil;
+end;
+
+{ TJSIDBKeyRange }
+
+class function TJSIDBKeyRange.bound(aLower, aUpper: JSValue;
+  aLowerOpen: Boolean): TJSIDBKeyRange;
+begin
+  Result := nil;
+end;
+
+class function TJSIDBKeyRange.bound(aLower, aUpper: JSValue): TJSIDBKeyRange;
+begin
+  Result := nil;
+end;
+
+class function TJSIDBKeyRange.bound(aLower, aUpper: JSValue; aLowerOpen,
+  aUpperOpen: Boolean): TJSIDBKeyRange;
+begin
+  Result := nil;
+end;
+
+function TJSIDBKeyRange.includes(aValue: JSValue): Boolean;
+begin
+  Result := False;
+end;
+
+class function TJSIDBKeyRange.lowerBound(aLower: JSValue): TJSIDBKeyRange;
+begin
+  Result := nil;
+end;
+
+class function TJSIDBKeyRange.lowerBound(aLower: JSValue;
+  aOpen: Boolean): TJSIDBKeyRange;
+begin
+  Result := nil;
+end;
+
+class function TJSIDBKeyRange.only(aValue: JSValue): TJSIDBKeyRange;
+begin
+  Result := nil;
+end;
+
+class function TJSIDBKeyRange.upperBound(aUpper: JSValue): TJSIDBKeyRange;
+begin
+  Result := nil;
+end;
+
+class function TJSIDBKeyRange.upperBound(aUpper: JSValue;
+  aOpen: Boolean): TJSIDBKeyRange;
+begin
+  Result := nil;
+end;
+
+{ TJSIDBIndex }
+
+function TJSIDBIndex.count: TJSIDBRequest;
+begin
+  Result := nil;
+end;
+
+function TJSIDBIndex.get(aKey: TJSIDBKeyRange): TJSIDBRequest;
+begin
+  Result := nil;
+end;
+
+function TJSIDBIndex.get(aKey: jsValue): TJSIDBRequest;
+begin
+  Result := nil;
+end;
+
+function TJSIDBIndex.getAll(aKey: jsValue; ACount: NativeInt): TJSIDBRequest;
+begin
+  Result := nil;
+end;
+
+function TJSIDBIndex.getAll(aKey: TJSIDBKeyRange): TJSIDBRequest;
+begin
+  Result := nil;
+end;
+
+function TJSIDBIndex.getAll(aKey: jsValue): TJSIDBRequest;
+begin
+  Result := nil;
+end;
+
+function TJSIDBIndex.getAll(aKey: TJSIDBKeyRange;
+  ACount: NativeInt): TJSIDBRequest;
+begin
+  Result := nil;
+end;
+
+function TJSIDBIndex.getAllKeys(aKey: jsValue;
+  ACount: NativeInt): TJSIDBRequest;
+begin
+  Result := nil;
+end;
+
+function TJSIDBIndex.getAllKeys(aKey: TJSIDBKeyRange;
+  ACount: NativeInt): TJSIDBRequest;
+begin
+  Result := nil;
+end;
+
+function TJSIDBIndex.getAllKeys(aKey: jsValue): TJSIDBRequest;
+begin
+  Result := nil;
+end;
+
+function TJSIDBIndex.getAllKeys(aKey: TJSIDBKeyRange): TJSIDBRequest;
+begin
+  Result := nil;
+end;
+
+function TJSIDBIndex.getKey(aKey: jsValue): TJSIDBRequest;
+begin
+  Result := nil;
+end;
+
+function TJSIDBIndex.openCursor(aKeyRange: TJSIDBKeyRange;
+  ADirection: String): TJSIDBRequest;
+begin
+  Result := nil;
+end;
+
+function TJSIDBIndex.openCursor(aKeyRange: TJSIDBKeyRange): TJSIDBRequest;
+begin
+  Result := nil;
+end;
+
+function TJSIDBIndex.openCursor: TJSIDBRequest;
+begin
+  Result := nil;
+end;
+
+function TJSIDBIndex.openKeyCursor(aKeyRange: TJSIDBKeyRange;
+  ADirection: String): TJSIDBRequest;
+begin
+  Result := nil;
+end;
+
+function TJSIDBIndex.openKeyCursor(aKeyRange: TJSIDBKeyRange): TJSIDBRequest;
+begin
+  Result := nil;
+end;
+
+function TJSIDBIndex.openKeyCursor: TJSIDBRequest;
+begin
+  Result := nil;
+end;
+
+{ TJSIDBCursor }
+
+procedure TJSIDBCursor.advance(aCount: NativeInt);
+begin
+
+end;
+
+procedure TJSIDBCursor.advance(aKey: JSValue);
+begin
+
+end;
+
+procedure TJSIDBCursor.continue;
+begin
+
+end;
+
+procedure TJSIDBCursor.continue(aKey: JSValue);
+begin
+
+end;
+
+procedure TJSIDBCursor.continuePrimaryKey(aKey, aPrimaryKey: JSValue);
+begin
+
+end;
+
+procedure TJSIDBCursor.continuePrimaryKey(aKey: JSValue);
+begin
+
+end;
+
+procedure TJSIDBCursor.delete;
+begin
+
+end;
+
+procedure TJSIDBCursor.update(aValue: JSValue);
+begin
+
+end;
+
+{ TJSIDBObjectStore }
+
+function TJSIDBObjectStore.add(aValue: JSValue; aKey: String): TJSIDBRequest;
+begin
+  Result := nil;
+end;
+
+function TJSIDBObjectStore.add(aValue: JSValue): TJSIDBRequest;
+begin
+  Result := nil;
+end;
+
+function TJSIDBObjectStore.clear: TJSIDBRequest;
+begin
+  Result := nil;
+end;
+
+function TJSIDBObjectStore.count(aKeyRange: TJSIDBKeyRange): TJSIDBRequest;
+begin
+  Result := nil;
+end;
+
+function TJSIDBObjectStore.count(aKey: String): TJSIDBRequest;
+begin
+  Result := nil;
+end;
+
+function TJSIDBObjectStore.count: TJSIDBRequest;
+begin
+  Result := nil;
+end;
+
+function TJSIDBObjectStore.createIndex(aIndexName: String;
+  KeyPath: array of String; Options: TJSIDBIndexParameters): TJSIDBIndex;
+begin
+  Result := nil;
+end;
+
+function TJSIDBObjectStore.createIndex(aIndexName: String;
+  KeyPath: array of String): TJSIDBIndex;
+begin
+  Result := nil;
+end;
+
+function TJSIDBObjectStore.createIndex(aIndexName,
+  KeyPath: String): TJSIDBIndex;
+begin
+  Result := nil;
+end;
+
+function TJSIDBObjectStore.createIndex(aIndexName, KeyPath: String;
+  Options: TJSIDBIndexParameters): TJSIDBIndex;
+begin
+  Result := nil;
+end;
+
+function TJSIDBObjectStore.delete(aKeyRange: TJSIDBKeyRange): TJSIDBRequest;
+begin
+  Result := nil;
+end;
+
+function TJSIDBObjectStore.delete(aKey: string): TJSIDBRequest;
+begin
+  Result := nil;
+end;
+
+procedure TJSIDBObjectStore.deleteIndex(aIndexName: String);
+begin
+
+end;
+
+function TJSIDBObjectStore.get(aKeyRange: TJSIDBKeyRange): TJSIDBRequest;
+begin
+  Result := nil;
+end;
+
+function TJSIDBObjectStore.get(aKey: string): TJSIDBRequest;
+begin
+  Result := nil;
+end;
+
+function TJSIDBObjectStore.getAll(aKey: String): TJSIDBRequest;
+begin
+  Result := nil;
+end;
+
+function TJSIDBObjectStore.getAll(aKeyRange: TJSIDBKeyRange): TJSIDBRequest;
+begin
+  Result := nil;
+end;
+
+function TJSIDBObjectStore.getAll(aKey: String;
+  aCount: NativeInt): TJSIDBRequest;
+begin
+  Result := nil;
+end;
+
+function TJSIDBObjectStore.getAll(aKeyRange: TJSIDBKeyRange;
+  aCount: NativeInt): TJSIDBRequest;
+begin
+  Result := nil;
+end;
+
+function TJSIDBObjectStore.getAll: TJSIDBRequest;
+begin
+  Result := nil;
+end;
+
+function TJSIDBObjectStore.getAllKeys(aKeyRange: TJSIDBKeyRange): TJSIDBRequest;
+begin
+  Result := nil;
+end;
+
+function TJSIDBObjectStore.getAllKeys(aKey: String): TJSIDBRequest;
+begin
+  Result := nil;
+end;
+
+function TJSIDBObjectStore.getAllKeys(aKeyRange: TJSIDBKeyRange;
+  aCount: NativeInt): TJSIDBRequest;
+begin
+  Result := nil;
+end;
+
+function TJSIDBObjectStore.getAllKeys(aKey: String;
+  aCount: NativeInt): TJSIDBRequest;
+begin
+  Result := nil;
+end;
+
+function TJSIDBObjectStore.getKey(aKeyRange: TJSIDBKeyRange): TJSIDBRequest;
+begin
+  Result := nil;
+end;
+
+function TJSIDBObjectStore.getKey(aKey: string): TJSIDBRequest;
+begin
+  Result := nil;
+end;
+
+function TJSIDBObjectStore.index(aIndexName: String): TJSIDBIndex;
+begin
+  Result := nil;
+end;
+
+function TJSIDBObjectStore.openCursor(aKeyRange: TJSIDBKeyRange;
+  aDirection: string): TJSIDBRequest;
+begin
+  Result := nil;
+end;
+
+function TJSIDBObjectStore.openCursor(aKey, aDirection: string): TJSIDBRequest;
+begin
+  Result := nil;
+end;
+
+function TJSIDBObjectStore.openCursor(aKeyRange: TJSIDBKeyRange): TJSIDBRequest;
+begin
+  Result := nil;
+end;
+
+function TJSIDBObjectStore.openCursor(aKey: String): TJSIDBRequest;
+begin
+  Result := nil;
+end;
+
+function TJSIDBObjectStore.openCursor: TJSIDBRequest;
+begin
+  Result := nil;
+end;
+
+function TJSIDBObjectStore.openKeyCursor: TJSIDBRequest;
+begin
+  Result := nil;
+end;
+
+function TJSIDBObjectStore.openKeyCursor(aKeyRange: TJSIDBKeyRange;
+  aDirection: string): TJSIDBRequest;
+begin
+  Result := nil;
+end;
+
+function TJSIDBObjectStore.openKeyCursor(aKey,
+  aDirection: string): TJSIDBRequest;
+begin
+  Result := nil;
+end;
+
+function TJSIDBObjectStore.openKeyCursor(aKey: String): TJSIDBRequest;
+begin
+  Result := nil;
+end;
+
+function TJSIDBObjectStore.openKeyCursor(
+  aKeyRange: TJSIDBKeyRange): TJSIDBRequest;
+begin
+  Result := nil;
+end;
+
+function TJSIDBObjectStore.put(aValue: JSValue; aKey: String): TJSIDBRequest;
+begin
+  Result := nil;
+end;
+
+function TJSIDBObjectStore.put(aValue: JSValue): TJSIDBRequest;
+begin
+  Result := nil;
+end;
+
+{ TIDBDatabase }
+
+procedure TIDBDatabase.close;
+begin
+
+end;
+
+function TIDBDatabase.createObjectStore(aName: string;
+  Options: TJSCreateObjectStoreOptions): TJSIDBObjectStore;
+begin
+  Result := nil;
+end;
+
+function TIDBDatabase.createObjectStore(aName: string): TJSIDBObjectStore;
+begin
+  Result := nil;
+end;
+
+procedure TIDBDatabase.deleteObjectStore(aName: string);
+begin
+
+end;
+
+function TIDBDatabase.transaction(aStoreNames: array of string;
+  aMode: string): TJSIDBTransaction;
+begin
+  Result := nil;
+end;
+
+function TIDBDatabase.transaction(
+  aStoreNames: array of string): TJSIDBTransaction;
+begin
+  Result := nil;
+end;
+
+{ TJSIDBFactory }
+
+function TJSIDBFactory.cmp(a, b: jsValue): NativeInt;
+begin
+  Result := 0;
+end;
+
+function TJSIDBFactory.deleteDatabase(aName: string): TJSIDBOpenDBRequest;
+begin
+  Result := nil;
+end;
+
+function TJSIDBFactory.open(aName: string;
+  aVersion: Integer): TJSIDBOpenDBRequest;
+begin
+  Result := nil;
+end;
+
+function TJSIDBFactory.open(aName: string): TJSIDBOpenDBRequest;
+begin
+  Result := nil;
+end;
+
+{ TJSStorage }
+
+procedure TJSStorage.clear;
+begin
+
+end;
+
+function TJSStorage.getItem(aKeyName: string): string;
+begin
+  Result := '';
+end;
+
+function TJSStorage.key(aIndex: Integer): String;
+begin
+  Result := '';
+end;
+
+procedure TJSStorage.removeItem(aKeyName: string);
+begin
+
+end;
+
+procedure TJSStorage.setItem(aKeyName, aValue: string);
+begin
+
+end;
+
+{ TJSGeoLocation }
+
+procedure TJSGeoLocation.clearWatch(AID: NativeInt);
+begin
+
+end;
+
+procedure TJSGeoLocation.getCurrentPosition(ASuccess: TJSGeoLocationCallback;
+  aError: TJSGeoLocationErrorCallback; AOptions: TJSPositionOptions);
+begin
+
+end;
+
+procedure TJSGeoLocation.getCurrentPosition(ASuccess: TJSGeoLocationCallback;
+  aError: TJSGeoLocationErrorCallback);
+begin
+
+end;
+
+procedure TJSGeoLocation.getCurrentPosition(ASuccess: TJSGeoLocationCallback);
+begin
+
+end;
+
+function TJSGeoLocation.watchPosition(ASuccess: TJSGeoLocationCallback;
+  aError: TJSGeoLocationErrorCallback; AOptions: TJSPositionOptions): NativeInt;
+begin
+  Result := 0;
+end;
+
+function TJSGeoLocation.watchPosition(ASuccess: TJSGeoLocationCallback;
+  aError: TJSGeoLocationErrorCallback): NativeInt;
+begin
+  Result := 0;
+end;
+
+function TJSGeoLocation.watchPosition(
+  ASuccess: TJSGeoLocationCallback): NativeInt;
+begin
+  Result := 0;
+end;
+
+{ TJSWorker }
+
+constructor TJSWorker.new(aURL: string);
+begin
+
+end;
+
+procedure TJSWorker.postMessage(aValue: JSValue);
+begin
+
+end;
+
+procedure TJSWorker.postMessage(aValue: JSValue; aList: TJSValueDynArray);
+begin
+
+end;
+
+{ TJSMessagePort }
+
+procedure TJSMessagePort.close;
+begin
+
+end;
+
+procedure TJSMessagePort.postMessage(aValue: JSValue);
+begin
+
+end;
+
+procedure TJSMessagePort.postMessage(aValue: JSValue; aList: TJSValueDynArray);
+begin
+
+end;
+
+procedure TJSMessagePort.start;
+begin
+
+end;
+
+{ TJSSharedWorker }
+
+constructor TJSSharedWorker.new(aURL, aName: string);
+begin
+
+end;
+
+constructor TJSSharedWorker.new(aURL: String);
+begin
+
+end;
+
+{ TJSServiceWorkerRegistration }
+
+function TJSServiceWorkerRegistration.unregister: TJSPromise;
+begin
+  Result := nil;
+end;
+
+procedure TJSServiceWorkerRegistration.update;
+begin
+
+end;
+
+{ TJSServiceWorkerContainer }
+
+function TJSServiceWorkerContainer.getRegistration(aURL: String): TJSPromise;
+begin
+  Result := nil;
+end;
+
+function TJSServiceWorkerContainer.getRegistration: TJSPromise;
+begin
+  Result := nil;
+end;
+
+function TJSServiceWorkerContainer.getRegistrations: TJSPromise;
+begin
+  Result := nil;
+end;
+
+function TJSServiceWorkerContainer.register(aURL: String): TJSPromise;
+begin
+  Result := nil;
+end;
+
+function TJSServiceWorkerContainer.register(aURL: String;
+  aOptions: TJSServiceWorkerContainerOptions): TJSPromise;
+begin
+  Result := nil;
+end;
+
+{ TJSNavigator }
+
+function TJSNavigator.getBattery: TJSPromise;
+begin
+  Result := nil;
+end;
+
+procedure TJSNavigator.registerContentHandler(aMimeType, aURI, aTitle: string);
+begin
+
+end;
+
+procedure TJSNavigator.registerProtocolHandler(aProtocol, aURI, aTitle: string);
+begin
+
+end;
+
+function TJSNavigator.requestMediaKeySystemAccess(aKeySystem: String;
+  supportedConfigurations: TJSValueDynArray): TJSPromise;
+begin
+  Result := nil;
+end;
+
+procedure TJSNavigator.vibrate(aPattern: NativeInt);
+begin
+
+end;
+
+procedure TJSNavigator.vibrate(aPattern: array of NativeInt);
+begin
+
+end;
+
+{ TJSTouchList }
+
+function TJSTouchList.item(aIndex: Integer): TJSTouch;
+begin
+  Result := nil;
+end;
+
+{ TJSURLSearchParams }
+
+procedure TJSURLSearchParams.append(const aName, aValue: string);
+begin
+
+end;
+
+procedure TJSURLSearchParams.delete(const aName: string);
+begin
+
+end;
+
+function TJSURLSearchParams.entries: TJSIterator;
+begin
+  Result := nil;
+end;
+
+procedure TJSURLSearchParams.foreach(aEnumCallBack: TJSParamEnumCallBack);
+begin
+
+end;
+
+function TJSURLSearchParams.get(const aName: string): JSValue;
+begin
+  Result := nil;
+end;
+
+function TJSURLSearchParams.getAll(const aName: string): TStringDynArray;
+begin
+  Result := nil;
+end;
+
+function TJSURLSearchParams.getString(const aName: string): string;
+begin
+  Result := '';
+end;
+
+function TJSURLSearchParams.has(const aName: string): Boolean;
+begin
+  Result := False;
+end;
+
+function TJSURLSearchParams.keys: TJSIterator;
+begin
+  Result := nil;
+end;
+
+procedure TJSURLSearchParams.set_(const aName, aValue: string);
+begin
+
+end;
+
+procedure TJSURLSearchParams.sort;
+begin
+
+end;
+
+function TJSURLSearchParams.values: TJSIterator;
+begin
+  Result := nil;
+end;
+
+{ TJSURL }
+
+class function TJSURL.createObjectURL(const v: JSValue): string;
+begin
+  Result := '';
+end;
+
+constructor TJSURL.new(aURL: String);
+begin
+
+end;
+
+constructor TJSURL.new(aURL, aBase: String);
+begin
+
+end;
+
+class function TJSURL.revokeObjectURL(const S: String): string;
+begin
+  Result := '';
+end;
+
+function TJSURL.toJSON: String;
+begin
+  Result := '';
+end;
+
+{ TJSHTMLHeaders }
+
+procedure TJSHTMLHeaders.append(aName, aValue: String);
+begin
+
+end;
+
+procedure TJSHTMLHeaders.delete(aName: String);
+begin
+
+end;
+
+function TJSHTMLHeaders.entries: TJSIterator;
+begin
+  Result := nil;
+end;
+
+function TJSHTMLHeaders.get(aName: String): string;
+begin
+  Result := '';
+end;
+
+function TJSHTMLHeaders.has(aName: String): Boolean;
+begin
+  Result := False;
+end;
+
+function TJSHTMLHeaders.keys: TJSIterator;
+begin
+  Result := nil;
+end;
+
+constructor TJSHTMLHeaders.new(values: THeaderArray);
+begin
+
+end;
+
+procedure TJSHTMLHeaders.set_(aName, aValue: String);
+begin
+
+end;
+
+function TJSHTMLHeaders.values: TJSIterator;
+begin
+  Result := nil;
+end;
+
+{ TJSReadableStream }
+
+function TJSReadableStream.cancel(reason: TJSDOMString): TJSPromise;
+begin
+  Result := nil;
+end;
+
+function TJSReadableStream.getReader(mode: TJSObject): TJSObject;
+begin
+  Result := nil;
+end;
+
+function TJSReadableStream.getReader: TJSObject;
+begin
+  Result := nil;
+end;
+
+constructor TJSReadableStream.new(underlyingSource: TJSObject);
+begin
+
+end;
+
+constructor TJSReadableStream.new(underlyingSource,
+  queueingStrategy: TJSObject);
+begin
+
+end;
+
+function TJSReadableStream.pipeThrough(transformStream,
+  options: TJSObject): TJSReadableStream;
+begin
+  Result := nil;
+end;
+
+function TJSReadableStream.pipeThrough(
+  transformStream: TJSObject): TJSReadableStream;
+begin
+  Result := nil;
+end;
+
+function TJSReadableStream.pipeTo(destination, options: TJSObject): TJSPromise;
+begin
+  Result := nil;
+end;
+
+function TJSReadableStream.pipeTo(destination: TJSObject): TJSPromise;
+begin
+  Result := nil;
+end;
+
+function TJSReadableStream.tee: TJSArray;
+begin
+  Result := nil;
+end;
+
+{ TJSBody }
+
+function TJSBody.arrayBuffer: TJSPromise;
+begin
+  Result := nil;
+end;
+
+function TJSBody.blob: TJSBlob;
+begin
+  Result := nil;
+end;
+
+function TJSBody.json: TJSPromise;
+begin
+  Result := nil;
+end;
+
+function TJSBody.text: string;
+begin
+  Result := '';
+end;
+
+{ TJSResponse }
+
+function TJSResponse.clone: TJSResponse;
+begin
+  Result := nil;
+end;
+
+function TJSResponse.error: TJSResponse;
+begin
+  Result := nil;
+end;
+
+constructor TJSResponse.new(body, init: TJSObject);
+begin
+
+end;
+
+function TJSResponse.redirect(url: String; Status: NativeInt): TJSResponse;
+begin
+  Result := nil;
+end;
+
+{ TJSWindow }
+
+procedure TJSWindow.addEventListener(aname: string; aListener: TJSEventHandler);
+begin
+
+end;
+
+procedure TJSWindow.addEventListener(aname: string; aListener: JSValue);
+begin
+
+end;
+
+procedure TJSWindow.alert(const Msg: String);
+begin
+
+end;
+
+function TJSWindow.atob(const aValue: string): string;
+begin
+  Result := '';
+end;
+
+procedure TJSWindow.blur;
+begin
+
+end;
+
+function TJSWindow.btoa(const aValue: string): string;
+begin
+  Result := '';
+end;
+
+procedure TJSWindow.cancelAnimationFrame(aHandle: Integer);
+begin
+
+end;
+
+procedure TJSWindow.clearInterval(aID: NativeInt);
+begin
+
+end;
+
+procedure TJSWindow.clearTimeout(aID: NativeInt);
+begin
+
+end;
+
+procedure TJSWindow.close;
+begin
+
+end;
+
+function TJSWindow.confirm(const aMsg: String): boolean;
+begin
+  Result := False;
+end;
+
+function TJSWindow.fetch(resource: String; init: TJSObject): TJSPromise;
+begin
+  Result := nil;
+end;
+
+function TJSWindow.fetch(resource: String): TJSResponse;
+begin
+  Result := nil;
+end;
+
+function TJSWindow.fetch(resource: TJSObject): TJSPromise;
+begin
+  Result := nil;
+end;
+
+function TJSWindow.fetch(resource, init: TJSObject): TJSPromise;
+begin
+  Result := nil;
+end;
+
+procedure TJSWindow.focus;
+begin
+
+end;
+
+function TJSWindow.getComputedStyle(aElement,
+  aPseudoElement: TJSElement): TJSCSSStyleDeclaration;
+begin
+  Result := nil;
+end;
+
+function TJSWindow.getComputedStyle(
+  aElement: TJSElement): TJSCSSStyleDeclaration;
+begin
+  Result := nil;
+end;
+
+function TJSWindow.matchMedia(aQuery: String): TJSMediaQueryList;
+begin
+  Result := nil;
+end;
+
+procedure TJSWindow.moveBy(x, y: NativeInt);
+begin
+
+end;
+
+procedure TJSWindow.moveTo(x, y: NativeInt);
+begin
+
+end;
+
+function TJSWindow.open(const aURL, aTarget: String): TJSWindow;
+begin
+  Result := nil;
+end;
+
+function TJSWindow.open(const aURL, aTarget: String;
+  AOptions: TJSObject): TJSWindow;
+begin
+  Result := nil;
+end;
+
+function TJSWindow.open(const aURL: String): TJSWindow;
+begin
+  Result := nil;
+end;
+
+function TJSWindow.open: TJSWindow;
+begin
+  Result := nil;
+end;
+
+procedure TJSWindow.postMessage(aMessage: JSValue; aTarget: string);
+begin
+
+end;
+
+procedure TJSWindow.postMessage(aMessage: JSValue; aTarget: string;
+  aTransfer: TJSValueDynArray);
+begin
+
+end;
+
+procedure TJSWindow.postMessage(aMessage: JSValue; aTransfer: TJSValueDynArray);
+begin
+
+end;
+
+procedure TJSWindow.postMessage(aMessage: JSValue;
+  aOptions: TJSPostMessageOptions);
+begin
+
+end;
+
+procedure TJSWindow.postMessage(aMessage: JSValue);
+begin
+
+end;
+
+procedure TJSWindow.print;
+begin
+
+end;
+
+function TJSWindow.prompt(const aMessage, aDefault: String): String;
+begin
+  Result := '';
+end;
+
+function TJSWindow.prompt(const aMessage: String): String;
+begin
+  Result := '';
+end;
+
+procedure TJSWindow.removeEventListener(aname: string;
+  aListener: TJSEventHandler);
+begin
+
+end;
+
+procedure TJSWindow.removeEventListener(aname: string; aListener: JSValue);
+begin
+
+end;
+
+function TJSWindow.requestAnimationFrame(
+  aCallback: TFrameRequestCallback): Integer;
+begin
+  Result := 0;
+end;
+
+procedure TJSWindow.resizeBy(aWidth, aHeight: NativeInt);
+begin
+
+end;
+
+procedure TJSWindow.resizeTo(aWidth, aHeight: NativeInt);
+begin
+
+end;
+
+procedure TJSWindow.scrollBy(x, y: NativeInt);
+begin
+
+end;
+
+procedure TJSWindow.scrollTo(x, y: NativeInt);
+begin
+
+end;
+
+function TJSWindow.setInterval(ahandler: TJSTimerCallBack;
+  aInterval: NativeUInt): NativeInt;
+begin
+  Result := 0;
+end;
+
+function TJSWindow.setTimeout(ahandler: TJSTimerCallBack): NativeInt;
+begin
+  Result := 0;
+end;
+
+function TJSWindow.setTimeout(ahandler: TJSTimerCallBack;
+  aTimeout: NativeUInt): NativeInt;
+begin
+  Result := 0;
+end;
+
+procedure TJSWindow.stop;
+begin
+
+end;
+
+{ TJSCSSStyleDeclaration }
+
+function TJSCSSStyleDeclaration.getPropertyPriority(
+  const aProperty: String): string;
+begin
+  Result := '';
+end;
+
+function TJSCSSStyleDeclaration.getPropertyValue(
+  const aProperty: String): string;
+begin
+  Result := '';
+end;
+
+function TJSCSSStyleDeclaration.item(aIndex: Integer): string;
+begin
+  Result := '';
+end;
+
+function TJSCSSStyleDeclaration.removeProperty(const aProperty: String): string;
+begin
+  Result := '';
+end;
+
+procedure TJSCSSStyleDeclaration.setProperty(const aProperty, aValue,
+  aPriority: string);
+begin
+
+end;
+
+procedure TJSCSSStyleDeclaration.setProperty(const aProperty, aValue: String);
+begin
+
+end;
+
+{ TJSHTMLElement }
+
+procedure TJSHTMLElement.blur;
+begin
+
+end;
+
+procedure TJSHTMLElement.click;
+begin
+
+end;
+
+procedure TJSHTMLElement.focus;
+begin
+
+end;
+
+{ TJSHTMLFormControlsCollection }
+
+function TJSHTMLFormControlsCollection.namedItem(S: String): TJSElement;
+begin
+  Result := nil;
+end;
+
+{ TJSHTMLFormElement }
+
+function TJSHTMLFormElement.checkValidity: Boolean;
+begin
+  Result := False;
+end;
+
+function TJSHTMLFormElement.reportValidity: Boolean;
+begin
+  Result := False;
+end;
+
+procedure TJSHTMLFormElement.reset;
+begin
+
+end;
+
+procedure TJSHTMLFormElement.submit;
+begin
+
+end;
+
+{ TJSBlob }
+
+procedure TJSBlob.close;
+begin
+
+end;
+
+function TJSBlob.slice: TJSBlob;
+begin
+  Result := nil;
+end;
+
+function TJSBlob.slice(aStart: NativeInt): TJSBlob;
+begin
+  Result := nil;
+end;
+
+function TJSBlob.slice(aStart, aEnd: NativeInt): TJSBlob;
+begin
+  Result := nil;
+end;
+
+function TJSBlob.slice(aStart, aEnd: NativeInt; AContentType: String): TJSBlob;
+begin
+  Result := nil;
+end;
+
+{ TJSHTMLFileList }
+
+function TJSHTMLFileList.item(aIndex: NativeInt): TJSHTMLFile;
+begin
+  Result := nil;
+end;
+
+{ TJSHTMLInputElement }
+
+function TJSHTMLInputElement.checkValidity: Boolean;
+begin
+  Result := False;
+end;
+
+function TJSHTMLInputElement.reportValidity: Boolean;
+begin
+  Result := False;
+end;
+
+procedure TJSHTMLInputElement.select;
+begin
+
+end;
+
+procedure TJSHTMLInputElement.setCustomValidity(aText: string);
+begin
+
+end;
+
+procedure TJSHTMLInputElement.setRangeText(aText: string; selectionStart,
+  selectionEnd: NativeInt; Direction: string);
+begin
+
+end;
+
+procedure TJSHTMLInputElement.setRangeText(aText: string; selectionStart,
+  selectionEnd: NativeInt);
+begin
+
+end;
+
+procedure TJSHTMLInputElement.setSelectionRange(selectionStart,
+  selectionEnd: NativeInt; Direction: string);
+begin
+
+end;
+
+procedure TJSHTMLInputElement.setSelectionRange(selectionStart,
+  selectionEnd: NativeInt);
+begin
+
+end;
+
+procedure TJSHTMLInputElement.stepUp;
+begin
+
+end;
+
+procedure TJSHTMLInputElement.stepUp(n: Integer);
+begin
+
+end;
+
+{ TJSHTMLOutputElement }
+
+function TJSHTMLOutputElement.checkValidity: Boolean;
+begin
+  Result := False;
+end;
+
+function TJSHTMLOutputElement.reportValidity: Boolean;
+begin
+  Result := False;
+end;
+
+procedure TJSHTMLOutputElement.setCustomValidity(error: TJSDOMString);
+begin
+
+end;
+
+{ TJSHTMLImageElement }
+
+function TJSHTMLImageElement.decode: TJSPromise;
+begin
+  Result := nil;
+end;
+
+constructor TJSHTMLImageElement.New(x, y: Cardinal);
+begin
+
+end;
+
+{ TJSHTMLOptionElement }
+
+constructor TJSHTMLOptionElement.New;
+begin
+
+end;
+
+constructor TJSHTMLOptionElement.New(aText: String);
+begin
+
+end;
+
+constructor TJSHTMLOptionElement.New(aText, aValue: String);
+begin
+
+end;
+
+constructor TJSHTMLOptionElement.New(aText, aValue: String;
+  aDefaultSelected: Boolean);
+begin
+
+end;
+
+constructor TJSHTMLOptionElement.New(aText, aValue: String; aDefaultSelected,
+  Selected: Boolean);
+begin
+
+end;
+
+{ TJSHTMLSelectElement }
+
+procedure TJSHTMLSelectElement.add(anItem: TJSHTMLOptionElement);
+begin
+
+end;
+
+procedure TJSHTMLSelectElement.add(anItem, before: TJSHTMLOptionElement);
+begin
+
+end;
+
+procedure TJSHTMLSelectElement.checkValidity;
+begin
+
+end;
+
+function TJSHTMLSelectElement.item(aIndex: NativeInt): TJSHTMLOptionElement;
+begin
+  Result := nil;
+end;
+
+function TJSHTMLSelectElement.namedItem(aName: String): TJSHTMLOptionElement;
+begin
+  Result := nil;
+end;
+
+procedure TJSHTMLSelectElement.remove(aIndex: NativeInt);
+begin
+
+end;
+
+procedure TJSHTMLSelectElement.setCustomValidity(aMessage: String);
+begin
+
+end;
+
+{ TJSHTMLTableElement }
+
+function TJSHTMLTableElement.createCaption: TJSHTMLElement;
+begin
+  Result := nil;
+end;
+
+function TJSHTMLTableElement.createTFoot: TJSHTMLTableSectionElement;
+begin
+  Result := nil;
+end;
+
+function TJSHTMLTableElement.createTHead: TJSHTMLTableSectionElement;
+begin
+  Result := nil;
+end;
+
+procedure TJSHTMLTableElement.deleteCaption;
+begin
+
+end;
+
+procedure TJSHTMLTableElement.deleteRow(index: Integer);
+begin
+
+end;
+
+procedure TJSHTMLTableElement.deleteTFoot;
+begin
+
+end;
+
+procedure TJSHTMLTableElement.deleteTHead;
+begin
+
+end;
+
+function TJSHTMLTableElement.insertRow(index: Integer): TJSHTMLTableRowElement;
+begin
+  Result := nil;
+end;
+
+{ TJSHTMLTableSectionElement }
+
+procedure TJSHTMLTableSectionElement.deleteRow(index: Integer);
+begin
+
+end;
+
+function TJSHTMLTableSectionElement.insertRow(
+  index: Integer): TJSHTMLTableRowElement;
+begin
+  Result := nil;
+end;
+
+{ TJSHTMLTableRowElement }
+
+procedure TJSHTMLTableRowElement.deleteCell(index: Integer);
+begin
+
+end;
+
+function TJSHTMLTableRowElement.insertCell(
+  index: Integer): TJSHTMLTableCellElement;
+begin
+  Result := nil;
+end;
+
+{ TJSHTMLCanvasElement }
+
+function TJSHTMLCanvasElement.getContext(contextType: string): TJSObject;
+begin
+  Result := nil;
+end;
+
+function TJSHTMLCanvasElement.getContext(contextType: string;
+  contextAttributes: TJSObject): TJSObject;
+begin
+  Result := nil;
+end;
+
+function TJSHTMLCanvasElement.getContextAs2DContext(contextType: string;
+  contextAttributes: TJSObject): TJSCanvasRenderingContext2D;
+begin
+  Result := nil;
+end;
+
+function TJSHTMLCanvasElement.getContextAs2DContext(
+  contextType: string): TJSCanvasRenderingContext2D;
+begin
+  Result := nil;
+end;
+
+procedure TJSHTMLCanvasElement.toBlob(aCallBack: THTMLCanvasToBlobCallback;
+  aMimeType: String);
+begin
+
+end;
+
+procedure TJSHTMLCanvasElement.toBlob(aCallBack: THTMLCanvasToBlobCallback;
+  aMimeType: String; aQuality: Double);
+begin
+
+end;
+
+function TJSHTMLCanvasElement.toDataURL: String;
+begin
+  Result := '';
+end;
+
+function TJSHTMLCanvasElement.toDataURL(aMimeType: String): String;
+begin
+  Result := '';
+end;
+
+function TJSHTMLCanvasElement.toDataURL(aMimeType: String;
+  aQuality: Double): String;
+begin
+  Result := '';
+end;
+
+{ TJSFileReader }
+
+procedure TJSFileReader.abort;
+begin
+
+end;
+
+constructor TJSFileReader.new;
+begin
+
+end;
+
+procedure TJSFileReader.readAsArrayBuffer(Blob: TJSBlob);
+begin
+
+end;
+
+procedure TJSFileReader.readAsBinaryString(Blob: TJSBlob);
+begin
+
+end;
+
+procedure TJSFileReader.readAsDataURL(Blob: TJSBlob);
+begin
+
+end;
+
+procedure TJSFileReader.readAsText(Blob: TJSBlob; encoding: string);
+begin
+
+end;
+
+procedure TJSFileReader.readAsText(Blob: TJSBlob);
+begin
+
+end;
+
+{ TJSPath2D }
+
+procedure TJSPath2D.addPath(aPath: TJSPath2D);
+begin
+
+end;
+
+procedure TJSPath2D.arc(x, y, radius, startAngle, endAngle: TCanvasCoordType);
+begin
+
+end;
+
+procedure TJSPath2D.arc(x, y, radius, startAngle, endAngle: TCanvasCoordType;
+  antiClockWise: boolean);
+begin
+
+end;
+
+procedure TJSPath2D.arcTo(x1, y1, x2, y2, radius: TCanvasCoordType);
+begin
+
+end;
+
+procedure TJSPath2D.bezierCurveTo(cp1x, cp1y, cp2x, cp2y, x,
+  y: TCanvasCoordType);
+begin
+
+end;
+
+procedure TJSPath2D.closePath;
+begin
+
+end;
+
+procedure TJSPath2D.ellipse(x, y, radiusX, radiusY: TCanvasCoordType; rotation,
+  startAngle, endAngle: Double; anticlockwise: Boolean);
+begin
+
+end;
+
+procedure TJSPath2D.ellipse(x, y, radiusX, radiusY: TCanvasCoordType; rotation,
+  startAngle, endAngle: Double);
+begin
+
+end;
+
+procedure TJSPath2D.lineTo(X, Y: TCanvasCoordType);
+begin
+
+end;
+
+procedure TJSPath2D.moveTo(X, Y: TCanvasCoordType);
+begin
+
+end;
+
+constructor TJSPath2D.new(SVGPath: String);
+begin
+
+end;
+
+constructor TJSPath2D.new(aPath: TJSPath2D);
+begin
+
+end;
+
+constructor TJSPath2D.new;
+begin
+
+end;
+
+procedure TJSPath2D.quadraticCurveTo(cpx, cpy, x, y: TCanvasCoordType);
+begin
+
+end;
+
+procedure TJSPath2D.rect(x, y, awidth, aheight: TCanvasCoordType);
+begin
+
+end;
+
+{ TJSImageData }
+
+constructor TJSImageData.new(anArray: TJSUint8ClampedArray; awidth,
+  aheight: integer);
+begin
+
+end;
+
+constructor TJSImageData.new(awidth, aheight: integer);
+begin
+
+end;
+
+{ TJSCanvasRenderingContext2D }
+
+procedure TJSCanvasRenderingContext2D.arc(x, y, radius, startAngle,
+  endAngle: TCanvasCoordType; antiClockWise: boolean);
+begin
+
+end;
+
+procedure TJSCanvasRenderingContext2D.arc(x, y, radius, startAngle,
+  endAngle: TCanvasCoordType);
+begin
+
+end;
+
+procedure TJSCanvasRenderingContext2D.arcTo(x1, y1, x2, y2,
+  radius: TCanvasCoordType);
+begin
+
+end;
+
+procedure TJSCanvasRenderingContext2D.beginPath;
+begin
+
+end;
+
+procedure TJSCanvasRenderingContext2D.bezierCurveTo(cp1x, cp1y, cp2x, cp2y, x,
+  y: TCanvasCoordType);
+begin
+
+end;
+
+procedure TJSCanvasRenderingContext2D.clearRect(x, y, width,
+  height: TCanvasCoordType);
+begin
+
+end;
+
+procedure TJSCanvasRenderingContext2D.clip(aPath: TJSPath2D);
+begin
+
+end;
+
+procedure TJSCanvasRenderingContext2D.clip(aFillRule: String);
+begin
+
+end;
+
+procedure TJSCanvasRenderingContext2D.clip;
+begin
+
+end;
+
+procedure TJSCanvasRenderingContext2D.closePath;
+begin
+
+end;
+
+function TJSCanvasRenderingContext2D.createImageData(
+  aImage: TJSImageData): TJSImageData;
+begin
+  Result := nil;
+end;
+
+function TJSCanvasRenderingContext2D.createImageData(aWidth,
+  aHeight: Integer): TJSImageData;
+begin
+  Result := nil;
+end;
+
+function TJSCanvasRenderingContext2D.createLinearGradient(x0, y0, x1,
+  y1: TCanvasCoordType): TJSCanvasGradient;
+begin
+  Result := nil;
+end;
+
+function TJSCanvasRenderingContext2D.createPattern(aImage: TJSObject;
+  repetition: string): TJSCanvasPattern;
+begin
+  Result := nil;
+end;
+
+function TJSCanvasRenderingContext2D.createRadialGradient(x0, y0, r0, x1, y1,
+  r1: TCanvasCoordType): TJSCanvasGradient;
+begin
+  Result := nil;
+end;
+
+procedure TJSCanvasRenderingContext2D.drawFocusIfNeeded(aPath: TJSPath2D;
+  aElement: TJSElement);
+begin
+
+end;
+
+procedure TJSCanvasRenderingContext2D.drawFocusIfNeeded(aElement: TJSElement);
+begin
+
+end;
+
+procedure TJSCanvasRenderingContext2D.drawImage(image: TJSObject; dx, dy,
+  dwidth, dheight: TCanvasCoordType);
+begin
+
+end;
+
+procedure TJSCanvasRenderingContext2D.drawImage(image: TJSObject; dx,
+  dy: TCanvasCoordType);
+begin
+
+end;
+
+procedure TJSCanvasRenderingContext2D.drawImage(image: TJSObject; sx, sy,
+  sWidth, sHeight, dx, dy, dwidth, dheight: TCanvasCoordType);
+begin
+
+end;
+
+procedure TJSCanvasRenderingContext2D.ellipse(x, y, radiusX,
+  radiusY: TCanvasCoordType; rotation, startAngle, endAngle: Double;
+  anticlockwise: Boolean);
+begin
+
+end;
+
+procedure TJSCanvasRenderingContext2D.ellipse(x, y, radiusX,
+  radiusY: TCanvasCoordType; rotation, startAngle, endAngle: Double);
+begin
+
+end;
+
+procedure TJSCanvasRenderingContext2D.fill;
+begin
+
+end;
+
+procedure TJSCanvasRenderingContext2D.fill(aRule: String);
+begin
+
+end;
+
+procedure TJSCanvasRenderingContext2D.fill(aPath: TJSPath2D; aRule: String);
+begin
+
+end;
+
+procedure TJSCanvasRenderingContext2D.fill(aPath: TJSPath2D);
+begin
+
+end;
+
+procedure TJSCanvasRenderingContext2D.fillRect(x, y, awidth,
+  aheight: TCanvasCoordType);
+begin
+
+end;
+
+procedure TJSCanvasRenderingContext2D.fillText(aText: string; x,
+  y: TCanvasCoordType);
+begin
+
+end;
+
+procedure TJSCanvasRenderingContext2D.fillText(aText: string; x, y,
+  aMaxWidth: TCanvasCoordType);
+begin
+
+end;
+
+function TJSCanvasRenderingContext2D.getImageData(x, y, awidth,
+  aheight: TCanvasCoordType): TJSImageData;
+begin
+  Result := nil;
+end;
+
+function TJSCanvasRenderingContext2D.getLineDash: TJSArray;
+begin
+  Result := nil;
+end;
+
+function TJSCanvasRenderingContext2D.isPointInPath(x,
+  y: TCanvasCoordType): Boolean;
+begin
+  Result := False;
+end;
+
+function TJSCanvasRenderingContext2D.isPointInPath(aPath: TJSPath2D; x,
+  y: TCanvasCoordType; aFillRule: String): Boolean;
+begin
+  Result := False;
+end;
+
+function TJSCanvasRenderingContext2D.isPointInPath(aPath: TJSPath2D; x,
+  y: TCanvasCoordType): Boolean;
+begin
+  Result := False;
+end;
+
+function TJSCanvasRenderingContext2D.isPointInPath(x, y: TCanvasCoordType;
+  aFillRule: String): Boolean;
+begin
+  Result := False;
+end;
+
+function TJSCanvasRenderingContext2D.isPointInStroke(x,
+  y: TCanvasCoordType): Boolean;
+begin
+  Result := False;
+end;
+
+function TJSCanvasRenderingContext2D.isPointInStroke(aPath: TJSPath2D; x,
+  y: TCanvasCoordType): Boolean;
+begin
+  Result := False;
+end;
+
+procedure TJSCanvasRenderingContext2D.lineTo(x, y: TCanvasCoordType);
+begin
+
+end;
+
+function TJSCanvasRenderingContext2D.measureText(S: String): TJSTextMetrics;
+begin
+  Result := nil;
+end;
+
+procedure TJSCanvasRenderingContext2D.moveTo(x, y: TCanvasCoordType);
+begin
+
+end;
+
+procedure TJSCanvasRenderingContext2D.putImageData(aData: TJSImageData; x, y,
+  dityX, dirtyY, dirtyWidth, dirtyHeight: TCanvasCoordType);
+begin
+
+end;
+
+procedure TJSCanvasRenderingContext2D.putImageData(aData: TJSImageData; x,
+  y: TCanvasCoordType);
+begin
+
+end;
+
+procedure TJSCanvasRenderingContext2D.quadraticCurveTo(cpx, cpy, x,
+  y: TCanvasCoordType);
+begin
+
+end;
+
+procedure TJSCanvasRenderingContext2D.rect(x, y, awidth,
+  aheight: TCanvasCoordType);
+begin
+
+end;
+
+procedure TJSCanvasRenderingContext2D.restore;
+begin
+
+end;
+
+procedure TJSCanvasRenderingContext2D.rotate(anAngle: double);
+begin
+
+end;
+
+procedure TJSCanvasRenderingContext2D.save;
+begin
+
+end;
+
+procedure TJSCanvasRenderingContext2D.scale(x, y: double);
+begin
+
+end;
+
+procedure TJSCanvasRenderingContext2D.setLineDash(segments: TJSArray);
+begin
+
+end;
+
+procedure TJSCanvasRenderingContext2D.setLineDash(segments: array of integer);
+begin
+
+end;
+
+procedure TJSCanvasRenderingContext2D.setTransform(a, b, c, d, e, f: double);
+begin
+
+end;
+
+procedure TJSCanvasRenderingContext2D.stroke(aPath: TJSPath2D);
+begin
+
+end;
+
+procedure TJSCanvasRenderingContext2D.stroke;
+begin
+
+end;
+
+procedure TJSCanvasRenderingContext2D.strokeRect(x, y, awidth,
+  aheight: TCanvasCoordType);
+begin
+
+end;
+
+procedure TJSCanvasRenderingContext2D.strokeText(aText: string; x,
+  y: TCanvasCoordType);
+begin
+
+end;
+
+procedure TJSCanvasRenderingContext2D.strokeText(aText: string; x, y,
+  aMaxWidth: TCanvasCoordType);
+begin
+
+end;
+
+procedure TJSCanvasRenderingContext2D.transform(a, b, c, d, e, f: double);
+begin
+
+end;
+
+procedure TJSCanvasRenderingContext2D.translate(x, y: TCanvasCoordType);
+begin
+
+end;
+
+{ TJSXMLHttpRequest }
+
+procedure TJSXMLHttpRequest.abort;
+begin
+
+end;
+
+function TJSXMLHttpRequest.getAllResponseHeaders: String;
+begin
+  Result := '';
+end;
+
+function TJSXMLHttpRequest.getResponseHeader(aName: string): String;
+begin
+  Result := '';
+end;
+
+constructor TJSXMLHttpRequest.new;
+begin
+
+end;
+
+procedure TJSXMLHttpRequest.open(aMethod, aURL: String);
+begin
+
+end;
+
+procedure TJSXMLHttpRequest.open(aMethod, aURL: String; Async: Boolean);
+begin
+
+end;
+
+procedure TJSXMLHttpRequest.open(aMethod, aURL: String; Async: Boolean;
+  AUserame: String);
+begin
+
+end;
+
+procedure TJSXMLHttpRequest.open(aMethod, aURL: String; Async: Boolean;
+  AUserame, APassword: String);
+begin
+
+end;
+
+procedure TJSXMLHttpRequest.overrideMimeType(aType: String);
+begin
+
+end;
+
+procedure TJSXMLHttpRequest.send(aBody: jsValue);
+begin
+
+end;
+
+procedure TJSXMLHttpRequest.send;
+begin
+
+end;
+
+procedure TJSXMLHttpRequest.setRequestHeader(aName, AValue: string);
+begin
+
+end;
+
+{ TJSMouseEvent }
+
+function TJSMouseEvent.getModifierState(keyArg: String): boolean;
+begin
+  Result := False;
+end;
+
+{ TJSWheelEvent }
+
+constructor TJSWheelEvent.new(atype: String; aInit: TJSWheelEventInit);
+begin
+
+end;
+
+constructor TJSWheelEvent.new(atype: String);
+begin
+
+end;
+
+{ TJSKeyboardEvent }
+
+function TJSKeyboardEvent.getModifierState(aKey: string): Boolean;
+begin
+  Result := False;
+end;
+
+{ TJSMutationObserver }
+
+procedure TJSMutationObserver.disconnect;
+begin
+
+end;
+
+constructor TJSMutationObserver.new(mutationCallback: TJSMutationCallback);
+begin
+
+end;
+
+procedure TJSMutationObserver.observe(target: TJSNode);
+begin
+
+end;
+
+procedure TJSMutationObserver.observe(target: TJSNode;
+  options: TJSMutationObserverInit);
+begin
+
+end;
+
+procedure TJSMutationObserver.observe(target: TJSNode; options: TJSObject);
+begin
+
+end;
+
+function TJSMutationObserver.takeRecords: TJSMutationRecordArray;
+begin
+  Result := nil;
+end;
+
+{ TJSWebSocket }
+
+procedure TJSWebSocket.close;
+begin
+
+end;
+
+procedure TJSWebSocket.close(code: Cardinal);
+begin
+
+end;
+
+procedure TJSWebSocket.close(code: Cardinal; reason: String);
+begin
+
+end;
+
+constructor TJSWebSocket.new(url: String; protocols: array of String);
+begin
+
+end;
+
+constructor TJSWebSocket.new(url, protocol: String);
+begin
+
+end;
+
+constructor TJSWebSocket.new(url: String);
+begin
+
+end;
+
+procedure TJSWebSocket.send(data: String);
+begin
+
+end;
+
+procedure TJSWebSocket.send(data: TJSTypedArray);
+begin
+
+end;
+
+procedure TJSWebSocket.send(data: TJSArrayBuffer);
+begin
+
+end;
+
+procedure TJSWebSocket.send(data: TJSBlob);
+begin
+
+end;
+
+{ TJSHTMLAudioTrackList }
+
+function TJSHTMLAudioTrackList.getitem(aIndex: nativeInt): TJSHTMLAudioTrack;
+begin
+  Result := nil;
+end;
+
+{ TJSHTMLVideoTrackList }
+
+function TJSHTMLVideoTrackList.getitem(aIndex: nativeInt): TJSHTMLVideoTrack;
+begin
+  Result := nil;
+end;
+
+{ TJSHTMLTextTrackList }
+
+function TJSHTMLTextTrackList.getitem(aIndex: nativeInt): TJSHTMLTextTrack;
+begin
+  Result := nil;
+end;
+
+{ TJSHTMLMediaElement }
+
+function TJSHTMLMediaElement.canPlayType(aType: String): String;
+begin
+  Result := '';
+end;
+
+function TJSHTMLMediaElement.captureStream: TJSHTMLMediaStream;
+begin
+  Result := nil;
+end;
+
+procedure TJSHTMLMediaElement.load;
+begin
+
+end;
+
+procedure TJSHTMLMediaElement.pause;
+begin
+
+end;
+
+procedure TJSHTMLMediaElement.play;
+begin
+
+end;
+
+{ TJSFormData }
+
+procedure TJSFormData.append(const aName, aValue: String);
+begin
+
+end;
+
+procedure TJSFormData.append(const aName: String; aBlob: TJSBlob);
+begin
+
+end;
+
+procedure TJSFormData.delete(const aName: String);
+begin
+
+end;
+
+function TJSFormData.entries: TJSFormDataEntryValueArray;
+begin
+  Result := nil;
+end;
+
+function TJSFormData.get(const aName: String): TJSFormDataEntryValue;
+begin
+  Result := '';
+end;
+
+function TJSFormData.getAll(const aName: String): TJSFormDataEntryValueArray;
+begin
+  Result := nil;
+end;
+
+function TJSFormData.has(const aName: String): Boolean;
+begin
+  Result := False;
+end;
+
+function TJSFormData.keys: TStringDynArray;
+begin
+  Result := nil;
+end;
+
+constructor TJSFormData.new;
+begin
+
+end;
+
+constructor TJSFormData.new(aForm: TJSHTMLElement);
+begin
+
+end;
+
+procedure TJSFormData.set_(const aName: String; aBlob: TJSBlob);
+begin
+
+end;
+
+procedure TJSFormData.set_(const aName, aValue: String);
+begin
+
+end;
+
+function TJSFormData.values: TJSValueDynArray;
+begin
+  Result := nil;
+end;
+{$ENDIF}
 end.

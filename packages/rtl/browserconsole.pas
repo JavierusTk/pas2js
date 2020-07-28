@@ -54,13 +54,14 @@ Var
   MaxConsoleLines : Integer;
   // Copy console lines on newline to browser console log
   ConsoleLinesToBrowserLog : Boolean;
-
+{$IFDEF PAS2JS}
 // Clear console content
 Procedure ResetConsole;
 // Re-initialize console (style)
 Procedure InitConsole;
 // Re-hook console
 Procedure HookConsole;
+{$ENDIF}
 
 implementation
 
@@ -71,9 +72,8 @@ Var
   LinesParent,
   ConsoleElement : TJSElement;
 
-
+{$IFDEF PAS2JS}
 Procedure AppendLine;
-
 Var
   CurrentCount : Integer;
   S : TJSNode;
@@ -98,7 +98,6 @@ end;
 
 
 Procedure WriteConsole(S : JSValue; NewLine : Boolean);
-
 Var
   CL: String;
 
@@ -121,8 +120,6 @@ begin
 end;
 
 Procedure ResetConsole;
-
-
 begin
   if LinesParent=Nil then exit;
   While LinesParent.firstElementChild<>Nil do
@@ -131,7 +128,6 @@ begin
 end;
 
 Procedure InitConsole;
-
 begin
   if ConsoleElement=Nil then
      exit;
@@ -148,7 +144,6 @@ begin
 end;
 
 Procedure HookConsole;
-
 begin
   ConsoleElement:=Nil;
   if (ConsoleElementID<>'') then
@@ -168,5 +163,6 @@ initialization
   ConsoleStyle:=DefaultConsoleStyle;
   MaxConsoleLines:=DefaultMaxConsoleLines;
   HookConsole;
+{$ENDIF}
 end.
 

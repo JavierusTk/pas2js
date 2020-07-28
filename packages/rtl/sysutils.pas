@@ -20,7 +20,7 @@ unit SysUtils;
 interface
 
 uses
-  RTLConsts, js;
+  RTLConsts, JS, Types, SystemPas2JS;
 
 procedure FreeAndNil(var Obj);
 
@@ -185,7 +185,7 @@ Const
   EmptyStr = '';
   EmptyWideStr = ''; // No difference here.
   HexDisplayPrefix: string = '$';
-  LeadBytes = [] unimplemented;
+  LeadBytes = [] {$IFDEF PAS2JS} unimplemented {$ENDIF};
 
 Function CharInSet(Ch: Char;Const CSet : array of char) : Boolean; overload;
 
@@ -627,7 +627,7 @@ function ConcatPaths(const Paths: array of PathStr): PathStr;
 *****************************************************************************}
 
 const
-  GUID_NULL: TGuid = '{00000000-0000-0000-0000-000000000000}';
+  GUID_NULL = '{00000000-0000-0000-0000-000000000000}';
 
 function Supports(const Instance: IInterface; const AClass: TClass; out Obj): Boolean; overload;
 function Supports(const Instance: IInterface; const IID: TGuid; out Intf): Boolean; overload;
@@ -657,7 +657,7 @@ Function EncodeHTMLEntities (S : String) : String;
 
 Type
 
-  generic TArray<T> = array of T;
+  {$IFDEF PAS2JS}generic{$ENDIF} TArray<T> = array of T;
   TCharArray = Array of char;
 
   TByteBitIndex = 0..7;
@@ -695,8 +695,8 @@ Type
   end;
 
 
-  TCompareOption = system.TCompareOption;
-  TCompareOptions = system.TCompareOptions;
+  TCompareOption = {$IFDEF PAS2JS}System{$ELSE}SystemPas2JS{$ENDIF}.TCompareOption;
+  TCompareOptions = {$IFDEF PAS2JS}System{$ELSE}SystemPas2JS{$ENDIF}.TCompareOptions;
 
 {$SCOPEDENUMS ON}
   TStringSplitOptions = (None, ExcludeEmpty);
@@ -704,7 +704,7 @@ Type
 
   { TStringHelper }
 
-  TStringHelper = Type Helper for String
+  TStringHelper = {$IFDEF PAS2JS}Type{$ELSE}Record{$ENDIF} Helper for String
   Private
     Function GetChar(AIndex : SizeInt) : Char;
     Function GetLength : SizeInt;
@@ -743,7 +743,7 @@ Type
     Class Function ToNativeInt(const S: string): NativeInt; overload; static; inline;
     Class Function ToInteger(const S: string): Integer; overload; static; inline;
     Class Function UpperCase(const S: string): string; overload; static; inline;
-    Class Function ToCharArray(const S : String) : TCharArray; static; overload;
+    {$IFDEF PAS2JS}Class Function ToCharArray(const S : String) : TCharArray; static; overload;{$ENDIF}
     Function CompareTo(const B: string): Integer;
     Function Contains(const AValue: string): Boolean;
     Function CountChar(const C: Char): SizeInt;
@@ -854,7 +854,7 @@ Type
     property Length: SizeInt read GetLength;
   end;
 
-  TDoubleHelper = Type Helper for Double
+  TDoubleHelper = {$IFDEF PAS2JS}Type{$ELSE}Record{$ENDIF} Helper  for Double
   private
     Function GetB(AIndex: Cardinal): Byte;
     Function GetW(AIndex: Cardinal): Word;
@@ -866,7 +866,9 @@ Type
     procedure SetW(AIndex: Cardinal; const AValue: Word);
   public
     const
+    {$IFDEF PAS2JS}
     {$push}
+    {$ENDIF}
     {$R-}
     {$Q-}
       Epsilon          : Double = 4.9406564584124654418e-324;
@@ -875,7 +877,9 @@ Type
       // PositiveInfinity : Double = 1.0/0.0;
       // NegativeInfinity : Double = -1.0/0.0;
       // NaN              : Double = 0.0/0.0;
+    {$IFDEF PAS2JS}
     {$POP}
+    {$ENDIF}
     Class Function IsInfinity(const AValue: Double): Boolean; overload; inline; static;
     Class Function IsNan(const AValue: Double): Boolean; overload; inline; static;
     Class Function IsNegativeInfinity(const AValue: Double): Boolean; overload; inline; static;
@@ -904,7 +908,7 @@ Type
     property Frac: NativeUInt read GetF;
   end;
 
-  TByteHelper = Type Helper for Byte
+  TByteHelper = {$IFDEF PAS2JS}Type{$ELSE}Record{$ENDIF} Helper  for Byte
   public
     const
       MaxValue = 255;
@@ -928,7 +932,7 @@ Type
     Function TestBit(const Index:TByteBitIndex):Boolean; inline;
   end;
 
-  TShortIntHelper = Type Helper for ShortInt
+  TShortIntHelper = {$IFDEF PAS2JS}Type{$ELSE}Record{$ENDIF} Helper  for ShortInt
   public
     const
       MaxValue = 127;
@@ -952,7 +956,7 @@ Type
     Function TestBit(const Index:TShortIntBitIndex):Boolean; inline;
   end;
 
-  TSmallIntHelper = Type Helper for SmallInt
+  TSmallIntHelper = {$IFDEF PAS2JS}Type{$ELSE}Record{$ENDIF} Helper  for SmallInt
   public
     const
       MaxValue = 32767;
@@ -976,7 +980,7 @@ Type
     Function TestBit(const Index:TSmallIntBitIndex):Boolean; inline;
   end;
 
-  TWordHelper = Type Helper for Word
+  TWordHelper = {$IFDEF PAS2JS}Type{$ELSE}Record{$ENDIF} Helper  for Word
   public
     const
       MaxValue = 65535;
@@ -1000,7 +1004,7 @@ Type
     Function TestBit(const Index:TWordBitIndex):Boolean; inline;
   end;
 
-  TCardinalHelper = Type Helper for Cardinal { for LongWord Type too }
+  TCardinalHelper = {$IFDEF PAS2JS}Type{$ELSE}Record{$ENDIF} Helper  for Cardinal { for LongWord Type too }
   public
     const
       MaxValue = 4294967295;
@@ -1024,7 +1028,7 @@ Type
     Function TestBit(const Index:TCardinalBitIndex):Boolean; inline;
   end;
 
-  TIntegerHelper = Type Helper for Integer { for LongInt Type too }
+  TIntegerHelper = {$IFDEF PAS2JS}Type{$ELSE}Record{$ENDIF} Helper  for Integer { for LongInt Type too }
   public
     const
       MaxValue = 2147483647;
@@ -1048,7 +1052,7 @@ Type
     Function TestBit(const Index:TIntegerBitIndex):Boolean; inline;
   end;
 
-  TNativeIntHelper = Type Helper for NativeInt
+  TNativeIntHelper = {$IFDEF PAS2JS}Type{$ELSE}Record{$ENDIF} Helper  for NativeInt
   public
     const
       MaxValue = High(NativeInt);
@@ -1072,7 +1076,7 @@ Type
     Function TestBit(const Index:TNativeIntBitIndex):Boolean; inline;
   end;
 
-  TNativeUIntHelper = Type Helper for NativeUInt
+  TNativeUIntHelper = {$IFDEF PAS2JS}Type{$ELSE}Record{$ENDIF} Helper  for NativeUInt
   public
     const
       MaxValue = High(NativeUInt);
@@ -1101,7 +1105,7 @@ Type
     TUseBoolStrs = (False, True);
   {$SCOPEDENUMS OFF}
 
-  TBooleanHelper = Type Helper for Boolean
+  TBooleanHelper = {$IFDEF PAS2JS}Type{$ELSE}Record{$ENDIF} Helper  for Boolean
   public
     Class Function Parse(const S: string): Boolean; inline; static;
     Class Function Size: Integer; inline; static;
@@ -1112,7 +1116,7 @@ Type
     Function ToString(UseBoolStrs: TUseBoolStrs = TUseBoolStrs.False): string; overload; inline;
   end;
 
-  TByteBoolHelper = Type Helper for ByteBool
+  TByteBoolHelper = {$IFDEF PAS2JS}Type{$ELSE}Record{$ENDIF} Helper  for ByteBool
   public
     Class Function Parse(const S: string): Boolean; inline; static;
     Class Function Size: Integer; inline; static;
@@ -1123,7 +1127,7 @@ Type
     Function ToString(UseBoolStrs: TUseBoolStrs = TUseBoolStrs.False): string; overload; inline;
   end;
 
-  TWordBoolHelper = Type Helper for WordBool
+  TWordBoolHelper = {$IFDEF PAS2JS}Type{$ELSE}Record{$ENDIF} Helper  for WordBool
   public
     Class Function Parse(const S: string): Boolean; inline; static;
     Class Function Size: Integer; inline; static;
@@ -1134,7 +1138,7 @@ Type
     Function ToString(UseBoolStrs: TUseBoolStrs = TUseBoolStrs.False): string; overload; inline;
   end;
 
-  TLongBoolHelper = Type Helper for LongBool
+  TLongBoolHelper = {$IFDEF PAS2JS}Type{$ELSE}Record{$ENDIF} Helper  for LongBool
   public
     Class Function Parse(const S: string): Boolean; inline; static;
     Class Function Size: Integer; inline; static;
@@ -1159,6 +1163,7 @@ Resourcestring
 procedure DoShowException(S : String);
 
 begin
+  {$IFDEF PAS2JS}
   if Assigned(OnShowException) then
     OnShowException(S)
   else
@@ -1172,6 +1177,7 @@ begin
       Writeln(S);
     {$ENDIF}
     end;
+  {$ENDIF}
 end;
 
 procedure ShowException(ExceptObject: TObject; ExceptAddr: Pointer = Nil);
@@ -1191,8 +1197,8 @@ Type
   TRTLExceptionHandler = procedure (aError : JSValue);
 
 Var
-  rtlExceptionHandler : TRTLExceptionHandler; External name 'rtl.onUncaughtException';
-  rtlShowUncaughtExceptions : Boolean; External name 'rtl.showUncaughtExceptions';
+  rtlExceptionHandler : TRTLExceptionHandler; {$IFDEF PAS2JS}External name 'rtl.onUncaughtException';{$ENDIF}
+  rtlShowUncaughtExceptions : Boolean; {$IFDEF PAS2JS}External name 'rtl.showUncaughtExceptions';{$ENDIF}
   OnPascalException : TUncaughtPascalExceptionHandler;
   OnJSException : TUncaughtJSExceptionHandler;
 
@@ -1202,6 +1208,7 @@ Var
   S : String;
 
 begin
+  {$IFDEF PAS2JS}
   if isClassInstance(aError) then
     begin
     if Assigned(OnPascalException) then
@@ -1227,6 +1234,7 @@ begin
     S:=SErrUnknownExceptionType+String(aError);
     DoShowException(S);
     end;
+  {$ENDIF}
 end;
 
 
@@ -1285,33 +1293,35 @@ end;
 
 function LeftStr(const S: string; Count: Integer): String; assembler;
 asm
-  return (Count>0) ? S.substr(0,Count) : "";
+  {$IFDEF PAS2JS}return (Count>0) ? S.substr(0,Count) : "";{$ENDIF}
 end;
 
 function RightStr(const S: string; Count: Integer): String; assembler;
 asm
+  {$IFDEF PAS2JS}
   var l = S.length;
   return (Count<1) ? "" : ( Count>=l ? S : S.substr(l-Count));
+  {$ENDIF}
 end;
 
 function Trim(const S: String): String; assembler;
 asm
-  return S.replace(/^[\s\uFEFF\xA0\x00-\x1f]+/,'').replace(/[\s\uFEFF\xA0\x00-\x1f]+$/,'');
+  {$IFDEF PAS2JS}return S.replace(/^[\s\uFEFF\xA0\x00-\x1f]+/,'').replace(/[\s\uFEFF\xA0\x00-\x1f]+$/,'');{$ENDIF}
 end;
 
 function TrimLeft(const S: String): String; assembler;
 asm
-  return S.replace(/^[\s\uFEFF\xA0\x00-\x1f]+/,'');
+  {$IFDEF PAS2JS}return S.replace(/^[\s\uFEFF\xA0\x00-\x1f]+/,'');{$ENDIF}
 end;
 
 function TrimRight(const S: String): String; assembler;
 asm
-  return S.replace(/[\s\uFEFF\xA0\x00-\x1f]+$/,'');
+  {$IFDEF PAS2JS}return S.replace(/[\s\uFEFF\xA0\x00-\x1f]+$/,'');{$ENDIF}
 end;
 
 function IntToStr(const Value: Integer): string;
 begin
-  Result:=str(Value);
+  {$IFDEF PAS2JS}Result := str(Value);{$ENDIF}
 end;
 
 function FloatToDecimal(Value: double; Precision, Decimals: integer): TFloatRec;
@@ -1324,7 +1334,6 @@ var
   InfNan: string;
   OutPos,Error, N, L, C: Integer;
   GotNonZeroBeforeDot, BeforeDot : boolean;
-
 begin
   Result.Negative:=False;
   Result.Exponent:=0;
@@ -1333,7 +1342,7 @@ begin
   if Value=0 then
     exit;
   asm
-    Buffer=Value.toPrecision(21); // Double precision
+    {$IFDEF PAS2JS}Buffer=Value.toPrecision(21);{$ENDIF} // Double precision
   end;
   // Writeln('Buffer :',Buffer);
   N := 1;
@@ -1473,6 +1482,7 @@ Var
   N : String;
 
 begin
+  {$IFDEF PAS2JS}
   N:=S;
   // Delocalize
   if (ThousandSeparator <>'') then
@@ -1483,6 +1493,7 @@ begin
   Result:=Not jsIsNaN(J);
   if Result then
     Res:=Double(J);
+  {$ENDIF}
 end;
 
 function StrToFloatDef(const S: String; const aDef: Double): Double;
@@ -1493,8 +1504,10 @@ end;
 
 function StrToFloat(const S: String): Double;
 begin
+  {$IFDEF PAS2JS}
   if not TryStrToFloat(S,Result) then
     Raise EConvertError.CreateFmt(SErrInvalidFloat,[S]);
+  {$ENDIF}
 end;
 
 function FormatFloat(Fmt: String; aValue: Double): String;
@@ -1833,7 +1846,7 @@ begin
   if (SectionLength=0) or ValueOutSideScope then
     begin
     asm
-     Section=E.toPrecision(15);
+     {$IFDEF PAS2JS}Section=E.toPrecision(15);{$ENDIF}
     end;
     Result:=Section;
     end;
@@ -1891,8 +1904,10 @@ end;
 
 function StrToBool(const S: String): Boolean;
 begin
+  {$IFDEF PAS2JS}
   if not(TryStrToBool(S,Result)) then
     raise EConvertError.CreateFmt(SInvalidBoolean,[S]);
+  {$ENDIF}
 end;
 
 procedure CheckBoolStrs;
@@ -1969,16 +1984,17 @@ end;
 
 function UpperCase(const s: String): String; assembler;
 asm
-  return s.toUpperCase();
+  {$IFDEF PAS2JS}return s.toUpperCase();{$ENDIF}
 end;
 
 function LowerCase(const s: String): String; assembler;
 asm
-  return s.toLowerCase();
+  {$IFDEF PAS2JS}return s.toLowerCase();{$ENDIF}
 end;
 
 function CompareStr(const s1, s2: String): Integer; assembler;
 asm
+  {$IFDEF PAS2JS}
   var l1 = s1.length;
   var l2 = s2.length;
   if (l1<=l2){
@@ -1991,35 +2007,38 @@ asm
     if (s<s2){ return -1;
     } else { return 1; };
   };
+  {$ENDIF}
 end;
 
 function SameStr(const s1, s2: String): Boolean; assembler;
 asm
-  return s1 == s2;
+  {$IFDEF PAS2JS}return s1 == s2;{$ENDIF}
 end;
 
 function CompareText(const s1, s2: String): Integer; assembler;
 asm
+  {$IFDEF PAS2JS}
   var l1 = s1.toLowerCase();
   var l2 = s2.toLowerCase();
   if (l1>l2){ return 1;
   } else if (l1<l2){ return -1;
   } else { return 0; }
+  {$ENDIF}
 end;
 
 function SameText(const s1, s2: String): Boolean; assembler;
 asm
-  return s1.toLowerCase() == s2.toLowerCase();
+  {$IFDEF PAS2JS}return s1.toLowerCase() == s2.toLowerCase();{$ENDIF}
 end;
 
 function AnsiCompareText(const s1, s2: String): Integer; assembler;
 asm
-  return s1.localeCompare(s2);
+  {$IFDEF PAS2JS}return s1.localeCompare(s2);{$ENDIF}
 end;
 
 function AnsiSameText(const s1, s2: String): Boolean; assembler;
 asm
-  return s1.toLowerCase() == s2.toLowerCase();
+  {$IFDEF PAS2JS}return s1.toLowerCase() == s2.toLowerCase();{$ENDIF}
 end;
 
 function AnsiCompareStr(const s1, s2: String): Integer;
@@ -2045,12 +2064,14 @@ Const
 
 Procedure DoFormatError (ErrCode : Longint;const fmt: String);
 begin
+  {$IFDEF PAS2JS}
   //!! must be changed to contain format string...
   Case ErrCode of
    feInvalidFormat : raise EConvertError.Createfmt(SInvalidFormat,[Fmt]);
    feMissingArgument : raise EConvertError.Createfmt(SArgumentMissing,[Fmt]);
    feInvalidArgIndex : raise EConvertError.Createfmt(SInvalidArgIndex,[Fmt]);
   end;
+  {$ENDIF}
 end;
 
 Const
@@ -2076,11 +2097,13 @@ Var
   P : Integer;
 
 begin
-  P:=Pos('.',S);
+  {$IFDEF PAS2JS}
+  P := Pos('.',S);
   if P>0 then
     Result:=Copy(S,1,P-1)+DS+Copy(S,P+1,Length(S)-P)
   else
     Result:=S;
+  {$ENDIF}
 end;
 
 function FormatGeneralFloat(Value : double; Precision : Integer; DS : String) : string;
@@ -2089,6 +2112,7 @@ Var
   P, PE, Q, Exponent: Integer;
 
 Begin
+  {$IFDEF PAS2JS}
   If (Precision = -1) Or (Precision > maxdigits) Then
      Precision := maxdigits;
   { First convert to scientific format, with correct precision }
@@ -2181,6 +2205,7 @@ Begin
       System.Delete(Result,PE+1,1)
     end;
   Result:=ReplaceDecimalSep(Result,DS)
+  {$ENDIF}
 end;
 
 function FormatExponentFloat(Value : double; Precision,Digits : Integer;DS : String) : string;
@@ -2188,6 +2213,7 @@ function FormatExponentFloat(Value : double; Precision,Digits : Integer;DS : Str
 Var
   P: Integer;
 Begin
+  {$IFDEF PAS2JS}
   DS:=DecimalSeparator;
   If (Precision = -1) Or (Precision > maxdigits) Then
     Precision := maxdigits;
@@ -2219,6 +2245,7 @@ Begin
       Dec(Digits);
       end;
   Result:=ReplaceDecimalSep(Result,DS);
+  {$ENDIF}
 End;
 
 function FormatFixedFloat(Value : double; Digits : Integer; DS : String) : string;
@@ -2241,6 +2268,7 @@ Var
   P : integer;
 
 Begin
+  {$IFDEF PAS2JS}
   If Digits = -1 Then
     Digits := 2
   else If Digits > maxdigits Then
@@ -2260,6 +2288,7 @@ Begin
         Insert(TS, Result, P);
       Dec(P, 3);
       End;
+  {$ENDIF}
 End;
 
 function RemoveLeadingNegativeSign(var AValue: String; DS : String): Boolean;
@@ -2273,6 +2302,7 @@ var
 
 begin
   Result:=False;
+  {$IFDEF PAS2JS}
   StartPos := 2;
   TS := ThousandSeparator;
   for i :=StartPos to length(AValue) do
@@ -2283,6 +2313,7 @@ begin
     end;
   if (Result) and (AValue[1]='-') then
     Delete(AValue, 1, 1);
+  {$ENDIF}
 end;
 
 Function FormatNumberCurrency(const Value : Currency; Digits : Integer; DS,TS : String) : string;
@@ -2292,6 +2323,7 @@ Var
   P : Integer;
 
 Begin
+  {$IFDEF PAS2JS}
   //  Writeln('Value ',D);
    If Digits = -1 Then
      Digits := CurrencyDecimals
@@ -2348,6 +2380,7 @@ Begin
        14: Result := '(' + CurrencyString + ' ' + Result + ')';
        15: Result := '(' + Result + ' ' + CurrencyString + ')';
      end;
+   {$ENDIF}
 end;
 
 function FloatToStrF(const Value: double; format: TFloatFormat; Precision,
@@ -2538,6 +2571,7 @@ Var ChPos,OldPos,ArgPos,DoArg,Len : SizeInt;
   end;
 
 begin
+  {$IFDEF PAS2JS}
   Result:='';
   Len:=Length(Fmt);
   ChPos:=1;
@@ -2638,6 +2672,7 @@ begin
     inc(ChPos);
     Oldpos:=ChPos;
     end;
+    {$ENDIF}
 end;
 
 function BytesOf(const AVal: string): TBytes;
@@ -2660,12 +2695,12 @@ end;
 
 function LocaleCompare(const s1, s2, locales: String): Boolean; assembler;
 asm
-  return s1.localeCompare(s2,locales) == 0;
+  {$IFDEF PAS2JS}return s1.localeCompare(s2,locales) == 0;{$ENDIF}
 end;
 
 function NormalizeStr(const S: String; const Norm: String): String; assembler;
 asm
-  return S.normalize(Norm);
+  {$IFDEF PAS2JS}return S.normalize(Norm);{$ENDIF}
 end;
 
 function IsValidIdent(const Ident: string; AllowDots: Boolean = False; StrictDots: Boolean = False): Boolean;
@@ -2726,12 +2761,14 @@ end;
 
 constructor Exception.Create(const Msg: String);
 begin
+  {$IFDEF PAS2JS}
   fMessage:=Msg;
   {$ifdef nodejs}
   FNodeJSError:=TJSError.new;
   {$endif}
   if LogMessageOnCreate then
     Writeln('Created exception ',ClassName,' with message: ',Msg);
+  {$ENDIF}
 end;
 
 constructor Exception.CreateFmt(const Msg: string; const Args: array of jsvalue
@@ -2819,17 +2856,20 @@ end;
 
 function IsDelimiter(const Delimiters, S: string; Index: Integer): Boolean;
 begin
+  {$IFDEF PAS2JS}
   Result:=False;
   if (Index>0) and (Index<=Length(S)) then
     Result:=Pos(S[Index],Delimiters)<>0; // Note we don't do MBCS yet
+  {$ENDIF}
 end;
 
 Function LastDelimiter(const Delimiters, S: string): SizeInt;
-
 begin
+  {$IFDEF PAS2JS}
   Result:=Length(S);
   While (Result>0) and (Pos(S[Result],Delimiters)=0) do
     Dec(Result);
+  {$ENDIF}
 end;
 
 
@@ -2945,32 +2985,37 @@ end;
 
 function GetEnvironmentVariable(const EnvVar: String): String;
 begin
+  {$IFDEF PAS2JS}
   if Assigned(OnGetEnvironmentVariable) then
     Result:=OnGetEnvironmentVariable(EnvVar)
   else
     Result:='';
+  {$ENDIF}
 end;
 
 function GetEnvironmentVariableCount: Integer;
 begin
+  {$IFDEF PAS2JS}
   if Assigned(OnGetEnvironmentVariableCount) then
     Result:=OnGetEnvironmentVariableCount()
   else
     Result:=0;
+  {$ENDIF}
 end;
 
 function GetEnvironmentString(Index: Integer): String;
 begin
+  {$IFDEF PAS2JS}
   if Assigned(OnGetEnvironmentString) then
     Result:=OnGetEnvironmentString(Index)
   else
     Result:='';
+  {$ENDIF}
 end;
 
 { Date/Time routines}
 
 Function DoEncodeDate(Year, Month, Day: Word): longint;
-
 Var
   D : TDateTime;
 
@@ -2982,14 +3027,12 @@ begin
 end;
 
 function DoEncodeTime(Hour, Minute, Second, MilliSecond: word): TDateTime;
-
 begin
   If not TryEncodeTime(Hour,Minute,Second,MilliSecond,Result) then
     Result:=0;
 end;
 
 function DateTimeToJSDate(aDateTime: TDateTime): TJSDate;
-
 Var
   Y,M,D,h,n,s,z : Word;
 
@@ -3000,7 +3043,6 @@ begin
 end;
 
 function JSDateToDateTime(aDate: TJSDate): TDateTime;
-
 begin
   Result:=EncodeDate(ADate.FullYear,ADate.Month+1,ADate.Date) +
           EncodeTime(ADate.Hours,ADate.Minutes,ADate.Seconds,ADate.Milliseconds);
@@ -3009,7 +3051,6 @@ end;
 
 {   ComposeDateTime converts a Date and a Time into one TDateTime   }
 function ComposeDateTime(Date,Time : TDateTime) : TDateTime;
-
 begin
   if Date < 0 then
     Result := trunc(Date) - Abs(frac(Time))
@@ -3018,7 +3059,6 @@ begin
 end;
 
 function TryEncodeDate(Year, Month, Day: Word; out Date: TDateTime): Boolean;
-
 var
   c, ya: LongWord;
 begin
@@ -3045,7 +3085,6 @@ end;
 
 function TryEncodeTime(Hour, Min, Sec, MSec: Word; out Time: TDateTime
   ): Boolean;
-
 begin
   Result:=(Hour<24) and (Min<60) and (Sec<60) and (MSec<1000);
   If Result then
@@ -3056,22 +3095,24 @@ end;
     TDateTime value the result is the number of days since 12/30/1899   }
 
 function EncodeDate(Year, Month, Day: word): TDateTime;
-
 begin
+  {$IFDEF PAS2JS}
   If Not TryEncodeDate(Year,Month,Day,Result) then
     Raise EConvertError.CreateFmt('%s-%s-%s is not a valid date specification',
                               [IntToStr(Year),IntToStr(Month),IntToStr(Day)]);
+  {$ENDIF}
 end;
 
 {   EncodeTime packs four variables Hour, Minute, Second and MilliSecond into
     a TDateTime value     }
 
 function EncodeTime(Hour, Minute, Second, MilliSecond:word):TDateTime;
-
 begin
+  {$IFDEF PAS2JS}
   If not TryEncodeTime(Hour,Minute,Second,MilliSecond,Result) then
     Raise EConvertError.CreateFmt('%s:%s:%s.%s is not a valid time specification',
                               [IntToStr(Hour),IntToStr(Minute),IntToStr(Second),IntToStr(MilliSecond)]);
+  {$ENDIF}
 end;
 
 
@@ -3129,10 +3170,10 @@ end;
   {   DateTimeToTimeStamp converts DateTime to a TTimeStamp   }
 
 function DateTimeToTimeStamp(DateTime: TDateTime): TTimeStamp;
-
 Var
   D : Double;
 begin
+  {$IFDEF PAS2JS}
   D:=DateTime * Double(MSecsPerDay);
   if D<0 then
     D:=D-0.5
@@ -3140,6 +3181,7 @@ begin
     D:=D+0.5;
   result.Time := Trunc(Abs(Trunc(D)) Mod MSecsPerDay);
   result.Date := DateDelta + (Trunc(D) div MSecsPerDay);
+  {$ENDIF}
 end;
 
 {   TimeStampToDateTime converts TimeStamp to a TDateTime value   }
@@ -3296,15 +3338,13 @@ end ;
     an EConvertError will be raised   }
 
 function IntStrToDate(Out ErrorMsg : String; const S: String; const useformat : string; separator : char): TDateTime;
-
 Const
   WhiteSpace = ' '#8#9#10#12#13;
   Digits = '0123456789';
 
   procedure FixErrorMsg(const errmarg : String);
-
   begin
-    ErrorMsg:=Format(SInvalidDateFormat,[errmarg]);
+    {$IFDEF PAS2JS}ErrorMsg:=Format(SInvalidDateFormat,[errmarg]);{$ENDIF}
   end;
 
 var
@@ -3318,6 +3358,7 @@ var
    YearMoreThenTwoDigits : boolean;
 
 begin
+  {$IFDEF PAS2JS}
   SetLength(values,4);
   Result:=0;
   Len:=Length(S);
@@ -3451,6 +3492,7 @@ begin
     end;
   if not TryEncodeDate(y, m, d, result) then
     errormsg:=SErrInvalidDate;
+  {$ENDIF}
 end;
 
 function StrToDate(const S: String; const useformat : string; separator : char): TDateTime;
@@ -3478,7 +3520,6 @@ end;
 
 
 function IntStrToTime(Out ErrorMsg : String; const S: String; Len : integer; separator : char): TDateTime;
-
 const
   AMPM_None = 0;
   AMPM_AM = 1;
@@ -3510,6 +3551,7 @@ var
       allowedchars : string;
 
    begin
+     {$IFDEF PAS2JS}
      Result := False;
      AmPm := AMPM_None; //No Am or PM in string found yet
      MSecPending := False;
@@ -3653,9 +3695,11 @@ var
      if (TimeIndex = tiHour) or ((AmPm <> AMPM_None) and ((TimeValues[tiHour] > 12) or (TimeValues[tiHour] = 0))) or DigitPending then
        Exit;
      Result := True;
+     {$ENDIF}
    end;
 
 begin
+  {$IFDEF PAS2JS}
   setlength(timevalues,4);
   if separator = #0 then
      if (TimeSeparator<>#0) then
@@ -3674,6 +3718,7 @@ begin
   if not TryEncodeTime(TimeValues[tiHour], TimeValues[tiMin], TimeValues[tiSec], TimeValues[tiMSec], result) Then
 
     ErrorMsg:=Format(SErrInvalidTimeFormat,[S]);
+  {$ENDIF}
 end ;
 
 function StrToTime(const S: String; separator: char): TDateTime;
@@ -3717,6 +3762,7 @@ var
   p: Integer;
   DummyDT: TDateTime;
 begin
+  {$IFDEF PAS2JS}
   Result := 0;
   DateStr := '';
   TimeStr := '';
@@ -3767,6 +3813,7 @@ begin
       DateStr := '';
       end;
     end;
+  {$ENDIF}
 end;
 
 function StrToDateTime(const S: String): TDateTime;
@@ -4032,7 +4079,6 @@ end ;
 
 
 function CurrentYear: Word;
-
 begin
   Result:=TJSDate.New().FullYear;
 end;
@@ -4043,17 +4089,13 @@ begin
 end;
 
 function TryStrToDate(const S: String; out Value: TDateTime; separator : char): Boolean;
-
 begin
   Result:=TryStrToDate(S,Value,ShortDateFormat,Separator);
 end;
 
-function TryStrToDate(const S: String; out Value: TDateTime;
-                    const useformat : string; separator : char = #0): Boolean;
-
+function TryStrToDate(const S: String; out Value: TDateTime; const useformat : string; separator : char): Boolean;
 Var
   Msg : String;
-
 begin
   Result:=Length(S)<>0;
   If Result then
@@ -4062,9 +4104,6 @@ begin
     Result:=(Msg='');
     end;
 end;
-
-
-
 
 function TryStrToTime(const S: String; out Value: TDateTime; separator : char): Boolean;
 Var
@@ -4089,6 +4128,7 @@ var
   I: integer;
   dtdate, dttime :TDateTime;
 begin
+  {$IFDEF PAS2JS}
   result:=false;
   I:=Pos(TimeSeparator,S);
   If (I>0) then
@@ -4109,6 +4149,7 @@ begin
     end
   else
     result:=TryStrToDate(s,Value);
+  {$ENDIF}
 end;
 
 
@@ -4157,15 +4198,19 @@ end;
 
 function FloatToDateTime(const Value: Extended): TDateTime;
 begin
+  {$IFDEF PAS2JS}
   If (Value<MinDateTime) or (Value>MaxDateTime) then
     Raise EConvertError.CreateFmt (SInvalidDateTime,[FloatToStr(Value)]);
   Result:=Value;
+  {$ENDIF}
 end;
 
 function FloattoCurr(const Value: Extended): Currency;
 begin
+  {$IFDEF PAS2JS}
   if not TryFloatToCurr(Value, Result) then
     Raise EConvertError.CreateFmt(SInvalidCurrency, [FloatToStr(Value)]);
+  {$ENDIF}
 end;
 
 function TryFloatToCurr(const Value: Extended; var AResult: Currency): Boolean;
@@ -4188,10 +4233,11 @@ end;
 *)
 
 function StrToCurr(const S: string): Currency;
-
 begin
+  {$IFDEF PAS2JS}
   if not TryStrToCurr(S,Result) then
     Raise EConvertError.createfmt(SInvalidCurrency,[S]);
+  {$ENDIF}
 end;
 
 (*
@@ -4244,25 +4290,33 @@ end;
 function Supports(const Instance: IInterface; const AClass: TClass; out Obj
   ): Boolean;
 begin
+  {$IFDEF PAS2JS}
   Result := (Instance<>nil) and (Instance.QueryInterface(IObjectInstance,Obj)=S_OK)
      and (TObject(Obj).InheritsFrom(AClass));
+  {$ENDIF}
 end;
 
 function Supports(const Instance: IInterface; const IID: TGuid; out Intf
   ): Boolean;
 begin
+  {$IFDEF PAS2JS}
   Result:=(Instance<>nil) and (Instance.QueryInterface(IID,Intf)=S_OK);
+  {$ENDIF}
 end;
 
 function Supports(const Instance: TObject; const IID: TGuid; out Intf): Boolean;
 begin
+  {$IFDEF PAS2JS}
   Result:=(Instance<>nil) and Instance.GetInterface(IID,Intf);
+  {$ENDIF}
 end;
 
 function Supports(const Instance: TObject; const IID: TGuidString; out Intf
   ): Boolean;
 begin
+  {$IFDEF PAS2JS}
   Result:=(Instance<>nil) and Instance.GetInterfaceByStr(IID,Intf);
+  {$ENDIF}
 end;
 
 function Supports(const Instance: IInterface; const AClass: TClass): Boolean;
@@ -4285,7 +4339,7 @@ var
 begin
   Result:=Supports(Instance,IID,Temp);
   asm
-    if (Temp && Temp.$kind==='com') Temp._Release();
+    {$IFDEF PAS2JS}if (Temp && Temp.$kind==='com') Temp._Release();{$ENDIF}
   end;
 end;
 
@@ -4295,7 +4349,7 @@ var
 begin
   Result:=Supports(Instance,IID,Temp);
   asm
-    if (Temp && Temp.$kind==='com') Temp._Release();
+    {$IFDEF PAS2JS}if (Temp && Temp.$kind==='com') Temp._Release();{$ENDIF}
   end;
 end;
 
@@ -4303,28 +4357,33 @@ function Supports(const AClass: TClass; const IID: TGuid): Boolean;
 var
   maps: JSValue;
 begin
+  {$IFDEF PAS2JS}
   if AClass=nil then exit(false);
   maps := TJSObject(AClass)['$intfmaps'];
   if not maps then exit(false);
   if TJSObject(maps)[GUIDToString(IID)] then exit(true);
   Result:=false;
+  {$ENDIF}
 end;
 
 function Supports(const AClass: TClass; const IID: TGuidString): Boolean;
 var
   maps: JSValue;
 begin
+  {$IFDEF PAS2JS}
   if AClass=nil then exit(false);
   maps := TJSObject(AClass)['$intfmaps'];
   if not maps then exit(false);
   if TJSObject(maps)[uppercase(IID)] then exit(true);
   Result:=false;
+  {$ENDIF}
 end;
 
 function TryStringToGUID(const s: string; out Guid: TGuid): Boolean;
 var
   re: TJSRegexp;
 begin
+  {$IFDEF PAS2JS}
   if Length(s)<>38 then Exit(False);
   re:=TJSRegexp.new('^\{[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}\}$');
   Result:=re.test(s);
@@ -4337,17 +4396,22 @@ begin
     rtl.strToGUIDR(s,Guid);
   end;
   Result:=true;
+  {$ENDIF}
 end;
 
 function StringToGUID(const S: string): TGuid;
 begin
+  {$IFDEF PAS2JS}
   if not TryStringToGUID(S, Result) then
     raise EConvertError.CreateFmt(SInvalidGUID, [S]);
+  {$ENDIF}
 end;
 
 function GUIDToString(const guid: TGuid): string;
 begin
+  {$IFDEF PAS2JS}
   Result:=System.GUIDToString(guid);
+  {$ENDIF}
 end;
 
 function IsEqualGUID(const guid1, guid2: TGuid): Boolean;
@@ -4414,11 +4478,12 @@ end;
 function TryStrToInt(const S: String; out res: NativeInt): Boolean;
 
 Var
-  Radix : Integer = 10;
+  Radix : Integer{$IFDEF PAS2JS} = 10{$ENDIF};
   N : String;
   J : JSValue;
 
 begin
+  {$IFDEF PAS2JS}
   N:=S;
   case Copy(N,1,1) of
   '$': Radix:=16;
@@ -4431,6 +4496,7 @@ begin
   Result:=Not jsIsNan(j);
   if Result then
     res:=NativeInt(J);
+  {$ENDIF}
 end;
 
 function StrToIntDef(const S: String; const aDef: Integer): Integer;
@@ -4463,16 +4529,20 @@ Var
   R : NativeInt;
 
 begin
+  {$IFDEF PAS2JS}
   if not TryStrToInt(S,R) then
     Raise EConvertError.CreateFmt(SErrInvalidInteger,[S]);
   Result:=R;
+  {$ENDIF}
 end;
 
 function StrToNativeInt(const S: String): NativeInt;
 
 begin
+  {$IFDEF PAS2JS}
   if not TryStrToInt(S,Result) then
     Raise EConvertError.CreateFmt(SErrInvalidInteger,[S]);
+  {$ENDIF}
 end;
 
 function StrToInt64(const S: String): NativeLargeInt;
@@ -4481,9 +4551,11 @@ Var
   N : NativeInt;
 
 begin
+  {$IFDEF PAS2JS}
   if not TryStrToInt(S,N) then
     Raise EConvertError.CreateFmt(SErrInvalidInteger,[S]);
   Result:=N;
+  {$ENDIF}
 end;
 
 function TryStrToInt64(const S: String; out res: NativeLargeInt): Boolean;
@@ -4492,9 +4564,11 @@ Var
   R : nativeint;
 
 begin
+  {$IFDEF PAS2JS}
   Result:=TryStrToInt(S,R);
   If Result then
     Res:=R;
+  {$ENDIF}
 end;
 
 function StrToInt64Def(const S: String; ADefault: NativeLargeInt
@@ -4512,9 +4586,11 @@ Var
   N : NativeInt;
 
 begin
+  {$IFDEF PAS2JS}
   if (not TryStrToInt(S,N)) or (N<0) then
     Raise EConvertError.CreateFmt(SErrInvalidInteger,[S]);
   Result:=N;
+  {$ENDIF}
 end;
 
 function TryStrToQWord(const S: String; out res: NativeLargeUInt): Boolean;
@@ -4543,9 +4619,11 @@ Var
   N : NativeInt;
 
 begin
+  {$IFDEF PAS2JS}
   if (not TryStrToInt(S,N)) or (N<0) then
     Raise EConvertError.CreateFmt(SErrInvalidInteger,[S]);
   Result:=N;
+  {$ENDIF}
 end;
 
 function TryStrToUInt64(const S: String; out res: NativeLargeUInt): Boolean;
@@ -4582,8 +4660,10 @@ end;
 function StrToDWord(const S: String): DWord;
 
 begin
+  {$IFDEF PAS2JS}
   if not TryStrToDWord(S,Result) then
     Raise EConvertError.CreateFmt(SErrInvalidInteger,[S]);
+  {$ENDIF}
 end;
 
 
@@ -4599,6 +4679,7 @@ function IntToHex(Value: NativeInt; Digits: integer): string;
 
 begin
 //  Result:=HexStr(Value,Digits);     // TestNegLongintHelper  Failed: "ToHexString" expected: <FFFE0000> but was: <00-20000> !
+  {$IFDEF PAS2JS}
   Result:='';
   if Value<0 then
     asm
@@ -4610,6 +4691,7 @@ begin
   Result:=UpperCase(Result);
   while (Length(Result)<Digits) do
     Result:='0'+Result;
+  {$ENDIF}
 end;
 
 
@@ -5067,9 +5149,9 @@ begin
   Result:='';
   if S='' then exit;
   asm
-   return S.replace(/[\u00A0-\u9999<>\&]/gim, function(i) {
+   {$IFDEF PAS2JS}return S.replace(/[\u00A0-\u9999<>\&]/gim, function(i) {
      return '&#'+i.charCodeAt(0)+';';
-   });
+   });{$ENDIF}
   end;
 end;
 
@@ -5130,10 +5212,12 @@ Var
   D : TJSUint8Array;
 
 begin
+  {$IFDEF PAS2JS}
   if ((System.Length(Data)-AStartIndex)<16) then
     raise EArgumentException.CreateFmt('The length of a GUID array must be at least %d',[]);
   D:=TJSUint8Array.From(Data);
   Result:=Create(D.buffer,aStartIndex,BigEndian);
+  {$ENDIF}
 end;
 
 
@@ -5202,6 +5286,7 @@ Var
   I : Integer;
 
 begin
+  {$IFDEF PAS2JS}
   D:=TJSUint8array.New(16);
   V:=TJSDataView.New(D.buffer);
   V.setUint32(0,D1,DataEndian=TEndian.Little);
@@ -5212,6 +5297,7 @@ begin
   SetLength(Result, 16);
   for I:=0 to 15 do
     Result[i]:=V.getUint8(I);
+  {$ENDIF}
 end;
 
 function TGuidHelper.ToString(SkipBrackets: Boolean): string;
@@ -5418,13 +5504,13 @@ end;
 class function TStringHelper.Join(const Separator: string; const Values: array of JSValue): string;
 
 begin
-  Result:=TJSArray(Values).Join(Separator);
+  {$IFDEF PAS2JS}Result:=TJSArray(Values).Join(Separator);{$ENDIF}
 end;
 
 class function TStringHelper.Join(const Separator: string;
   const Values: array of string): string;
 begin
-  Result:=TJSArray(Values).Join(Separator);
+  {$IFDEF PAS2JS}Result:=TJSArray(Values).Join(Separator);{$ENDIF}
 end;
 
 
@@ -5435,6 +5521,7 @@ Var
   VLen : SizeInt;
 
 begin
+  {$IFDEF PAS2JS}
   VLen:=High(Values);
   If (ACount<0) or ((StartIndex>0) and (StartIndex>VLen)) then
     raise ERangeError.Create(SRangeError);
@@ -5442,6 +5529,7 @@ begin
     Result:=''
   else
     Result:=TJSArray(Values).Slice(StartIndex,StartIndex+aCount).Join(Separator);
+  {$ENDIF}
 end;
 
 
@@ -5509,7 +5597,7 @@ class function TStringHelper.UpperCase(const S: string): string;
 begin
   Result:=sysutils.Uppercase(S);
 end;
-
+{$IFDEF PAS2JS}
 class function TStringHelper.ToCharArray(const S: String): TCharArray;
 
 Var
@@ -5521,6 +5609,7 @@ begin
   For I:=1 to Len do
     Result[I-1]:=S[I];
 end;
+{$ENDIF}
 
 function TStringHelper.CompareTo(const B: string): Integer;
 begin
@@ -5531,7 +5620,7 @@ end;
 
 function TStringHelper.Contains(const AValue: string): Boolean;
 begin
-  Result:=(AValue<>'') and (Pos(AValue,Self)>0);
+  {$IFDEF PAS2JS}Result:=(AValue<>'') and (Pos(AValue,Self)>0);{$ENDIF}
 end;
 
 
@@ -5643,6 +5732,7 @@ var
   L : TJSString;
 
 begin
+{$IFDEF PAS2JS}
 {$push}
 {$Q-}
   L:=TJSString(Self);
@@ -5656,6 +5746,7 @@ begin
     Inc(p);
     end;
 {$pop}
+{$ENDIF}
 end;
 
 
@@ -5691,10 +5782,12 @@ Var
   S : String;
 
 begin
+  {$IFDEF PAS2JS}
   S:=System.Copy(Self,StartIndex+1,ACount);
   Result:=Pos(AValue,S)-1;
   if Result<>-1 then
     Result:=Result+StartIndex;
+  {$ENDIF}
 end;
 
 
@@ -5705,10 +5798,12 @@ Var
   S : String;
 
 begin
+  {$IFDEF PAS2JS}
   S:=System.Copy(Self,StartIndex+1,ACount);
   Result:=Pos(AValue,S)-1;
   if Result<>-1 then
     Result:=Result+StartIndex;
+  {$ENDIF}
 end;
 
 function TStringHelper.IndexOfUnQuoted(const AValue: string; StartQuote,
@@ -5724,11 +5819,13 @@ Var
     J : SizeInt;
 
   begin
+    {$IFDEF PAS2JS}
     J:=1;
     Repeat
       Result:=(S[I+J-1]=AValue[j]);
       Inc(J);
     Until (Not Result) or (J>LV);
+    {$ENDIF}
   end;
 
 Var
@@ -6613,58 +6710,62 @@ end;
   TDoubleHelper
   ---------------------------------------------------------------------}
 
-Class Function TDoubleHelper.IsNan(const AValue: Double): Boolean; overload; inline;
+Class Function TDoubleHelper.IsNan(const AValue: Double): Boolean;
 
 begin
-  Result:=JS.jsIsNaN(AValue);
+  {$IFDEF PAS2JS}Result:=JS.jsIsNaN(AValue);{$ENDIF}
 end;
 
-Class Function TDoubleHelper.IsInfinity(const AValue: Double): Boolean; overload; inline;
+Class Function TDoubleHelper.IsInfinity(const AValue: Double): Boolean;
 
 begin
-  Result:=Not jsIsFinite(aValue);
+  {$IFDEF PAS2JS}Result:=Not jsIsFinite(aValue);{$ENDIF}
 end;
 
-Class Function TDoubleHelper.IsNegativeInfinity(const AValue: Double): Boolean; overload; inline;
+Class Function TDoubleHelper.IsNegativeInfinity(const AValue: Double): Boolean;
 
 begin
+  {$IFDEF PAS2JS}
   asm
     return (AValue=Number.NEGATIVE_INFINITY);
   end;
+  {$ENDIF}
   Result:=aValue=0; // Fool compiler
 end;
 
-Class Function TDoubleHelper.IsPositiveInfinity(const AValue: Double): Boolean; overload; inline;
+Class Function TDoubleHelper.IsPositiveInfinity(const AValue: Double): Boolean;
 
 begin
+  {$IFDEF PAS2JS}
   asm
     return (AValue=Number.POSITIVE_INFINITY);
   end;
+  {$ENDIF}
   Result:=aValue=0;  // Fool compiler.
 end;
 
-Class Function TDoubleHelper.Parse(const AString: string): Double; overload; inline;
+Class Function TDoubleHelper.Parse(const AString: string): Double;
 
 begin
   Result:=StrToFloat(AString);
 end;
 
 
-Class Function TDoubleHelper.ToString(const AValue: Double): string; overload; inline;
+Class Function TDoubleHelper.ToString(const AValue: Double): string;
 
 begin
   Result:=FloatToStr(AValue);
 end;
 
 
-Class Function TDoubleHelper.ToString(const AValue: Double; const AFormat: TFloatFormat; const APrecision, ADigits: Integer): string; overload; inline;
+Class Function TDoubleHelper.ToString(const AValue: Double; const AFormat: TFloatFormat; const APrecision, ADigits: Integer): string;
 
 begin
   Result:=FloatToStrF(AValue,AFormat,APrecision,ADigits);
 end;
 
 
-Class Function TDoubleHelper.TryParse(const AString: string; out AValue: Double): Boolean; overload; inline;
+Class Function TDoubleHelper.TryParse(const AString: string; out AValue: Double): Boolean;
 
 begin
   Result:=TryStrToFloat(AString,AValue);
@@ -6679,10 +6780,12 @@ var
   B : TJSUInt8array;
 
 begin
+  {$IFDEF PAS2JS}
   F:=TJSFloat64Array.New(1);
   B:=TJSUInt8array.New(F.Buffer);
   F[0]:=Self;
   Result:=B[AIndex];
+  {$ENDIF}
 end;
 
 Function TDoubleHelper.GetW(AIndex: Cardinal): Word;
@@ -6692,10 +6795,12 @@ var
   W : TJSUInt16array;
 
 begin
+  {$IFDEF PAS2JS}
   F:=TJSFloat64Array.New(1);
   W:=TJSUInt16array.New(F.Buffer);
   F[0]:=Self;
   Result:=W[AIndex];
+  {$ENDIF}
 end;
 
 Type
@@ -6714,6 +6819,7 @@ var
   B : TJSUInt8array;
 
 begin
+  {$IFDEF PAS2JS}
   F:=TJSFloat64Array.New(1);
   B:=TJSUInt8array.New(F.Buffer);
   F[0]:=aValue;
@@ -6722,25 +6828,26 @@ begin
   B[3]:=$3F;
   B[6]:=B[6] or $F0;
   Result.Mantissa:=F[0];
+  {$ENDIF}
 end;
 
-Function TDoubleHelper.GetE: NativeUInt; inline;
+Function TDoubleHelper.GetE: NativeUInt;
 
 begin
-  Result:=FloatToParts(Self).Exp;
+  {$IFDEF PAS2JS}Result:=FloatToParts(Self).Exp;{$ENDIF}
 end;
 
-Function TDoubleHelper.GetF: NativeUInt; inline;
+Function TDoubleHelper.GetF: NativeUInt;
 
 begin
   Result:=0;
-  NotImplemented('GetF');
+  {$IFDEF PAS2JS}NotImplemented('GetF');{$ENDIF}
 end;
 
-Function TDoubleHelper.GetS: Boolean; inline;
+Function TDoubleHelper.GetS: Boolean;
 
 begin
-  Result:=FloatToParts(Self).Sign;
+  {$IFDEF PAS2JS}Result:=FloatToParts(Self).Sign;{$ENDIF}
 end;
 
 procedure TDoubleHelper.SetB(AIndex: Cardinal; const AValue: Byte);
@@ -6750,6 +6857,7 @@ var
   B : TJSUInt8array;
 
 begin
+  {$IFDEF PAS2JS}
   if (AIndex>=8) then
     raise ERangeError.Create(SRangeError);
   F:=TJSFloat64Array.New(1);
@@ -6757,6 +6865,7 @@ begin
   F[0]:=Self;
   B[AIndex]:=aValue;
   Self:=F[0];
+  {$ENDIF}
 end;
 
 procedure TDoubleHelper.SetW(AIndex: Cardinal; const AValue: Word);
@@ -6766,6 +6875,7 @@ Var
   W : TJSUInt16array;
 
 begin
+  {$IFDEF PAS2JS}
   if (AIndex>=4) then
     raise ERangeError.Create(SRangeError);
   F:=TJSFloat64Array.New(1);
@@ -6773,6 +6883,7 @@ begin
   F[0]:=Self;
   W[AIndex]:=aValue;
   Self:=F[0];
+  {$ENDIF}
 end;
 
 
@@ -6785,6 +6896,7 @@ Var
   B : TJSUInt8array;
 
 begin
+  {$IFDEF PAS2JS}
   F:=TJSFloat64Array.New(1);
   B:=TJSUInt8array.New(F.Buffer);
   F[0]:=Self;
@@ -6793,6 +6905,7 @@ begin
   else
     B[7]:=B[7] and not (1 shr 7);
   Self:=F[0];
+  {$ENDIF}
 end;
 
 
@@ -6817,25 +6930,25 @@ begin
   Result:=system.Frac(Self);
 end;
 
-Function TDoubleHelper.IsInfinity: Boolean; overload; inline;
+Function TDoubleHelper.IsInfinity: Boolean;
 
 begin
   Result:=Double.IsInfinity(Self);
 end;
 
-Function TDoubleHelper.IsNan: Boolean; overload; inline;
+Function TDoubleHelper.IsNan: Boolean;
 
 begin
   Result:=Double.IsNan(Self);
 end;
 
-Function TDoubleHelper.IsNegativeInfinity: Boolean; overload; inline;
+Function TDoubleHelper.IsNegativeInfinity: Boolean;
 
 begin
   Result:=Double.IsNegativeInfinity(Self);
 end;
 
-Function TDoubleHelper.IsPositiveInfinity: Boolean; overload; inline;
+Function TDoubleHelper.IsPositiveInfinity: Boolean;
 
 begin
   Result:=Double.IsPositiveInfinity(Self);
@@ -6847,13 +6960,13 @@ begin
   Result:=Trunc(FloatToParts(Self).mantissa);
 end;
 
-Function TDoubleHelper.ToString(const AFormat: TFloatFormat; const APrecision, ADigits: Integer): string; overload; inline;
+Function TDoubleHelper.ToString(const AFormat: TFloatFormat; const APrecision, ADigits: Integer): string;
 
 begin
   Result:=FloatToStrF(Self,AFormat,APrecision,ADigits);
 end;
 
-Function TDoubleHelper.ToString: string; overload; inline;
+Function TDoubleHelper.ToString: string;
 
 begin
   Result:=FloatToStr(Self);
@@ -6863,25 +6976,25 @@ end;
   TByteHelper
   ---------------------------------------------------------------------}
 
-Class Function TByteHelper.Parse(const AString: string): Byte; inline;
+Class Function TByteHelper.Parse(const AString: string): Byte;
 
 begin
   Result:=StrToInt(AString);
 end;
 
-Class Function TByteHelper.Size: Integer; inline;
+Class Function TByteHelper.Size: Integer;
 
 begin
   Result:=1;
 end;
 
-Class Function TByteHelper.ToString(const AValue: Byte): string; overload; inline;
+Class Function TByteHelper.ToString(const AValue: Byte): string;
 
 begin
   Result:=IntToStr(AValue);
 end;
 
-Class Function TByteHelper.TryParse(const AString: string; out AValue: Byte): Boolean; inline;
+Class Function TByteHelper.TryParse(const AString: string; out AValue: Byte): Boolean;
 
 Var
   C : Integer;
@@ -6891,72 +7004,66 @@ begin
   Result:=(C=0);
 end;
 
-Function TByteHelper.ToBoolean: Boolean; inline;
+Function TByteHelper.ToBoolean: Boolean;
 
 begin
   Result:=(Self<>0);
 end;
 
-Function TByteHelper.ToDouble: Double; inline;
+Function TByteHelper.ToDouble: Double;
 
 begin
   Result:=Self;
 end;
 
-Function TByteHelper.ToExtended: Extended; inline;
+Function TByteHelper.ToExtended: Extended;
 
 begin
   Result:=Self;
 end;
 
-Function TByteHelper.ToBinString: string; inline;
+Function TByteHelper.ToBinString: string;
 
 begin
   Result:=BinStr(Self,Size*8);
 end;
 
 Function TByteHelper.ToHexString(const AMinDigits: Integer): string;
-overload; inline;
-
 begin
   Result:=IntToHex(Self,AMinDigits);
 end;
 
-Function TByteHelper.ToHexString: string; overload; inline;
+Function TByteHelper.ToHexString: string;
 
 begin
   Result:=IntToHex(Self,Size*2);
 end;
 
-Function TByteHelper.ToString: string; overload; inline;
+Function TByteHelper.ToString: string;
 
 begin
   Result:=IntToStr(Self);
 end;
 
-Function TByteHelper.SetBit(const index: TByteBitIndex) : Byte; inline;
-
+Function TByteHelper.SetBit(const index: TByteBitIndex) : Byte;
 begin
   Self := Self or (Byte(1) shl index);
   Result:=Self;
 end;
 
-Function TByteHelper.ClearBit(const index: TByteBitIndex) : Byte; inline;
-
+Function TByteHelper.ClearBit(const index: TByteBitIndex) : Byte;
 begin
   Self:=Self and not Byte((Byte(1) shl index));
   Result:=Self;
 end;
 
-Function TByteHelper.ToggleBit(const index: TByteBitIndex) : Byte; inline;
-
+Function TByteHelper.ToggleBit(const index: TByteBitIndex) : Byte;
 begin
   Self := Self xor Byte((Byte(1) shl index));
   Result:=Self;
 end;
 
-Function TByteHelper.TestBit(const Index: TByteBitIndex):Boolean; inline;
-
+Function TByteHelper.TestBit(const Index: TByteBitIndex):Boolean;
 begin
   Result := (Self and Byte((Byte(1) shl index)))<>0;
 end;
@@ -6965,26 +7072,22 @@ end;
   TShortintHelper
   ---------------------------------------------------------------------}
 
-Class Function TShortIntHelper.Parse(const AString: string): ShortInt; inline;
-
+Class Function TShortIntHelper.Parse(const AString: string): ShortInt;
 begin
   Result:=StrToInt(AString);
 end;
 
-Class Function TShortIntHelper.Size: Integer; inline;
-
+Class Function TShortIntHelper.Size: Integer;
 begin
   Result:=1;
 end;
 
-Class Function TShortIntHelper.ToString(const AValue: ShortInt): string; overload; inline;
-
+Class Function TShortIntHelper.ToString(const AValue: ShortInt): string;
 begin
   Result:=IntToStr(AValue);
 end;
 
-Class Function TShortIntHelper.TryParse(const AString: string; out AValue: ShortInt): Boolean; inline;
-
+Class Function TShortIntHelper.TryParse(const AString: string; out AValue: ShortInt): Boolean;
 Var
   C : Integer;
 
@@ -6993,38 +7096,34 @@ begin
   Result:=(C=0);
 end;
 
-Function TShortIntHelper.ToBoolean: Boolean; inline;
-
+Function TShortIntHelper.ToBoolean: Boolean;
 begin
   Result:=(Self<>0);
 end;
 
-Function TShortIntHelper.ToDouble: Double; inline;
-
+Function TShortIntHelper.ToDouble: Double;
 begin
   Result:=Self;
 end;
 
-Function TShortIntHelper.ToExtended: Extended; inline;
-
+Function TShortIntHelper.ToExtended: Extended;
 begin
   Result:=Self;
 end;
 
-Function TShortIntHelper.ToBinString: string; inline;
-
+Function TShortIntHelper.ToBinString: string;
 begin
   Result:=BinStr(Self,Size*8);
 end;
 
-Function TShortIntHelper.ToHexString(const AMinDigits: Integer): string; overload; inline;
-
+Function TShortIntHelper.ToHexString(const AMinDigits: Integer): string;
 Var
   B : Word;
   U : TJSUInt8Array;
   S : TJSInt8array;
 
 begin
+  {$IFDEF PAS2JS}
   if Self>=0 then
     B:=Self
   else
@@ -7037,43 +7136,38 @@ begin
       B:=$FF00+B;
     end;
   Result:=IntToHex(B,AMinDigits);
+  {$ENDIF}
 end;
 
-Function TShortIntHelper.ToHexString: string; overload; inline;
-
+Function TShortIntHelper.ToHexString: string;
 begin
   Result:=ToHexString(Size*2);
 end;
 
-Function TShortIntHelper.ToString: string; overload; inline;
-
+Function TShortIntHelper.ToString: string;
 begin
   Result:=IntToStr(Self);
 end;
 
-Function TShortIntHelper.SetBit(const index: TShortIntBitIndex) : ShortInt; inline;
-
+Function TShortIntHelper.SetBit(const index: TShortIntBitIndex) : ShortInt;
 begin
   Self := Self or (ShortInt(1) shl index);
   Result:=Self;
 end;
 
-Function TShortIntHelper.ClearBit(const index: TShortIntBitIndex) : ShortInt; inline;
-
+Function TShortIntHelper.ClearBit(const index: TShortIntBitIndex) : ShortInt;
 begin
   Self:=Self and not ShortInt((ShortInt(1) shl index));
   Result:=Self;
 end;
 
-Function TShortIntHelper.ToggleBit(const index: TShortIntBitIndex) : ShortInt; inline;
-
+Function TShortIntHelper.ToggleBit(const index: TShortIntBitIndex) : ShortInt;
 begin
   Self := Self xor ShortInt((ShortInt(1) shl index));
   Result:=Self;
 end;
 
-Function TShortIntHelper.TestBit(const Index: TShortIntBitIndex):Boolean; inline;
-
+Function TShortIntHelper.TestBit(const Index: TShortIntBitIndex):Boolean;
 begin
   Result := (Self and ShortInt((ShortInt(1) shl index)))<>0;
 end;
@@ -7082,26 +7176,22 @@ end;
   TSmallintHelper
   ---------------------------------------------------------------------}
 
-Class Function TSmallIntHelper.Parse(const AString: string): SmallInt; inline;
-
+Class Function TSmallIntHelper.Parse(const AString: string): SmallInt;
 begin
   Result:=StrToInt(AString);
 end;
 
-Class Function TSmallIntHelper.Size: Integer; inline;
-
+Class Function TSmallIntHelper.Size: Integer;
 begin
   Result:=2;
 end;
 
-Class Function TSmallIntHelper.ToString(const AValue: SmallInt): string; overload; inline;
-
+Class Function TSmallIntHelper.ToString(const AValue: SmallInt): string;
 begin
   Result:=IntToStr(AValue);
 end;
 
-Class Function TSmallIntHelper.TryParse(const AString: string; out AValue: SmallInt): Boolean; inline;
-
+Class Function TSmallIntHelper.TryParse(const AString: string; out AValue: SmallInt): Boolean;
 Var
   C : Integer;
 
@@ -7110,39 +7200,34 @@ begin
   Result:=(C=0);
 end;
 
-Function TSmallIntHelper.ToBoolean: Boolean; inline;
-
+Function TSmallIntHelper.ToBoolean: Boolean;
 begin
   Result:=(Self<>0);
 end;
 
-Function TSmallIntHelper.ToDouble: Double; inline;
-
+Function TSmallIntHelper.ToDouble: Double;
 begin
   Result:=Self;
 end;
 
-Function TSmallIntHelper.ToExtended: Extended; inline;
-
+Function TSmallIntHelper.ToExtended: Extended;
 begin
   Result:=Self;
 end;
 
-Function TSmallIntHelper.ToBinString: string; inline;
-
+Function TSmallIntHelper.ToBinString: string;
 begin
   Result:=BinStr(Self,Size*8);
 end;
 
-Function TSmallIntHelper.ToHexString(const AMinDigits: Integer): string; overload; inline;
-
+Function TSmallIntHelper.ToHexString(const AMinDigits: Integer): string;
 Var
   B : Cardinal;
   U : TJSUInt16Array;
   S : TJSInt16array;
 
-
 begin
+  {$IFDEF PAS2JS}
   if Self>=0 then
     B:=Self
   else
@@ -7157,44 +7242,39 @@ begin
       B:=$FF0000+B;
     end;
   Result:=IntToHex(B,AMinDigits);
+  {$ENDIF}
 end;
 
-Function TSmallIntHelper.ToHexString: string; overload; inline;
-
+Function TSmallIntHelper.ToHexString: string;
 begin
   Result:=ToHexString(Size*2);
 end;
 
 
-Function TSmallIntHelper.ToString: string; overload; inline;
-
+Function TSmallIntHelper.ToString: string;
 begin
   Result:=IntToStr(Self);
 end;
 
-Function TSmallIntHelper.SetBit(const index: TSmallIntBitIndex) : SmallInt; inline;
-
+Function TSmallIntHelper.SetBit(const index: TSmallIntBitIndex) : SmallInt;
 begin
   Self := Self or (SmallInt(1) shl index);
   Result:=Self;
 end;
 
-Function TSmallIntHelper.ClearBit(const index: TSmallIntBitIndex) : SmallInt; inline;
-
+Function TSmallIntHelper.ClearBit(const index: TSmallIntBitIndex) : SmallInt;
 begin
   Self:=Self and not SmallInt((SmallInt(1) shl index));
   Result:=Self;
 end;
 
-Function TSmallIntHelper.ToggleBit(const index: TSmallIntBitIndex) : SmallInt; inline;
-
+Function TSmallIntHelper.ToggleBit(const index: TSmallIntBitIndex) : SmallInt;
 begin
   Self := Self xor SmallInt((SmallInt(1) shl index));
   Result:=Self;
 end;
 
-Function TSmallIntHelper.TestBit(const Index: TSmallIntBitIndex):Boolean; inline;
-
+Function TSmallIntHelper.TestBit(const Index: TSmallIntBitIndex):Boolean;
 begin
   Result := (Self and SmallInt((SmallInt(1) shl index)))<>0;
 end;
@@ -7203,26 +7283,22 @@ end;
   TWordHelper
   ---------------------------------------------------------------------}
 
-Class Function TWordHelper.Parse(const AString: string): Word; inline;
-
+Class Function TWordHelper.Parse(const AString: string): Word;
 begin
   Result:=StrToInt(AString);
 end;
 
-Class Function TWordHelper.Size: Integer; inline;
-
+Class Function TWordHelper.Size: Integer;
 begin
   Result:=2;
 end;
 
-Class Function TWordHelper.ToString(const AValue: Word): string; overload; inline;
-
+Class Function TWordHelper.ToString(const AValue: Word): string;
 begin
   Result:=IntToStr(AValue);
 end;
 
-Class Function TWordHelper.TryParse(const AString: string; out AValue: Word): Boolean; inline;
-
+Class Function TWordHelper.TryParse(const AString: string; out AValue: Word): Boolean;
 Var
   C : Integer;
 
@@ -7231,73 +7307,65 @@ begin
   Result:=(C=0);
 end;
 
-Function TWordHelper.ToBoolean: Boolean; inline;
+Function TWordHelper.ToBoolean: Boolean;
 
 begin
   Result:=(Self<>0);
 end;
 
-Function TWordHelper.ToDouble: Double; inline;
+Function TWordHelper.ToDouble: Double;
 
 begin
   Result:=Self;
 end;
 
-Function TWordHelper.ToExtended: Extended; inline;
+Function TWordHelper.ToExtended: Extended;
 
 begin
   Result:=Self;
 end;
 
-Function TWordHelper.ToBinString: string; inline;
+Function TWordHelper.ToBinString: string;
 
 begin
   Result:=BinStr(Self,Size*8);
 end;
 
 Function TWordHelper.ToHexString(const AMinDigits: Integer): string;
-overload; inline;
-
 begin
   Result:=IntToHex(Self,AMinDigits);
 end;
 
-Function TWordHelper.ToHexString: string; overload; inline;
-
+Function TWordHelper.ToHexString: string;
 begin
   Result:=IntToHex(Self,Size*2);
 end;
 
 
-Function TWordHelper.ToString: string; overload; inline;
-
+Function TWordHelper.ToString: string;
 begin
   Result:=IntToStr(Self);
 end;
 
-Function TWordHelper.SetBit(const index: TWordBitIndex) : Word; inline;
-
+Function TWordHelper.SetBit(const index: TWordBitIndex) : Word;
 begin
   Self := Self or (Word(1) shl index);
   Result:=Self;
 end;
 
-Function TWordHelper.ClearBit(const index: TWordBitIndex) : Word; inline;
-
+Function TWordHelper.ClearBit(const index: TWordBitIndex) : Word;
 begin
   Self:=Self and not Word((Word(1) shl index));
   Result:=Self;
 end;
 
-Function TWordHelper.ToggleBit(const index: TWordBitIndex) : Word; inline;
-
+Function TWordHelper.ToggleBit(const index: TWordBitIndex) : Word;
 begin
   Self := Self xor Word((Word(1) shl index));
   Result:=Self;
 end;
 
-Function TWordHelper.TestBit(const Index: TWordBitIndex):Boolean; inline;
-
+Function TWordHelper.TestBit(const Index: TWordBitIndex):Boolean;
 begin
   Result := (Self and Word((Word(1) shl index)))<>0;
 end;
@@ -7306,26 +7374,22 @@ end;
   TCardinalHelper
   ---------------------------------------------------------------------}
 
-Class Function TCardinalHelper.Parse(const AString: string): Cardinal; inline;
-
+Class Function TCardinalHelper.Parse(const AString: string): Cardinal;
 begin
   Result:=StrToInt(AString);
 end;
 
-Class Function TCardinalHelper.Size: Integer; inline;
-
+Class Function TCardinalHelper.Size: Integer;
 begin
   Result:=4;
 end;
 
-Class Function TCardinalHelper.ToString(const AValue: Cardinal): string; overload; inline;
-
+Class Function TCardinalHelper.ToString(const AValue: Cardinal): string;
 begin
   Result:=IntToStr(AValue);
 end;
 
-Class Function TCardinalHelper.TryParse(const AString: string; out AValue: Cardinal): Boolean; inline;
-
+Class Function TCardinalHelper.TryParse(const AString: string; out AValue: Cardinal): Boolean;
 Var
   C : Integer;
 
@@ -7334,72 +7398,60 @@ begin
   Result:=(C=0);
 end;
 
-Function TCardinalHelper.ToBoolean: Boolean; inline;
-
+Function TCardinalHelper.ToBoolean: Boolean;
 begin
   Result:=(Self<>0);
 end;
 
-Function TCardinalHelper.ToDouble: Double; inline;
-
+Function TCardinalHelper.ToDouble: Double;
 begin
   Result:=Self;
 end;
 
-Function TCardinalHelper.ToExtended: Extended; inline;
-
+Function TCardinalHelper.ToExtended: Extended;
 begin
   Result:=Self;
 end;
 
-Function TCardinalHelper.ToBinString: string; inline;
-
+Function TCardinalHelper.ToBinString: string;
 begin
   Result:=BinStr(Self,Size*8);
 end;
 
 Function TCardinalHelper.ToHexString(const AMinDigits: Integer): string;
-overload; inline;
-
 begin
   Result:=IntToHex(Self,AMinDigits);
 end;
 
-Function TCardinalHelper.ToHexString: string; overload; inline;
-
+Function TCardinalHelper.ToHexString: string;
 begin
   Result:=ToHexString(Size*2);
 end;
 
-Function TCardinalHelper.ToString: string; overload; inline;
-
+Function TCardinalHelper.ToString: string;
 begin
   Result:=IntToStr(Self);
 end;
 
-Function TCardinalHelper.SetBit(const index: TCardinalBitIndex) : Cardinal; inline;
-
+Function TCardinalHelper.SetBit(const index: TCardinalBitIndex) : Cardinal;
 begin
   Self := Self or (Cardinal(1) shl index);
   Result:=Self;
 end;
 
-Function TCardinalHelper.ClearBit(const index: TCardinalBitIndex) : Cardinal; inline;
-
+Function TCardinalHelper.ClearBit(const index: TCardinalBitIndex) : Cardinal;
 begin
   Self:=Self and not Cardinal((Cardinal(1) shl index));
   Result:=Self;
 end;
 
-Function TCardinalHelper.ToggleBit(const index: TCardinalBitIndex) : Cardinal; inline;
-
+Function TCardinalHelper.ToggleBit(const index: TCardinalBitIndex) : Cardinal;
 begin
   Self := Self xor Cardinal((Cardinal(1) shl index));
   Result:=Self;
 end;
 
-Function TCardinalHelper.TestBit(const Index: TCardinalBitIndex):Boolean; inline;
-
+Function TCardinalHelper.TestBit(const Index: TCardinalBitIndex):Boolean;
 begin
   Result := (Self and Cardinal((Cardinal(1) shl index)))<>0;
 end;
@@ -7409,26 +7461,22 @@ end;
   TIntegerHelper
   ---------------------------------------------------------------------}
 
-Class Function TIntegerHelper.Parse(const AString: string): Integer; inline;
-
+Class Function TIntegerHelper.Parse(const AString: string): Integer;
 begin
   Result:=StrToInt(AString);
 end;
 
-Class Function TIntegerHelper.Size: Integer; inline;
-
+Class Function TIntegerHelper.Size: Integer;
 begin
   Result:=4;
 end;
 
-Class Function TIntegerHelper.ToString(const AValue: Integer): string; overload; inline;
-
+Class Function TIntegerHelper.ToString(const AValue: Integer): string;
 begin
   Result:=IntToStr(AValue);
 end;
 
-Class Function TIntegerHelper.TryParse(const AString: string; out AValue: Integer): Boolean; inline;
-
+Class Function TIntegerHelper.TryParse(const AString: string; out AValue: Integer): Boolean;
 Var
   C : Integer;
 
@@ -7437,40 +7485,34 @@ begin
   Result:=(C=0);
 end;
 
-Function TIntegerHelper.ToBoolean: Boolean; inline;
-
+Function TIntegerHelper.ToBoolean: Boolean;
 begin
   Result:=(Self<>0);
 end;
 
-Function TIntegerHelper.ToDouble: Double; inline;
-
+Function TIntegerHelper.ToDouble: Double;
 begin
   Result:=Self;
 end;
 
-Function TIntegerHelper.ToExtended: Extended; inline;
-
+Function TIntegerHelper.ToExtended: Extended;
 begin
   Result:=Self;
 end;
 
-Function TIntegerHelper.ToBinString: string; inline;
-
+Function TIntegerHelper.ToBinString: string;
 begin
   Result:=BinStr(Self,Size*8);
 end;
 
 Function TIntegerHelper.ToHexString(const AMinDigits: Integer): string;
-overload; inline;
-
-
 Var
   B : Word;
   U : TJSUInt32Array;
   S : TJSInt32array;
 
 begin
+  {$IFDEF PAS2JS}
   if Self>=0 then
     B:=Self
   else
@@ -7481,44 +7523,39 @@ begin
     B:=U[0];
     end;
   Result:=IntToHex(B,AMinDigits);
+  {$ENDIF}
 end;
 
-Function TIntegerHelper.ToHexString: string; overload; inline;
-
+Function TIntegerHelper.ToHexString: string;
 begin
   Result:=ToHexString(Size*2);
 end;
 
 
-Function TIntegerHelper.ToString: string; overload; inline;
-
+Function TIntegerHelper.ToString: string;
 begin
   Result:=IntToStr(Self);
 end;
 
-Function TIntegerHelper.SetBit(const index: TIntegerBitIndex) : Integer; inline;
-
+Function TIntegerHelper.SetBit(const index: TIntegerBitIndex) : Integer;
 begin
   Self := Self or (Integer(1) shl index);
   Result:=Self;
 end;
 
-Function TIntegerHelper.ClearBit(const index: TIntegerBitIndex) : Integer; inline;
-
+Function TIntegerHelper.ClearBit(const index: TIntegerBitIndex) : Integer;
 begin
   Self:=Self and not Integer((Integer(1) shl index));
   Result:=Self;
 end;
 
-Function TIntegerHelper.ToggleBit(const index: TIntegerBitIndex) : Integer; inline;
-
+Function TIntegerHelper.ToggleBit(const index: TIntegerBitIndex) : Integer;
 begin
   Self := Self xor Integer((Integer(1) shl index));
   Result:=Self;
 end;
 
-Function TIntegerHelper.TestBit(const Index: TIntegerBitIndex):Boolean; inline;
-
+Function TIntegerHelper.TestBit(const Index: TIntegerBitIndex):Boolean;
 begin
   Result := (Self and Integer((Integer(1) shl index)))<>0;
 end;
@@ -7528,26 +7565,22 @@ end;
   TNativeIntHelper
   ---------------------------------------------------------------------}
 
-Class Function TNativeIntHelper.Parse(const AString: string): NativeInt; inline;
-
+Class Function TNativeIntHelper.Parse(const AString: string): NativeInt;
 begin
   Result:=StrToInt(AString);
 end;
 
-Class Function TNativeIntHelper.Size: Integer; inline;
-
+Class Function TNativeIntHelper.Size: Integer;
 begin
   Result:=7;
 end;
 
-Class Function TNativeIntHelper.ToString(const AValue: NativeInt): string; overload; inline;
-
+Class Function TNativeIntHelper.ToString(const AValue: NativeInt): string;
 begin
   Result:=IntToStr(AValue);
 end;
 
-Class Function TNativeIntHelper.TryParse(const AString: string; out AValue: NativeInt): Boolean; inline;
-
+Class Function TNativeIntHelper.TryParse(const AString: string; out AValue: NativeInt): Boolean;
 Var
   C : Integer;
 
@@ -7556,72 +7589,60 @@ begin
   Result:=(C=0);
 end;
 
-Function TNativeIntHelper.ToBoolean: Boolean; inline;
-
+Function TNativeIntHelper.ToBoolean: Boolean;
 begin
   Result:=(Self<>0);
 end;
 
-Function TNativeIntHelper.ToDouble: Double; inline;
-
+Function TNativeIntHelper.ToDouble: Double;
 begin
   Result:=Self;
 end;
 
-Function TNativeIntHelper.ToExtended: Extended; inline;
-
+Function TNativeIntHelper.ToExtended: Extended;
 begin
   Result:=Self;
 end;
 
-Function TNativeIntHelper.ToBinString: string; inline;
-
+Function TNativeIntHelper.ToBinString: string;
 begin
   Result:=BinStr(Self,Size*8);
 end;
 
 Function TNativeIntHelper.ToHexString(const AMinDigits: Integer): string;
-overload; inline;
-
 begin
   Result:=IntToHex(Self,AMinDigits);
 end;
 
-Function TNativeIntHelper.ToHexString: string; overload; inline;
-
+Function TNativeIntHelper.ToHexString: string;
 begin
   Result:=IntToHex(Self,Size*2);
 end;
 
-Function TNativeIntHelper.ToString: string; overload; inline;
-
+Function TNativeIntHelper.ToString: string;
 begin
   Result:=IntToStr(Self);
 end;
 
-Function TNativeIntHelper.SetBit(const index: TNativeIntBitIndex) : NativeInt; inline;
-
+Function TNativeIntHelper.SetBit(const index: TNativeIntBitIndex) : NativeInt;
 begin
   Self := Self or (NativeInt(1) shl index);
   Result:=Self;
 end;
 
-Function TNativeIntHelper.ClearBit(const index: TNativeIntBitIndex) : NativeInt; inline;
-
+Function TNativeIntHelper.ClearBit(const index: TNativeIntBitIndex) : NativeInt;
 begin
   Self:=Self and not NativeInt((NativeInt(1) shl index));
   Result:=Self;
 end;
 
-Function TNativeIntHelper.ToggleBit(const index: TNativeIntBitIndex) : NativeInt; inline;
-
+Function TNativeIntHelper.ToggleBit(const index: TNativeIntBitIndex) : NativeInt;
 begin
   Self := Self xor NativeInt((NativeInt(1) shl index));
   Result:=Self;
 end;
 
-Function TNativeIntHelper.TestBit(const Index: TNativeIntBitIndex):Boolean; inline;
-
+Function TNativeIntHelper.TestBit(const Index: TNativeIntBitIndex):Boolean;
 begin
   Result := (Self and NativeInt((NativeInt(1) shl index)))<>0;
 end;
@@ -7631,26 +7652,22 @@ end;
   TNativeUIntHelper
   ---------------------------------------------------------------------}
 
-Class Function TNativeUIntHelper.Parse(const AString: string): NativeUInt; inline;
-
+Class Function TNativeUIntHelper.Parse(const AString: string): NativeUInt;
 begin
   Result:=StrToInt(AString);
 end;
 
-Class Function TNativeUIntHelper.Size: Integer; inline;
-
+Class Function TNativeUIntHelper.Size: Integer;
 begin
   Result:=7;
 end;
 
-Class Function TNativeUIntHelper.ToString(const AValue: NativeUInt): string; overload; inline;
-
+Class Function TNativeUIntHelper.ToString(const AValue: NativeUInt): string;
 begin
   Result:=IntToStr(AValue);
 end;
 
-Class Function TNativeUIntHelper.TryParse(const AString: string; out AValue: NativeUInt): Boolean; inline;
-
+Class Function TNativeUIntHelper.TryParse(const AString: string; out AValue: NativeUInt): Boolean;
 Var
   C : Integer;
 
@@ -7659,78 +7676,65 @@ begin
   Result:=(C=0);
 end;
 
-Function TNativeUIntHelper.ToBoolean: Boolean; inline;
-
+Function TNativeUIntHelper.ToBoolean: Boolean;
 begin
   Result:=(Self<>0);
 end;
 
-Function TNativeUIntHelper.ToDouble: Double; inline;
-
+Function TNativeUIntHelper.ToDouble: Double;
 begin
   Result:=Self;
 end;
 
-Function TNativeUIntHelper.ToExtended: Extended; inline;
-
+Function TNativeUIntHelper.ToExtended: Extended;
 begin
   Result:=Self;
 end;
 
-Function TNativeUIntHelper.ToBinString: string; inline;
-
+Function TNativeUIntHelper.ToBinString: string;
 begin
   Result:=BinStr(Self,Size*8);
 end;
 
 Function TNativeUIntHelper.ToHexString(const AMinDigits: Integer): string;
-overload; inline;
-
 begin
   Result:=IntToHex(Self,AMinDigits);
 end;
 
-Function TNativeUIntHelper.ToHexString: string; overload; inline;
-
+Function TNativeUIntHelper.ToHexString: string;
 begin
   Result:=IntToHex(Self,Size*2);
 end;
 
-Function TNativeUIntHelper.ToSingle: Single; inline;
-
+Function TNativeUIntHelper.ToSingle: Single;
 begin
   Result:=Self;
 end;
 
-Function TNativeUIntHelper.ToString: string; overload; inline;
-
+Function TNativeUIntHelper.ToString: string;
 begin
   Result:=IntToStr(Self);
 end;
 
-Function TNativeUIntHelper.SetBit(const index: TNativeUIntBitIndex) : NativeUInt; inline;
-
+Function TNativeUIntHelper.SetBit(const index: TNativeUIntBitIndex) : NativeUInt;
 begin
   Self := Self or (NativeUInt(1) shl index);
   Result:=Self;
 end;
 
-Function TNativeUIntHelper.ClearBit(const index: TNativeUIntBitIndex) : NativeUInt; inline;
-
+Function TNativeUIntHelper.ClearBit(const index: TNativeUIntBitIndex) : NativeUInt;
 begin
   Self:=Self and not NativeUInt((NativeUInt(1) shl index));
   Result:=Self;
 end;
 
-Function TNativeUIntHelper.ToggleBit(const index: TNativeUIntBitIndex) : NativeUInt; inline;
-
+Function TNativeUIntHelper.ToggleBit(const index: TNativeUIntBitIndex) : NativeUInt;
 begin
   Self := Self xor NativeUInt((NativeUInt(1) shl index));
   Result:=Self;
 end;
 
-Function TNativeUIntHelper.TestBit(const Index: TNativeUIntBitIndex):Boolean; inline;
-
+Function TNativeUIntHelper.TestBit(const Index: TNativeUIntBitIndex):Boolean;
 begin
   Result := (Self and NativeUInt((NativeUInt(1) shl index)))<>0;
 end;
@@ -7739,38 +7743,32 @@ end;
   TBooleanHelper
   ---------------------------------------------------------------------}
 
-Class Function TBooleanHelper.Parse(const S: string): Boolean; inline;
-
+Class Function TBooleanHelper.Parse(const S: string): Boolean;
 begin
   Result:=StrToBool(S);
 end;
 
-Class Function TBooleanHelper.Size: Integer; inline;
-
+Class Function TBooleanHelper.Size: Integer;
 begin
   Result:=1;
 end;
 
-Class Function TBooleanHelper.ToString(const AValue: Boolean; UseBoolStrs: TUseBoolStrs = TUseBoolStrs.False): string; overload; inline;
-
+Class Function TBooleanHelper.ToString(const AValue: Boolean; UseBoolStrs: TUseBoolStrs = TUseBoolStrs.False): string;
 begin
   Result:=BoolToStr(AValue,UseBoolStrs=TUseBoolStrs.True);
 end;
 
-Class Function TBooleanHelper.TryToParse(const S: string; out AValue: Boolean): Boolean; inline;
-
+Class Function TBooleanHelper.TryToParse(const S: string; out AValue: Boolean): Boolean;
 begin
   Result:=TryStrToBool(S,AValue);
 end;
 
-Function TBooleanHelper.ToInteger: Integer; inline;
-
+Function TBooleanHelper.ToInteger: Integer;
 begin
   Result:=Integer(Self);
 end;
 
-Function TBooleanHelper.ToString(UseBoolStrs: TUseBoolStrs = TUseBoolStrs.False): string; overload; inline;
-
+Function TBooleanHelper.ToString(UseBoolStrs: TUseBoolStrs = TUseBoolStrs.False): string;
 begin
   Result:=BoolToStr(Self,UseBoolStrs=TUseBoolStrs.True);
 end;
@@ -7779,38 +7777,32 @@ end;
   TByteBoolHelper
   ---------------------------------------------------------------------}
 
-Class Function TByteBoolHelper.Parse(const S: string): Boolean; inline;
-
+Class Function TByteBoolHelper.Parse(const S: string): Boolean;
 begin
   Result:=StrToBool(S);
 end;
 
-Class Function TByteBoolHelper.Size: Integer; inline;
-
+Class Function TByteBoolHelper.Size: Integer;
 begin
   Result:=1;
 end;
 
-Class Function TByteBoolHelper.ToString(const AValue: Boolean; UseBoolStrs: TUseBoolStrs = TUseBoolStrs.False): string; overload; inline;
-
+Class Function TByteBoolHelper.ToString(const AValue: Boolean; UseBoolStrs: TUseBoolStrs = TUseBoolStrs.False): string;
 begin
   Result:=BoolToStr(AValue,UseBoolStrs=TUseBoolStrs.True);
 end;
 
-Class Function TByteBoolHelper.TryToParse(const S: string; out AValue: Boolean): Boolean; inline;
-
+Class Function TByteBoolHelper.TryToParse(const S: string; out AValue: Boolean): Boolean;
 begin
   Result:=TryStrToBool(S,AValue);
 end;
 
-Function TByteBoolHelper.ToInteger: Integer; inline;
-
+Function TByteBoolHelper.ToInteger: Integer;
 begin
   Result:=Integer(Self);
 end;
 
-Function TByteBoolHelper.ToString(UseBoolStrs: TUseBoolStrs = TUseBoolStrs.False): string; overload; inline;
-
+Function TByteBoolHelper.ToString(UseBoolStrs: TUseBoolStrs = TUseBoolStrs.False): string;
 begin
   Result:=BoolToStr(Self,UseBoolStrs=TUseBoolStrs.True);
 end;
@@ -7819,38 +7811,32 @@ end;
   TWordBoolHelper
   ---------------------------------------------------------------------}
 
-Class Function TWordBoolHelper.Parse(const S: string): Boolean; inline;
-
+Class Function TWordBoolHelper.Parse(const S: string): Boolean;
 begin
   Result:=StrToBool(S);
 end;
 
-Class Function TWordBoolHelper.Size: Integer; inline;
-
+Class Function TWordBoolHelper.Size: Integer;
 begin
   Result:=2;
 end;
 
-Class Function TWordBoolHelper.ToString(const AValue: Boolean; UseBoolStrs: TUseBoolStrs = TUseBoolStrs.False): string; overload; inline;
-
+Class Function TWordBoolHelper.ToString(const AValue: Boolean; UseBoolStrs: TUseBoolStrs = TUseBoolStrs.False): string;
 begin
   Result:=BoolToStr(AValue,UseBoolStrs=TUseBoolStrs.True);
 end;
 
-Class Function TWordBoolHelper.TryToParse(const S: string; out AValue: Boolean): Boolean; inline;
-
+Class Function TWordBoolHelper.TryToParse(const S: string; out AValue: Boolean): Boolean;
 begin
   Result:=TryStrToBool(S,AValue);
 end;
 
-Function TWordBoolHelper.ToInteger: Integer; inline;
-
+Function TWordBoolHelper.ToInteger: Integer;
 begin
   Result:=Integer(Self);
 end;
 
-Function TWordBoolHelper.ToString(UseBoolStrs: TUseBoolStrs = TUseBoolStrs.False): string; overload; inline;
-
+Function TWordBoolHelper.ToString(UseBoolStrs: TUseBoolStrs = TUseBoolStrs.False): string;
 begin
   Result:=BoolToStr(Self,UseBoolStrs=TUseBoolStrs.True);
 end;
@@ -7860,38 +7846,32 @@ end;
   ---------------------------------------------------------------------}
 
 
-Class Function TLongBoolHelper.Parse(const S: string): Boolean; inline;
-
+Class Function TLongBoolHelper.Parse(const S: string): Boolean;
 begin
   Result:=StrToBool(S);
 end;
 
-Class Function TLongBoolHelper.Size: Integer; inline;
-
+Class Function TLongBoolHelper.Size: Integer;
 begin
   Result:=4;
 end;
 
-Class Function TLongBoolHelper.ToString(const AValue: Boolean; UseBoolStrs: TUseBoolStrs = TUseBoolStrs.False): string; overload; inline;
-
+Class Function TLongBoolHelper.ToString(const AValue: Boolean; UseBoolStrs: TUseBoolStrs = TUseBoolStrs.False): string;
 begin
   Result:=BoolToStr(AValue,UseBoolStrs=TUseBoolStrs.True);
 end;
 
-Class Function TLongBoolHelper.TryToParse(const S: string; out AValue: Boolean): Boolean; inline;
-
+Class Function TLongBoolHelper.TryToParse(const S: string; out AValue: Boolean): Boolean;
 begin
   Result:=TryStrToBool(S,AValue);
 end;
 
-Function TLongBoolHelper.ToInteger: Integer; inline;
-
+Function TLongBoolHelper.ToInteger: Integer;
 begin
   Result:=Integer(Self);
 end;
 
-Function TLongBoolHelper.ToString(UseBoolStrs: TUseBoolStrs = TUseBoolStrs.False): string; overload; inline;
-
+Function TLongBoolHelper.ToString(UseBoolStrs: TUseBoolStrs = TUseBoolStrs.False): string;
 begin
   Result:=BoolToStr(Self,UseBoolStrs=TUseBoolStrs.True);
 end;

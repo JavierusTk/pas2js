@@ -1,4 +1,6 @@
+{$IFDEF PAS2JS}
 {$mode objfpc}
+{$ENDIF}
 
 {
     This file is part of the Free Pascal run time library.

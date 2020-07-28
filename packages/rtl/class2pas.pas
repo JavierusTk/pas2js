@@ -57,6 +57,7 @@ var
   Value: JSValue;
 
 begin
+  {$IFDEF PAS2JS}
   T:=aPascalName+' = Class external name '''+aJSName+'''';
   if aAncestor<>'' then
     T:=T+' ('+aAncestor+')';
@@ -109,7 +110,8 @@ begin
     if Obj<>nil then
       aDecl.Add('// next getPrototypeOf ...');
     end;
- aDecl.Add('end;');
+  aDecl.Add('end;');
+  {$ENDIF}
 end;
 
 end.

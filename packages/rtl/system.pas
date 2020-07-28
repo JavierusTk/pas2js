@@ -10,11 +10,16 @@
     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
 
  **********************************************************************}
+{$IFDEF PAS2JS}
 unit System;
 
 {$modeswitch externalclass}
+{$ENDIF}
 
 interface
+
+uses
+  Types;
 
 {$IFDEF NodeJS}
 var
@@ -75,11 +80,11 @@ type
   TDate = type TDateTime;
 
 
-  Int64 = type NativeInt unimplemented; // only 53 bits at runtime
-  UInt64 = type NativeUInt unimplemented; // only 52 bits at runtime
-  QWord = type NativeUInt unimplemented; // only 52 bits at runtime
-  Single = type Double unimplemented;
-  Comp = type NativeInt unimplemented;
+  Int64 = type NativeInt {$IFDEF PAS2JS}unimplemented{$ENDIF}; // only 53 bits at runtime
+  UInt64 = type NativeUInt {$IFDEF PAS2JS}unimplemented{$ENDIF}; // only 52 bits at runtime
+  QWord = type NativeUInt {$IFDEF PAS2JS}unimplemented{$ENDIF}; // only 52 bits at runtime
+  Single = type Double {$IFDEF PAS2JS}unimplemented{$ENDIF};
+  Comp = type NativeInt {$IFDEF PAS2JS}unimplemented{$ENDIF};
   NativeLargeInt = NativeInt;
   NativeLargeUInt = NativeUInt;
 
@@ -100,14 +105,17 @@ type
             TObject, TClass, IUnknown, IInterface, TInterfacedObject
 *****************************************************************************}
 type
+{$IFDEF PAS2JS}
   TGuid = record
     D1: DWord;
     D2: word;
     D3: word;
     D4: array[0..7] of byte;
   end;
+{$ENDIF}
   TGUIDString = type string;
 
+{$IFDEF PAS2JS}
   PMethod = ^TMethod;
   TMethod = record
     Code : CodePointer;
@@ -115,11 +123,11 @@ type
   end;
 
   TClass = class of TObject;
-
   { TObject }
 
   {$DispatchField Msg} // enable checking message methods for record field name "Msg"
   {$DispatchStrField MsgStr}
+
   TObject = class
   private
     class var FClassName: String; external name '$classname';
@@ -157,7 +165,7 @@ type
     procedure DefaultHandlerStr(var aMessage); virtual;
 
     function GetInterface(const iid: TGuid; out obj): boolean; overload;
-    function GetInterface(const iidstr: String; out obj): boolean; inline; overload;
+    function GetInterface(const iidstr: String; out obj): boolean; overload; inline;
     function GetInterfaceByStr(const iidstr: String; out obj): boolean;
     function GetInterfaceWeak(const iid: TGuid; out obj): boolean; // equal to GetInterface but the interface returned is not referenced
 
@@ -180,14 +188,16 @@ const
   E_NOTIMPL     = -2147467263; // FPC: longint($80004001)
 
 type
+
   {$Interfaces COM}
-  IInterface = interface
+
+  IUnknown = interface
     ['{00000000-0000-0000-C000-000000000046}']
     function QueryInterface(const iid: TGuid; out obj): Integer;
     function _AddRef: Integer;
     function _Release: Integer;
   end;
-  IUnknown = IInterface;
+  IInterface = IUnknown;
 
   {$M+}
   IInvokable = interface(IInterface)
@@ -208,7 +218,7 @@ type
 
   { TInterfacedObject }
 
-  TInterfacedObject = class(TObject,IInterface)
+  TInterfacedObject = class(TObject,IUnknown)
   protected
     fRefCount: Integer;
     { implement methods of IUnknown }
@@ -226,15 +236,15 @@ type
   TAggregatedObject = class(TObject)
   private
     fController: Pointer;
-    function GetController: IInterface;
+    function GetController: IUnknown;
   protected
     { implement methods of IUnknown }
     function QueryInterface(const iid: TGuid; out obj): Integer; virtual;
     function _AddRef: Integer; virtual;
     function _Release: Integer; virtual;
   public
-    constructor Create(const aController: IInterface); reintroduce;
-    property Controller: IInterface read GetController;
+    constructor Create(const aController: IUnknown); reintroduce;
+    property Controller: IUnknown read GetController;
   end;
 
   { TContainedObject }
@@ -246,10 +256,10 @@ type
 
 const
   { for safe as operator support }
-  IObjectInstance: TGuid = '{D91C9AF4-3C93-420F-A303-BF5BA82BFD23}';
+  IObjectInstance = '{D91C9AF4-3C93-420F-A303-BF5BA82BFD23}';
 
 function GUIDToString(const GUID: TGUID): string; external name 'rtl.guidrToStr';
-
+{$ENDIF}
 {*****************************************************************************
                               Array of const support
 *****************************************************************************}
@@ -283,29 +293,29 @@ type
   TVarRec = record
     VType: byte;
     VJSValue: JSValue;
-    VInteger: LongInt external name 'VJSValue';
-    VBoolean: Boolean external name 'VJSValue';
-    VExtended: Double external name 'VJSValue';
-    VPointer: Pointer external name 'VJSValue';
-    VObject: TObject external name 'VJSValue';
-    VClass: TClass external name 'VJSValue';
-    VWideChar: WideChar external name 'VJSValue';
-    VCurrency: Currency external name 'VJSValue';
-    VInterface: Pointer external name 'VJSValue';
-    VUnicodeString: UnicodeString external name 'VJSValue';
-    VNativeInt: NativeInt external name 'VJSValue';
+    VInteger: LongInt; {$IFDEF PAS2JS}external name 'VJSValue';{$ENDIF}
+    VBoolean: Boolean; {$IFDEF PAS2JS}external name 'VJSValue';{$ENDIF}
+    VExtended: Double; {$IFDEF PAS2JS}external name 'VJSValue';{$ENDIF}
+    VPointer: Pointer; {$IFDEF PAS2JS}external name 'VJSValue';{$ENDIF}
+    VObject: TObject; {$IFDEF PAS2JS}external name 'VJSValue';{$ENDIF}
+    VClass: TClass; {$IFDEF PAS2JS}external name 'VJSValue';{$ENDIF}
+    VWideChar: WideChar; {$IFDEF PAS2JS}external name 'VJSValue';{$ENDIF}
+    VCurrency: Currency; {$IFDEF PAS2JS}external name 'VJSValue';{$ENDIF}
+    VInterface: Pointer; {$IFDEF PAS2JS}external name 'VJSValue';{$ENDIF}
+    VUnicodeString: UnicodeString; {$IFDEF PAS2JS}external name 'VJSValue';{$ENDIF}
+    VNativeInt: NativeInt; {$IFDEF PAS2JS}external name 'VJSValue';{$ENDIF}
   end;
   TVarRecArray = array of TVarRec;
 
-function VarRecs: TVarRecArray; varargs;
+function VarRecs: TVarRecArray; {$IFDEF PAS2JS}varargs;{$ENDIF}
 
 {*****************************************************************************
                             Init / Exit / ExitProc
 *****************************************************************************}
 var
-  ExitCode: Integer; external name 'rtl.exitcode';
-  IsConsole: Boolean = {$IFDEF NodeJS}true{$ELSE}false{$ENDIF};
-  FirstDotAtFileNameStartIsExtension : Boolean = False;
+  ExitCode: Integer; {$IFDEF PAS2JS} external name 'rtl.exitcode';{$ENDIF}
+  IsConsole: Boolean{$IFDEF PAS2JS} = {$IFDEF NodeJS}true{$ELSE}false{$ENDIF}{$ENDIF};
+  FirstDotAtFileNameStartIsExtension : Boolean{$IFDEF PAS2JS} = False{$ENDIF};
 
 type
   TOnParamCount = function: Longint;
@@ -320,34 +330,39 @@ function ParamStr(Index: Longint): String;
 {*****************************************************************************
                                  Math
 *****************************************************************************}
+{$IFDEF PAS2JS}
 const
-  PI: Double; external name 'Math.PI';
-  MathE: Double; external name 'Math.E'; // Euler's number
-  MathLN10: Double; external name 'Math.LN10'; // ln(10)
-  MathLN2: Double; external name 'Math.LN2'; // ln(2)
-  MathLog10E: Double; external name 'Math.Log10E'; // log10(e)
-  MathLog2E: Double; external name 'Math.LOG2E'; // log2(e)
-  MathSQRT1_2: Double; external name 'Math.SQRT1_2'; // sqrt(0.5)
-  MathSQRT2: Double; external name 'Math.SQRT2'; // sqrt(2)
-
-function Abs(const A: integer): integer; overload; external name 'Math.abs';
-function Abs(const A: NativeInt): integer; overload; external name 'Math.abs';
-function Abs(const A: Double): Double; overload; external name 'Math.abs';
-function ArcTan(const A: Double): Double; external name 'Math.atan';
-function ArcTan2(const A,B: Double): Double; external name 'Math.atan2';
-function Cos(const A: Double): Double; external name 'Math.cos';
-function Exp(const A: Double): Double; external name 'Math.exp';
+{$ELSE}
+var
+{$ENDIF}
+  PI: Double; {$IFDEF PAS2JS} external name 'Math.PI';{$ENDIF}
+  MathE: Double; {$IFDEF PAS2JS} external name 'Math.E';{$ENDIF} // Euler's number
+  MathLN10: Double; {$IFDEF PAS2JS} external name 'Math.LN10';{$ENDIF} // ln(10)
+  MathLN2: Double; {$IFDEF PAS2JS} external name 'Math.LN2';{$ENDIF} // ln(2)
+  MathLog10E: Double; {$IFDEF PAS2JS} external name 'Math.Log10E';{$ENDIF} // log10(e)
+  MathLog2E: Double; {$IFDEF PAS2JS} external name 'Math.LOG2E';{$ENDIF} // log2(e)
+  MathSQRT1_2: Double; {$IFDEF PAS2JS} external name 'Math.SQRT1_2';{$ENDIF} // sqrt(0.5)
+  MathSQRT2: Double; {$IFDEF PAS2JS} external name 'Math.SQRT2';{$ENDIF} // sqrt(2)
+{$IFDEF PAS2JS}
+function Abs(const A: integer): integer; overload; {$IFDEF PAS2JS}external name 'Math.abs';{$ENDIF}
+function Abs(const A: NativeInt): integer; overload; {$IFDEF PAS2JS}external name 'Math.abs';{$ENDIF}
+function Abs(const A: Double): Double; overload; {$IFDEF PAS2JS}external name 'Math.abs';{$ENDIF}
+function ArcTan(const A: Double): Double; {$IFDEF PAS2JS}external name 'Math.atan';{$ENDIF}
+function ArcTan2(const A,B: Double): Double; {$IFDEF PAS2JS}external name 'Math.atan2';{$ENDIF}
+function Cos(const A: Double): Double; {$IFDEF PAS2JS}external name 'Math.cos';{$ENDIF}
+function Exp(const A: Double): Double; {$IFDEF PAS2JS}external name 'Math.exp';{$ENDIF}
 function Frac(const A: Double): Double; assembler;
-function Ln(const A: Double): Double; external name 'Math.log';
+function Ln(const A: Double): Double; {$IFDEF PAS2JS}external name 'Math.log';{$ENDIF}
 function Odd(const A: Integer): Boolean; assembler;
 function Random(const Range: Integer): Integer; overload; assembler;
-function Random: Double; overload; external name 'Math.random';
-function Round(const A: Double): NativeInt; external name 'Math.round';
-function Sin(const A: Double): Double; external name 'Math.sin';
+function Random: Double; overload; {$IFDEF PAS2JS}external name 'Math.random';{$ENDIF}
+function Round(const A: Double): NativeInt; {$IFDEF PAS2JS}external name 'Math.round';{$ENDIF}
+function Sin(const A: Double): Double; {$IFDEF PAS2JS}external name 'Math.sin';{$ENDIF}
 function Sqr(const A: Integer): Integer; assembler; overload;
 function Sqr(const A: Double): Double; assembler; overload;
-function sqrt(const A: Double): Double; external name 'Math.sqrt';
+function sqrt(const A: Double): Double; {$IFDEF PAS2JS}external name 'Math.sqrt';{$ENDIF}
 function Trunc(const A: Double): NativeInt;
+{$ENDIF}
 
 {*****************************************************************************
                           String functions
@@ -363,7 +378,7 @@ function Pos(const Search, InString: String): Integer; assembler; overload;
 function Pos(const Search, InString: String; StartAt : Integer): Integer; assembler; overload;
 procedure Insert(const Insertion: String; var Target: String; Index: Integer); overload;
 function upcase(c : char) : char; assembler;
-function HexStr(Val: NativeInt; cnt: byte): string; external name 'rtl.hexStr'; overload;
+{$IFDEF PAS2JS}function HexStr(Val: NativeInt; cnt: byte): string; external name 'rtl.hexStr'; overload;{$ENDIF}
 function binstr(val : NativeUInt; cnt : byte) : string;
 
 procedure val(const S: String; out NI : NativeInt; out Code: Integer); overload;
@@ -381,8 +396,8 @@ function StringOfChar(c: Char; l: NativeInt): String;
 {*****************************************************************************
                           Other functions
 *****************************************************************************}
-procedure Write; varargs; // ToDo: should be compiler built-in function
-procedure Writeln; varargs; // ToDo: should be compiler built-in function
+procedure Write; {$IFDEF PAS2JS}varargs;{$ENDIF} // ToDo: should be compiler built-in function
+procedure Writeln; {$IFDEF PAS2JS}varargs;{$ENDIF} // ToDo: should be compiler built-in function
 
 Type
   TConsoleHandler = Procedure (S : JSValue; NewLine : Boolean);
@@ -393,7 +408,7 @@ function StrictEqual(const A: JSValue; const B): boolean; assembler;
 function StrictInequal(const A: JSValue; const B): boolean; assembler;
 
 implementation
-
+ {$IFDEF PAS2JS}
 type
 
   { TJSObj - simple access to JS Object }
@@ -423,6 +438,7 @@ type
     property Length: NativeInt read FLength;
     property Elements[Index: NativeInt]: JSValue read GetElements; default;
   end;
+
 var
   JSArguments: TJSArguments; external name 'arguments';
 
@@ -430,11 +446,12 @@ function isNumber(const v: JSValue): boolean; external name 'rtl.isNumber';
 function isObject(const v: JSValue): boolean; external name 'rtl.isObject'; // true if not null and a JS Object
 function isString(const v: JSValue): boolean; external name 'rtl.isString';
 function isNaN(i: JSValue): boolean; external name 'isNaN'; // may result NaN
+{$ENDIF}
 
 // needed by ClassNameIs, the real SameText is in SysUtils
 function SameText(const s1, s2: String): Boolean; assembler;
 asm
-  return s1.toLowerCase() == s2.toLowerCase();
+  {$IFDEF PAS2JS}return s1.toLowerCase() == s2.toLowerCase();{$ENDIF}
 end;
 
 function VarRecs: TVarRecArray;
@@ -443,62 +460,69 @@ var
   v: PVarRec;
 begin
   Result:=nil;
+  {$IFDEF PAS2JS}
   while i<JSArguments.Length do
-    begin
+  begin
     new(v);
     v^.VType:=byte(JSArguments[i]);
     inc(i);
     v^.VJSValue:=JSArguments[i];
     inc(i);
     TJSArray(Result).push(v^);
-    end;
+  end;
+  {$ENDIF}
 end;
 
 function ParamCount: Longint;
 begin
+  {$IFDEF PAS2JS}
   if Assigned(OnParamCount) then
     Result:=OnParamCount()
   else
     Result:=0;
+  {$ENDIF}
 end;
 
 function ParamStr(Index: Longint): String;
 begin
-  if Assigned(OnParamStr) then
+  {$IFDEF PAS2JS}
+  if Assigned(OnParamStr)then
     Result:=OnParamStr(Index)
   else if Index=0 then
     Result:='js'
   else
     Result:='';
+  {$ENDIF}
 end;
 
 function Frac(const A: Double): Double; assembler;
 asm
-  return A % 1;
+  {$IFDEF PAS2JS}return A % 1;{$ENDIF}
 end;
 
 function Odd(const A: Integer): Boolean; assembler;
 asm
-  return A&1 != 0;
+  {$IFDEF PAS2JS}return A&1 != 0;{$ENDIF}
 end;
 
 function Random(const Range: Integer): Integer; assembler;
 asm
-  return Math.floor(Math.random()*Range);
+  {$IFDEF PAS2JS}return Math.floor(Math.random()*Range);{$ENDIF}
 end;
 
-function Sqr(const A: Integer): Integer; assembler;
+function Sqr(const A: Integer): Integer; assembler; overload;
 asm
-  return A*A;
+  {$IFDEF PAS2JS}return A*A;{$ENDIF}
 end;
 
-function Sqr(const A: Double): Double; assembler;
+function Sqr(const A: Double): Double; assembler; overload;
 asm
-  return A*A;
+  {$IFDEF PAS2JS}return A*A;{$ENDIF}
 end;
 
 function Trunc(const A: Double): NativeInt; assembler;
 asm
+  {$IFDEF PAS2JS}
   if (!Math.trunc) {
     Math.trunc = function(v) {
       v = +v;
@@ -508,18 +532,23 @@ asm
   }
   $mod.Trunc = Math.trunc;
   return Math.trunc(A);
+  {$ENDIF}
 end;
 
-function Copy(const S: string; Index, Size: Integer): String; assembler;
+function Copy(const S: string; Index, Size: Integer): String; assembler; overload;
 asm
+  {$IFDEF PAS2JS}
   if (Index<1) Index = 1;
   return (Size>0) ? S.substring(Index-1,Index+Size-1) : "";
+  {$ENDIF}
 end;
 
-function Copy(const S: string; Index: Integer): String; assembler;
+function Copy(const S: string; Index: Integer): String; overload;
 asm
+  {$IFDEF PAS2JS}
   if (Index<1) Index = 1;
   return S.substr(Index-1);
+  {$ENDIF}
 end;
 
 procedure Delete(var S: String; Index, Size: Integer);
@@ -533,12 +562,16 @@ end;
 
 function Pos(const Search, InString: String): Integer; assembler;
 asm
+  {$IFDEF PAS2JS}
   return InString.indexOf(Search)+1;
+  {$ENDIF}
 end;
 
-function Pos(const Search, InString: String; StartAt : Integer): Integer; assembler; overload;
+function Pos(const Search, InString: String; StartAt : Integer): Integer; assembler;
 asm
+  {$IFDEF PAS2JS}
   return InString.indexOf(Search,StartAt-1)+1;
+  {$ENDIF}
 end;
 
 procedure Insert(const Insertion: String; var Target: String; Index: Integer);
@@ -560,7 +593,6 @@ var
   WriteCallBack : TConsoleHandler;
 
 Function SetWriteCallBack(H : TConsoleHandler) : TConsoleHandler;
-
 begin
   Result:=WriteCallBack;
   WriteCallBack:=H;
@@ -570,11 +602,13 @@ procedure Write;
 var
   i: Integer;
 begin
+  {$IFDEF PAS2JS}
   for i:=0 to JSArguments.Length-1 do
     if Assigned(WriteCallBack) then
       WriteCallBack(JSArguments[i],False)
     else
       WriteBuf:=WriteBuf+String(JSArguments[i]);
+  {$ENDIF}
 end;
 
 procedure Writeln;
@@ -584,14 +618,15 @@ var
   s: String;
 
 begin
+  {$IFDEF PAS2JS}
   L:=JSArguments.Length-1;
   if Assigned(WriteCallBack) then
     begin
-    for i:=0 to L do
-      WriteCallBack(JSArguments[i],I=L);
+      for i:=0 to L do
+        WriteCallBack(JSArguments[i],I=L);
     end
   else
-    begin
+  begin
     s:=WriteBuf;
     for i:=0 to L do
       s:=s+String(JSArguments[i]);
@@ -599,22 +634,26 @@ begin
       console.log(s);
     end;
     WriteBuf:='';
-    end;
+  end;
+  {$ENDIF}
 end;
 
 function Int(const A: Double): double;
-
 begin
   // trunc contains fix for missing Math.trunc in IE
   Result:=Trunc(A);
 end;
 
-function Number(S: String): Double; external name 'Number';
+function Number(S: String): Double; {$IFDEF PAS2JS}external name 'Number';{$ENDIF}
+begin
+  Result := 0;
+end;
 
 function valint(const S: String; MinVal, MaxVal: NativeInt; out Code: Integer): NativeInt;
 var
   x: double;
 begin
+  {$IFDEF PAS2JS}
   x:=Number(S);
   if isNaN(x) then
     case copy(s,1,1) of
@@ -634,72 +673,77 @@ begin
     Result:=Trunc(x);
     Code:=0;
     end;
+  {$ENDIF}
 end;
 
-procedure val(const S: String; out NI : NativeInt; out Code: Integer);
+procedure val(const S: String; out NI : NativeInt; out Code: Integer);overload;
 begin
   NI:=valint(S,low(NI),high(NI),Code);
 end;
 
-procedure val(const S: String; out NI: NativeUInt; out Code: Integer);
+procedure val(const S: String; out NI: NativeUInt; out Code: Integer);overload;
 var
   x : double;
 begin
+  {$IFDEF PAS2JS}
   x:=Number(S);
   if isNaN(x) or (X<>Int(X)) or (X<0) then
     Code:=1
   else
-    begin
+  begin
     Code:=0;
     NI:=Trunc(x);
-    end;
+  end;
+  {$ENDIF}
 end;
 
-procedure val(const S: String; out SI : ShortInt; out Code: Integer);
+procedure val(const S: String; out SI : ShortInt; out Code: Integer); overload;
 begin
   SI:=valint(S,low(SI),high(SI),Code);
 end;
 
-procedure val(const S: String; out SI: smallint; out Code: Integer);
+procedure val(const S: String; out SI: smallint; out Code: Integer);overload;
 begin
   SI:=valint(S,low(SI),high(SI),Code);
 end;
 
-procedure val(const S: String; out C: Cardinal; out Code: Integer);
+procedure val(const S: String; out C: Cardinal; out Code: Integer);overload;
 begin
   C:=valint(S,low(C),high(C),Code);
 end;
 
-procedure val(const S: String; out B: Byte; out Code: Integer);
+procedure val(const S: String; out B: Byte; out Code: Integer);overload;
 begin
   B:=valint(S,low(B),high(B),Code);
 end;
 
-procedure val(const S: String; out W: word; out Code: Integer);
+procedure val(const S: String; out W: word; out Code: Integer);overload;
 begin
   W:=valint(S,low(W),high(W),Code);
 end;
 
-procedure val(const S : String; out I : integer; out Code : Integer);
+procedure val(const S : String; out I : integer; out Code : Integer);overload;
 begin
   I:=valint(S,low(I),high(I),Code);
 end;
 
-procedure val(const S : String; out d : double; out Code : Integer);
+procedure val(const S : String; out d : double; out Code : Integer);overload;
 Var
   x: double;
 begin
+  {$IFDEF PAS2JS}
   x:=Number(S);
   if isNaN(x) then
     Code:=1
   else
-    begin
+  begin
     Code:=0;
     d:=x;
-    end;
+  end;
+  {$ENDIF}
 end;
 
-procedure val(const S: String; out b: boolean; out Code: Integer);
+procedure val(const S: String; out b: boolean; out Code: Integer);overload;
 begin
   if SameText(S,'true') then
     begin
@@ -729,7 +773,7 @@ end;
 
 function upcase(c : char) : char; assembler;
 asm
-  return c.toUpperCase();
+  {$IFDEF PAS2JS}return c.toUpperCase();{$ENDIF}
 end;
 
 function StringOfChar(c: Char; l: NativeInt): String;
@@ -737,7 +781,7 @@ var
   i: Integer;
 begin
   asm
-    if ((l>0) && c.repeat) return c.repeat(l);
+    {$IFDEF PAS2JS}if ((l>0) && c.repeat) return c.repeat(l);{$ENDIF}
   end;
   Result:='';
   for i:=1 to l do Result:=Result+c;
@@ -745,19 +789,20 @@ end;
 
 function Assigned(const V: JSValue): boolean; assembler;
 asm
-  return (V!=undefined) && (V!=null) && (!rtl.isArray(V) || (V.length > 0));
+  {$IFDEF PAS2JS}return (V!=undefined) && (V!=null) && (!rtl.isArray(V) || (V.length > 0));{$ENDIF}
 end;
 
 function StrictEqual(const A: JSValue; const B): boolean; assembler;
 asm
-  return A === B;
+  {$IFDEF PAS2JS}return A === B;{$ENDIF}
 end;
 
 function StrictInequal(const A: JSValue; const B): boolean; assembler;
 asm
-  return A !== B;
+  {$IFDEF PAS2JS}return A !== B;{$ENDIF}
 end;
 
+{$IFDEF PAS2JS}
 { TContainedObject }
 
 function TContainedObject.QueryInterface(const iid: TGuid; out obj): Integer;
@@ -770,27 +815,27 @@ end;
 
 { TAggregatedObject }
 
-function TAggregatedObject.GetController: IInterface;
+function TAggregatedObject.GetController: IUnknown;
 begin
-  Result := IInterface(fController);
+  Result := IUnknown(fController);
 end;
 
 function TAggregatedObject.QueryInterface(const iid: TGuid; out obj): Integer;
 begin
-  Result := IInterface(fController).QueryInterface(iid, obj);
+  Result := IUnknown(fController).QueryInterface(iid, obj);
 end;
 
 function TAggregatedObject._AddRef: Integer;
 begin
-  Result := IInterface(fController)._AddRef;
+  Result := IUnknown(fController)._AddRef;
 end;
 
 function TAggregatedObject._Release: Integer;
 begin
-  Result := IInterface(fController)._Release;
+  Result := IUnknown(fController)._Release;
 end;
 
-constructor TAggregatedObject.Create(const aController: IInterface);
+constructor TAggregatedObject.Create(const aController: IUnknown);
 begin
   inherited Create;
   { do not keep a counted reference to the controller! }
@@ -1081,10 +1126,9 @@ function TObject.ToString: String;
 begin
   Result:=ClassName;
 end;
-
+ {$ENDIF}
 
 initialization
   ExitCode:=0; // set it here, so that WPO does not remove it
 
 end.
-

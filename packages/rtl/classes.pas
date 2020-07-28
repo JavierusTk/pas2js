@@ -10,12 +10,12 @@
     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
 
  **********************************************************************}
-unit Classes;
+ unit Classes;
 
 interface
 
 uses
-  RTLConsts, Types, SysUtils, JS, TypInfo;
+  RTLConsts, Types, SysUtils, JS, TypInfo {$IFDEF DCC}, SystemPas2JS{$ENDIF};
 
 type
   TNotifyEvent = procedure(Sender: TObject) of object;
@@ -214,10 +214,10 @@ type
   private
     FOwnerInterface: IInterface;
   protected
-    function _AddRef: Integer;
-    function _Release: Integer;
+    function _AddRef: Integer; {$IFDEF DCC}stdcall;{$ENDIF}
+    function _Release: Integer; {$IFDEF DCC}stdcall;{$ENDIF}
   public
-    function QueryInterface(const IID: TGUID; out Obj): integer; virtual;
+    function QueryInterface(const IID: TGUID; out Obj): Integer; virtual; {$IFDEF DCC}stdcall;{$ENDIF}
     procedure AfterConstruction; override;
   end;
 
@@ -292,9 +292,9 @@ type
   public
     constructor Create; reintroduce;
     destructor Destroy; override;
-    function Add(const S: string): Integer; virtual; overload;
+    function Add(const S: string): Integer; overload; virtual;
 //    function AddFmt(const Fmt : string; const Args : Array of const): Integer; overload;
-    function AddObject(const S: string; AObject: TObject): Integer; virtual; overload;
+    function AddObject(const S: string; AObject: TObject): Integer; overload; virtual;
 //    function AddObject(const Fmt: string; Args : Array of const; AObject: TObject): Integer; overload;
     procedure Append(const S: string);
     procedure AddStrings(TheStrings: TStrings); overload; virtual;
@@ -309,7 +309,7 @@ type
     procedure Clear; virtual; abstract;
     procedure Delete(Index: Integer); virtual; abstract;
     procedure EndUpdate;
-    function Equals(Obj: TObject): Boolean; override; overload;
+    function Equals(Obj: TObject): Boolean; overload; override;
     function Equals(TheStrings: TStrings): Boolean; overload;
     procedure Exchange(Index1, Index2: Integer); virtual;
     function GetEnumerator: TStringsEnumerator;
@@ -387,8 +387,8 @@ type
     procedure PutObject(Index: Integer; AObject: TObject); override;
     procedure SetCapacity(NewCapacity: Integer); override;
     procedure SetUpdateState(Updating: Boolean); override;
-    procedure InsertItem(Index: Integer; const S: string); virtual; overload;
-    procedure InsertItem(Index: Integer; const S: string; O: TObject); virtual; overload;
+    procedure InsertItem(Index: Integer; const S: string); overload; virtual;
+    procedure InsertItem(Index: Integer; const S: string; O: TObject); overload; virtual;
     Function DoCompareText(const s1,s2 : string) : PtrInt; override;
     function CompareStrings(const s1,s2 : string) : Integer; virtual;
   public
@@ -430,7 +430,7 @@ type
     procedure SetDisplayName(const Value: string); virtual;
     property UpdateCount: Integer read FUpdateCount;
   public
-    constructor Create(ACollection: TCollection); virtual; reintroduce;
+    constructor Create(ACollection: TCollection); reintroduce; virtual;
     destructor Destroy; override;
     function GetNamePath: string; override;
     property Collection: TCollection read FCollection write SetCollection;
@@ -584,15 +584,15 @@ type
     procedure ValidateContainer(AComponent: TComponent); virtual;
     procedure ValidateInsert(AComponent: TComponent); virtual;
   protected
-    function _AddRef: Integer;
-    function _Release: Integer;
+    function _AddRef: Integer; {$IFDEF DCC}stdcall; {$ENDIF}
+    function _Release: Integer; {$IFDEF DCC}stdcall; {$ENDIF}
   public
-    constructor Create(AOwner: TComponent); virtual; reintroduce;
+    constructor Create(AOwner: TComponent); reintroduce; virtual;
     destructor Destroy; override;
     procedure BeforeDestruction; override;
     procedure DestroyComponents;
     procedure Destroying;
-    function QueryInterface(const IID: TGUID; out Obj): integer; virtual;
+    function QueryInterface(const IID: TGUID; out Obj): integer; virtual; {$IFDEF DCC}stdcall; {$ENDIF}
     procedure WriteState(Writer: TWriter); virtual;
 //    function ExecuteAction(Action: TBasicAction): Boolean; virtual;
     function FindComponent(const AName: string): TComponent;
@@ -646,12 +646,12 @@ type
     Procedure WriteExactSizeData(Const Buffer : TBytes; aSize,aCount : NativeInt);
   public
     function Read(var Buffer: TBytes; Count: Longint): Longint; overload;
-    function Read(Buffer : TBytes; aOffset, Count: Longint): Longint; virtual; abstract; overload;
+    function Read(Buffer : TBytes; aOffset, Count: Longint): Longint; overload; virtual; abstract;
 
-    function Write(const Buffer: TBytes; Count: Longint): Longint; virtual; overload;
-    function Write(const Buffer: TBytes; Offset, Count: Longint): Longint; virtual; abstract; overload;
+    function Write(const Buffer: TBytes; Count: Longint): Longint; overload; virtual;
+    function Write(const Buffer: TBytes; Offset, Count: Longint): Longint; overload; virtual; abstract;
 
-    function Seek(const Offset: NativeInt; Origin: TSeekOrigin): NativeInt; virtual; abstract; overload;
+    function Seek(const Offset: NativeInt; Origin: TSeekOrigin): NativeInt; overload; virtual; abstract;
 
     function ReadData(Buffer: TBytes; Count: NativeInt): NativeInt; overload;
     function ReadData(var Buffer: Boolean): NativeInt; overload;
@@ -837,7 +837,7 @@ type
   private
     function GetBytes: TBytes;
   public
-    constructor Create(const ABytes: TBytes); virtual; overload;
+    constructor Create(const ABytes: TBytes); overload; virtual;
     property Bytes: TBytes read GetBytes;
   end;
 
@@ -847,7 +847,7 @@ type
   private
     function GetDataString : String;
   public
-    constructor Create(const aString: String); virtual; overload;
+    constructor Create(const aString: String); overload; virtual;
     property DataString: String read GetDataString;
   end;
 
@@ -1437,6 +1437,7 @@ function TStringStream.GetDataString: String;
 var
   a : TJSUint16Array;
 begin
+  {$IFDEF PAS2JS}
   Result:=''; // Silence warning
   a:=TJSUint16Array.New(Memory.slice(0,Size));
   if a<>nil then
@@ -1444,6 +1445,7 @@ begin
       // Result=String.fromCharCode.apply(null, new Uint16Array(a));
       Result=String.fromCharCode.apply(null, a);
     end;
+  {$ENDIF}
 end;
 
 constructor TStringStream.Create(const aString: String);
@@ -1481,9 +1483,11 @@ end;
 procedure RegisterIntegerConsts(IntegerType: Pointer; IdentToIntFn: TIdentToInt;
   IntToIdentFn: TIntToIdent);
 begin
+  {$IFDEF PAS2JS}
   if Not Assigned(IntConstList) then
     IntConstList:=TFPList.Create;
   IntConstList.Add(TIntConst.Create(IntegerType, IdentToIntFn, IntToIdentFn));
+  {$ENDIF}
 end;
 
 function FindIntToIdent(AIntegerType: Pointer): TIntToIdent;
@@ -1492,6 +1496,7 @@ var
   i: Integer;
 
 begin
+  {$IFDEF PAS2JS}
   Result := nil;
   if Not Assigned(IntConstList) then
     exit;
@@ -1499,12 +1504,14 @@ begin
     for i := 0 to Count - 1 do
       if TIntConst(Items[i]).IntegerType = AIntegerType then
         exit(TIntConst(Items[i]).IntToIdentFn);
+  {$ENDIF}
 end;
 
 function FindIdentToInt(AIntegerType: Pointer): TIdentToInt;
 var
   i: Integer;
 begin
+  {$IFDEF PAS2JS}
   Result := nil;
   if Not Assigned(IntConstList) then
     exit;
@@ -1513,6 +1520,7 @@ begin
       with TIntConst(Items[I]) do
         if TIntConst(Items[I]).IntegerType = AIntegerType then
           exit(IdentToIntFn);
+  {$ENDIF}
 end;
 
 function IdentToInt(const Ident: String; out Int: LongInt;
@@ -1547,6 +1555,7 @@ function GlobalIdentToInt(const Ident: String; var Int: LongInt):boolean;
 var
   i : Integer;
 begin
+  {$IFDEF PAS2JS}
   Result := false;
   if Not Assigned(IntConstList) then
     exit;
@@ -1554,14 +1563,17 @@ begin
     for i := 0 to Count - 1 do
       if TIntConst(Items[I]).IdentToIntFn(Ident, Int) then
         Exit(True);
+  {$ENDIF}
 end;
 
 function FindClass(const AClassName: string): TPersistentClass;
 
 begin
+  {$IFDEF PAS2JS}
   Result := GetClass(AClassName);
   if not Assigned(Result) then
     raise EClassNotFound.CreateFmt(SClassNotFound, [AClassName]);
+  {$ENDIF}
 end;
 
 
@@ -1571,6 +1583,7 @@ Var
   Comp1,Comp2 : TComponent;
 
 begin
+  {$IFDEF PAS2JS}
   Comp2:=Nil;
   Comp1:=TComponent.Create;
   try
@@ -1579,6 +1592,7 @@ begin
     Comp1.Free;
     Comp2.Free;
   end;
+  {$ENDIF}
 end;
 
 function CollectionsEqual(C1, C2: TCollection; Owner1, Owner2: TComponent): Boolean;
@@ -1643,17 +1657,21 @@ function CollectionsEqual(C1, C2: TCollection; Owner1, Owner2: TComponent): Bool
 
 function TInterfacedPersistent._AddRef: Integer;
 begin
+  {$IFDEF PAS2JS}
   Result:=-1;
   if Assigned(FOwnerInterface) then
     Result:=FOwnerInterface._AddRef;
+  {$ENDIF}
 end;
 
 function TInterfacedPersistent._Release: Integer;
 
 begin
+  {$IFDEF PAS2JS}
   Result:=-1;
   if Assigned(FOwnerInterface) then
     Result:=FOwnerInterface._Release;
+  {$ENDIF}
 end;
 
 function TInterfacedPersistent.QueryInterface(const IID: TGUID; out Obj): integer;
@@ -1750,46 +1768,52 @@ end;
 
 procedure TFPList.DoCopy(ListA, ListB: TFPList);
 begin
+  {$IFDEF PAS2JS}
   if Assigned(ListB) then
     CopyMove(ListB)
   else
     CopyMove(ListA);
+  {$ENDIF}
 end;
 
 procedure TFPList.DoSrcUnique(ListA, ListB: TFPList);
 var r : integer;
 begin
+  {$IFDEF PAS2JS}
   if Assigned(ListB) then
-    begin
-    Clear;
-    for r := 0 to ListA.Count-1 do
-      if ListB.IndexOf(ListA[r]) < 0 then
-        Add(ListA[r]);
-    end
+  begin
+  Clear;
+  for r := 0 to ListA.Count-1 do
+    if ListB.IndexOf(ListA[r]) < 0 then
+      Add(ListA[r]);
+  end
   else
-    begin
-    for r := Count-1 downto 0 do
-      if ListA.IndexOf(Self[r]) >= 0 then
-        Delete(r);
-    end;
+  begin
+  for r := Count-1 downto 0 do
+    if ListA.IndexOf(Self[r]) >= 0 then
+      Delete(r);
+  end;
+  {$ENDIF}
 end;
 
 procedure TFPList.DoAnd(ListA, ListB: TFPList);
 var r : integer;
 begin
+  {$IFDEF PAS2JS}
   if Assigned(ListB) then
-    begin
-    Clear;
-    for r := 0 to ListA.count-1 do
-      if ListB.IndexOf(ListA[r]) >= 0 then
-        Add(ListA[r]);
-    end
+  begin
+  Clear;
+  for r := 0 to ListA.count-1 do
+    if ListB.IndexOf(ListA[r]) >= 0 then
+      Add(ListA[r]);
+  end
   else
-    begin
-    for r := Count-1 downto 0 do
-      if ListA.IndexOf(Self[r]) < 0 then
-        Delete(r);
-    end;
+  begin
+  for r := Count-1 downto 0 do
+    if ListA.IndexOf(Self[r]) < 0 then
+      Delete(r);
+  end;
+  {$ENDIF}
 end;
 
 procedure TFPList.DoDestUnique(ListA, ListB: TFPList);
@@ -1805,6 +1829,7 @@ procedure TFPList.DoDestUnique(ListA, ListB: TFPList);
 
 var Dest : TFPList;
 begin
+  {$IFDEF PAS2JS}
   if Assigned(ListB) then
     MoveElements(ListB, ListA)
   else
@@ -1815,10 +1840,12 @@ begin
     finally
       Dest.Destroy;
     end;
+  {$ENDIF}
 end;
 
 procedure TFPList.DoOr(ListA, ListB: TFPList);
 begin
+  {$IFDEF PAS2JS}
   if Assigned(ListB) then
     begin
     CopyMove(ListA);
@@ -1826,6 +1853,7 @@ begin
     end
   else
     MergeMove(ListA);
+  {$ENDIF}
 end;
 
 procedure TFPList.DoXOr(ListA, ListB: TFPList);
@@ -1833,18 +1861,19 @@ var
   r : integer;
   l : TFPList;
 begin
+  {$IFDEF PAS2JS}
   if Assigned(ListB) then
-    begin
-    Clear;
-    for r := 0 to ListA.Count-1 do
-      if ListB.IndexOf(ListA[r]) < 0 then
-        Add(ListA[r]);
-    for r := 0 to ListB.Count-1 do
-      if ListA.IndexOf(ListB[r]) < 0 then
-        Add(ListB[r]);
-    end
+  begin
+  Clear;
+  for r := 0 to ListA.Count-1 do
+    if ListB.IndexOf(ListA[r]) < 0 then
+      Add(ListA[r]);
+  for r := 0 to ListB.Count-1 do
+    if ListA.IndexOf(ListB[r]) < 0 then
+      Add(ListB[r]);
+  end
   else
-    begin
+  begin
     l := TFPList.Create;
     try
       l.CopyMove(Self);
@@ -1857,7 +1886,8 @@ begin
     finally
       l.Destroy;
     end;
-    end;
+  end;
+  {$ENDIF}
 end;
 
 function TFPList.Get(Index: Integer): JSValue;
@@ -1876,16 +1906,19 @@ end;
 
 procedure TFPList.SetCapacity(NewCapacity: Integer);
 begin
+  {$IFDEF PAS2JS}
   If (NewCapacity < FCount) then
      Error (SListCapacityError, str(NewCapacity));
   if NewCapacity = FCapacity then
     exit;
   SetLength(FList,NewCapacity);
   FCapacity := NewCapacity;
+  {$ENDIF}
 end;
 
 procedure TFPList.SetCount(NewCount: Integer);
 begin
+  {$IFDEF PAS2JS}
   if (NewCount < 0) then
     Error(SListCountError, str(NewCount));
   If NewCount > FCount then
@@ -1894,11 +1927,12 @@ begin
       SetCapacity(NewCount);
     end;
   FCount := NewCount;
+  {$ENDIF}
 end;
 
 procedure TFPList.RaiseIndexError(Index: Integer);
 begin
-  Error(SListIndexError, str(Index));
+  {$IFDEF PAS2JS}Error(SListIndexError, str(Index));{$ENDIF}
 end;
 
 destructor TFPList.Destroy;
@@ -1930,31 +1964,36 @@ end;
 
 procedure TFPList.Clear;
 begin
+  {$IFDEF PAS2JS}
   if Assigned(FList) then
   begin
     SetCount(0);
     SetCapacity(0);
   end;
+  {$ENDIF}
 end;
 
 procedure TFPList.Delete(Index: Integer);
 begin
+  {$IFDEF PAS2JS}
   If (Index<0) or (Index>=FCount) then
     Error (SListIndexError, str(Index));
   FCount := FCount-1;
   System.Delete(FList,Index,1);
   Dec(FCapacity);
+  {$ENDIF}
 end;
 
 class procedure TFPList.Error(const Msg: string; const Data: String);
 begin
-  Raise EListError.CreateFmt(Msg,[Data]);
+  {$IFDEF PAS2JS}Raise EListError.CreateFmt(Msg,[Data]);{$ENDIF}
 end;
 
 procedure TFPList.Exchange(Index1, Index2: Integer);
 var
   Temp : JSValue;
 begin
+  {$IFDEF PAS2JS}
   If (Index1 >= FCount) or (Index1 < 0) then
     Error(SListIndexError, str(Index1));
   If (Index2 >= FCount) or (Index2 < 0) then
@@ -1962,6 +2001,7 @@ begin
   Temp := FList[Index1];
   FList[Index1] := FList[Index2];
   FList[Index2] := Temp;
+  {$ENDIF}
 end;
 
 function TFPList.Expand: TFPList;
@@ -2035,11 +2075,13 @@ end;
 
 procedure TFPList.Insert(Index: Integer; Item: JSValue);
 begin
+  {$IFDEF PAS2JS}
   if (Index < 0) or (Index > FCount )then
     Error(SlistIndexError, str(Index));
   TJSArray(FList).splice(Index, 0, Item);
   inc(FCapacity);
   inc(FCount);
+  {$ENDIF}
 end;
 
 function TFPList.Last: JSValue;
@@ -2054,6 +2096,7 @@ procedure TFPList.Move(CurIndex, NewIndex: Integer);
 var
   Temp: JSValue;
 begin
+  {$IFDEF PAS2JS}
   if (CurIndex < 0) or (CurIndex > Count - 1) then
     Error(SListIndexError, str(CurIndex));
   if (NewIndex < 0) or (NewIndex > Count -1) then
@@ -2063,6 +2106,7 @@ begin
   // ToDo: use TJSArray.copyWithin if available
   TJSArray(FList).splice(CurIndex,1);
   TJSArray(FList).splice(NewIndex,0,Temp);
+  {$ENDIF}
 end;
 
 procedure TFPList.Assign(ListA: TFPList; AOperator: TListAssignOp;
@@ -2146,18 +2190,22 @@ end;
 
 procedure TFPList.Sort(const Compare: TListSortCompare);
 begin
+  {$IFDEF PAS2JS}
   if Not Assigned(FList) or (FCount < 2) then exit;
   QuickSort(Flist, 0, FCount-1,
     function(Item1, Item2: JSValue): Integer
     begin
       Result := Compare(Item1, Item2);
     end);
+  {$ENDIF}
 end;
 
 procedure TFPList.SortList(const Compare: TListSortCompareFunc);
 begin
+  {$IFDEF PAS2JS}
   if Not Assigned(FList) or (FCount < 2) then exit;
   QuickSort(Flist, 0, FCount-1, Compare);
+  {$ENDIF}
 end;
 
 procedure TFPList.ForEachCall(const proc2call: TListCallback; const arg: JSValue
@@ -2209,46 +2257,52 @@ end;
 
 procedure TList.DoCopy(ListA, ListB: TList);
 begin
+  {$IFDEF PAS2JS}
   if Assigned(ListB) then
     CopyMove(ListB)
   else
     CopyMove(ListA);
+  {$ENDIF}
 end;
 
 procedure TList.DoSrcUnique(ListA, ListB: TList);
 var r : integer;
 begin
+  {$IFDEF PAS2JS}
   if Assigned(ListB) then
-    begin
+  begin
     Clear;
     for r := 0 to ListA.Count-1 do
       if ListB.IndexOf(ListA[r]) < 0 then
         Add(ListA[r]);
-    end
+  end
   else
-    begin
+  begin
     for r := Count-1 downto 0 do
       if ListA.IndexOf(Self[r]) >= 0 then
         Delete(r);
-    end;
+  end;
+  {$ENDIF}
 end;
 
 procedure TList.DoAnd(ListA, ListB: TList);
 var r : integer;
 begin
+  {$IFDEF PAS2JS}
   if Assigned(ListB) then
-    begin
+  begin
     Clear;
     for r := 0 to ListA.Count-1 do
       if ListB.IndexOf(ListA[r]) >= 0 then
         Add(ListA[r]);
-    end
+  end
   else
-    begin
+  begin
     for r := Count-1 downto 0 do
       if ListA.IndexOf(Self[r]) < 0 then
         Delete(r);
-    end;
+  end;
+  {$ENDIF}
 end;
 
 procedure TList.DoDestUnique(ListA, ListB: TList);
@@ -2264,6 +2318,7 @@ procedure TList.DoDestUnique(ListA, ListB: TList);
 
 var Dest : TList;
 begin
+  {$IFDEF PAS2JS}
   if Assigned(ListB) then
     MoveElements(ListB, ListA)
   else
@@ -2274,17 +2329,20 @@ begin
     finally
       Dest.Destroy;
     end;
+  {$ENDIF}
 end;
 
 procedure TList.DoOr(ListA, ListB: TList);
 begin
+  {$IFDEF PAS2JS}
   if Assigned(ListB) then
-    begin
+  begin
     CopyMove(ListA);
     MergeMove(ListB);
-    end
+  end
   else
     MergeMove(ListA);
+  {$ENDIF}
 end;
 
 procedure TList.DoXOr(ListA, ListB: TList);
@@ -2292,8 +2350,9 @@ var
   r : integer;
   l : TList;
 begin
+  {$IFDEF PAS2JS}
   if Assigned(ListB) then
-    begin
+  begin
     Clear;
     for r := 0 to ListA.Count-1 do
       if ListB.IndexOf(ListA[r]) < 0 then
@@ -2301,7 +2360,7 @@ begin
     for r := 0 to ListB.Count-1 do
       if ListA.IndexOf(ListB[r]) < 0 then
         Add(ListB[r]);
-    end
+  end
   else
     try
       l := TList.Create;
@@ -2315,6 +2374,7 @@ begin
     finally
       l.Destroy;
     end;
+  {$ENDIF}
 end;
 
 function TList.Get(Index: Integer): JSValue;
@@ -2376,9 +2436,11 @@ end;
 
 destructor TList.Destroy;
 begin
+  {$IFDEF PAS2JS}
   if Assigned(FList) then
     Clear;
   FreeAndNil(FList);
+  {$ENDIF}
 end;
 
 procedure TList.AddList(AList: TList);
@@ -2420,7 +2482,7 @@ end;
 
 class procedure TList.Error(const Msg: string; Data: String);
 begin
-  Raise EListError.CreateFmt(Msg,[Data]);
+  {$IFDEF PAS2JS}Raise EListError.CreateFmt(Msg,[Data]);{$ENDIF}
 end;
 
 procedure TList.Exchange(Index1, Index2: Integer);
@@ -2725,7 +2787,6 @@ end;
 
 
 Function TStrings.GetDelimitedText: string;
-
 Var
   I: integer;
   RE : string;
@@ -2733,6 +2794,7 @@ Var
   doQuote : Boolean;
 
 begin
+  {$IFDEF PAS2JS}
   CheckSpecialChars;
   result:='';
   RE:=QuoteChar+'|'+Delimiter;
@@ -2741,7 +2803,7 @@ begin
   RE:='/'+RE+'/';
   // Check for break characters and quote if required.
   For i:=0 to count-1 do
-    begin
+  begin
     S:=Strings[i];
     doQuote:=FAlwaysQuote or (TJSString(s).search(RE)<>-1);
     if DoQuote then
@@ -2750,44 +2812,47 @@ begin
       Result:=Result+S;
     if I<Count-1 then
       Result:=Result+Delimiter;
-    end;
+  end;
   // Quote empty string:
   If (Length(Result)=0) and (Count=1) then
     Result:=QuoteChar+QuoteChar;
+  {$ENDIF}
 end;
 
 procedure TStrings.GetNameValue(Index : Integer; Out AName,AValue : String);
-
 Var L : longint;
 
 begin
+  {$IFDEF PAS2JS}
   CheckSpecialChars;
   AValue:=Strings[Index];
   L:=Pos(FNameValueSeparator,AValue);
   If L<>0 then
-    begin
+  begin
     AName:=Copy(AValue,1,L-1);
     //    System.Delete(AValue,1,L);
     AValue:=Copy(AValue,L+1,length(AValue)-L);
-    end
+  end
   else
     AName:='';
+  {$ENDIF}
 end;
 
 function TStrings.ExtractName(const s:String):String;
 var
   L: Longint;
 begin
+  {$IFDEF PAS2JS}
   CheckSpecialChars;
   L:=Pos(FNameValueSeparator,S);
   If L<>0 then
     Result:=Copy(S,1,L-1)
   else
     Result:='';
+  {$ENDIF}
 end;
 
 function TStrings.GetName(Index: Integer): string;
-
 Var
   V : String;
 
@@ -2796,7 +2861,6 @@ begin
 end;
 
 Function TStrings.GetValue(const Name: string): string;
-
 Var
   L : longint;
   N : String;
@@ -2809,7 +2873,6 @@ begin
 end;
 
 Function TStrings.GetValueFromIndex(Index: Integer): string;
-
 Var
   N : String;
 
@@ -2818,7 +2881,6 @@ begin
 end;
 
 Procedure TStrings.SetValueFromIndex(Index: Integer; const Value: string);
-
 begin
   If (Value='') then
     Delete(Index)
@@ -2934,7 +2996,6 @@ begin
 end;
 
 Procedure TStrings.SetCommaText(const Value: string);
-
 Var
   C1,C2 : Char;
 
@@ -2953,7 +3014,6 @@ begin
 end;
 
 Procedure TStrings.SetValue(const Name, Value: string);
-
 Var L : longint;
 
 begin
@@ -2968,7 +3028,7 @@ end;
 
 Procedure TStrings.Error(const Msg: string; Data: Integer);
 begin
-  Raise EStringListError.CreateFmt(Msg,[IntToStr(Data)]);
+  {$IFDEF PAS2JS}Raise EStringListError.CreateFmt(Msg,[IntToStr(Data)]);{$ENDIF}
 end;
 
 Function TStrings.GetCapacity: Integer;
@@ -2980,14 +3040,12 @@ end;
 
 
 Function TStrings.GetObject(Index: Integer): TObject;
-
 begin
   if Index=0 then ;
   Result:=Nil;
 end;
 
 Function TStrings.GetTextStr: string;
-
 Var
   I : Longint;
   S,NL : String;
@@ -3013,10 +3071,7 @@ begin
     end;
 end;
 
-
-
 Procedure TStrings.Put(Index: Integer; const S: string);
-
 Var Obj : TObject;
 
 begin
@@ -3028,7 +3083,6 @@ end;
 
 
 Procedure TStrings.PutObject(Index: Integer; AObject: TObject);
-
 begin
   // Empty.
   if Index=0 then exit;
@@ -3038,14 +3092,12 @@ end;
 
 
 Procedure TStrings.SetCapacity(NewCapacity: Integer);
-
 begin
   // Empty.
   if NewCapacity=0 then ;
 end;
 
 Function TStrings.GetNextLineBreak (Const Value : String; Out S : String; Var P : Integer) : Boolean;
-
 Var
   PP : Integer;
 
@@ -3063,7 +3115,6 @@ begin
 end;
 
 Procedure TStrings.DoSetTextStr(const Value: string; DoClear : Boolean);
-
 Var
   S : String;
   P : Integer;
@@ -3082,21 +3133,18 @@ begin
 end;
 
 Procedure TStrings.SetTextStr(const Value: string);
-
 begin
   CheckSpecialChars;
   DoSetTextStr(Value,True);
 end;
 
 Procedure TStrings.AddText(const S: string);
-
 begin
   CheckSpecialChars;
   DoSetTextStr(S,False);
 end;
 
 Procedure TStrings.SetUpdateState(Updating: Boolean);
-
 begin
   // FPONotifyObservers(Self,ooChange,Nil);
   if Updating then ;
@@ -3105,7 +3153,6 @@ end;
 
 
 destructor TSTrings.Destroy;
-
 begin
   inherited destroy;
 end;
@@ -3118,7 +3165,6 @@ begin
 end;
 
 Function TStrings.Add(const S: string): Integer;
-
 begin
   Result:=Count;
   Insert (Count,S);
@@ -3133,7 +3179,6 @@ end;
 *)
 
 Function TStrings.AddObject(const S: string; AObject: TObject): Integer;
-
 begin
   Result:=Add(S);
   Objects[result]:=AObject;
@@ -3148,7 +3193,6 @@ end;
 *)
 
 Procedure TStrings.Append(const S: string);
-
 begin
   Add (S);
 end;
@@ -3156,8 +3200,6 @@ end;
 
 
 Procedure TStrings.AddStrings(TheStrings: TStrings; ClearFirst : Boolean);
-
-
 begin
   beginupdate;
   try
@@ -3170,7 +3212,6 @@ begin
 end;
 
 Procedure TStrings.AddStrings(TheStrings: TStrings);
-
 Var Runner : longint;
 begin
   For Runner:=0 to TheStrings.Count-1 do
@@ -3178,7 +3219,6 @@ begin
 end;
 
 Procedure TStrings.AddStrings(const TheStrings: array of string);
-
 Var Runner : longint;
 begin
   if Count + High(TheStrings)+1 > Capacity then
@@ -3189,7 +3229,6 @@ end;
 
 
 Procedure TStrings.AddStrings(const TheStrings: array of string; ClearFirst : Boolean);
-
 begin
   beginupdate;
   try
@@ -3203,13 +3242,11 @@ end;
 
 
 function TStrings.AddPair(const AName, AValue: string): TStrings;
-
 begin
   Result:=AddPair(AName,AValue,Nil);
 end;
 
 function TStrings.AddPair(const AName, AValue: string; AObject: TObject): TStrings;
-
 begin
   Result := Self;
   AddObject(AName+NameValueSeparator+AValue, AObject);
@@ -3217,7 +3254,6 @@ end;
 
 
 Procedure TStrings.Assign(Source: TPersistent);
-
 Var
   S : TStrings;
 
@@ -3337,6 +3373,7 @@ Var
   len : longint;
   S : String;
 begin
+  {$IFDEF PAS2JS}
   CheckSpecialChars;
   Result:=0;
   while (Result<Count) do
@@ -3348,6 +3385,7 @@ begin
     inc(result);
     end;
   result:=-1;
+  {$ENDIF}
 end;
 
 
@@ -3513,11 +3551,11 @@ end;
 
 
 procedure TStringList.InsertItem(Index: Integer; const S: string; O: TObject);
-
 Var
   It : TStringItem;
   
 begin
+  {$IFDEF PAS2JS}
   Changing;
   If FCount=Capacity then Grow;
   it.FString:=S;
@@ -3525,11 +3563,10 @@ begin
   TJSArray(FList).Splice(Index,0,It);
   Inc(FCount);
   Changed;
+  {$ENDIF}
 end;
 
-
 procedure TStringList.SetSorted(Value: Boolean);
-
 begin
   If Value then
     SortStyle:=sslAuto
@@ -3537,26 +3574,24 @@ begin
     SortStyle:=sslNone
 end;
 
-
-
 procedure TStringList.Changed;
-
 begin
+  {$IFDEF PAS2JS}
   If (FUpdateCount=0) Then
-   begin
-   If Assigned(FOnChange) then
+  begin
+    If Assigned(FOnChange) then
      FOnchange(Self);
-   end;
+  end;
+  {$ENDIF}
 end;
 
-
-
 procedure TStringList.Changing;
-
 begin
+  {$IFDEF PAS2JS}
   If FUpdateCount=0 then
     if Assigned(FOnChanging) then
       FOnchanging(Self);
+  {$ENDIF}
 end;
 
 
@@ -3833,12 +3868,13 @@ end;
 
 
 function TCollectionItem.GetIndex: Integer;
-
 begin
+  {$IFDEF PAS2JS}
   if FCollection<>nil then
     Result:=FCollection.FItems.IndexOf(Self)
   else
     Result:=-1;
+  {$ENDIF}
 end;
 
 
@@ -4022,6 +4058,7 @@ end;
 
 procedure TCollection.InsertItem(Item: TCollectionItem);
 begin
+  {$IFDEF PAS2JS}
   If Not(Item Is FitemClass) then
     exit;
   FItems.add(Item);
@@ -4031,6 +4068,7 @@ begin
   SetItemName(Item);
   Notify(Item,cnAdded);
   Changed;
+  {$ENDIF}
 end;
 
 
@@ -4040,12 +4078,14 @@ Var
   I : Integer;
 
 begin
+  {$IFDEF PAS2JS}
   Notify(Item,cnExtracting);
   I:=FItems.IndexOfItem(Item,fromEnd);
   If (I<>-1) then
     FItems.Delete(I);
   Item.FCollection:=Nil;
   Changed;
+  {$ENDIF}
 end;
 
 
@@ -4078,11 +4118,13 @@ end;
 function TCollection.GetNamePath: string;
 var o : TPersistent;
 begin
+  {$IFDEF PAS2JS}
   o:=getowner;
   if assigned(o) and (propname<>'') then
      result:=o.getnamepath+'.'+propname
    else
      result:=classname;
+   {$ENDIF}
 end;
 
 
@@ -4126,6 +4168,7 @@ end;
 
 destructor TCollection.Destroy;
 begin
+  {$IFDEF PAS2JS}
   FUpdateCount:=1; // Prevent OnChange
   try
     DoClear;
@@ -4135,6 +4178,7 @@ begin
   if assigned(FItems) then
     FItems.Destroy;
   Inherited Destroy;
+  {$ENDIF}
 end;
 
 
@@ -4182,12 +4226,14 @@ procedure TCollection.DoClear;
 var
   Item: TCollectionItem;
 begin
+  {$IFDEF PAS2JS}
   While FItems.Count>0 do
-    begin
+  begin
     Item:=TCollectionItem(FItems.Last);
     if Assigned(Item) then
       Item.Destroy;
-    end;
+  end;
+  {$ENDIF}
 end;
 
 
@@ -4218,10 +4264,12 @@ procedure TCollection.Delete(Index: Integer);
 Var
   Item : TCollectionItem;
 begin
+  {$IFDEF PAS2JS}
   Item:=TCollectionItem(FItems[Index]);
   Notify(Item,cnDeleting);
   If assigned(Item) then
     Item.Destroy;
+  {$ENDIF}
 end;
 
 
@@ -4292,81 +4340,87 @@ end;
 
 
 function TComponent.GetComponent(AIndex: Integer): TComponent;
-
 begin
+  {$IFDEF PAS2JS}
   If not assigned(FComponents) then
     Result:=Nil
   else
     Result:=TComponent(FComponents.Items[Aindex]);
+  {$ENDIF}
 end;
 
 function TComponent.GetComponentCount: Integer;
-
 begin
+  {$IFDEF PAS2JS}
   If not assigned(FComponents) then
     result:=0
   else
     Result:=FComponents.Count;
+  {$ENDIF}
 end;
 
 
 function TComponent.GetComponentIndex: Integer;
-
 begin
+  {$IFDEF PAS2JS}
   If Assigned(FOwner) and Assigned(FOwner.FComponents) then
     Result:=FOWner.FComponents.IndexOf(Self)
   else
     Result:=-1;
+  {$ENDIF}
 end;
 
 
 procedure TComponent.Insert(AComponent: TComponent);
-
 begin
+  {$IFDEF PAS2JS}
   If not assigned(FComponents) then
     FComponents:=TFpList.Create;
   FComponents.Add(AComponent);
   AComponent.FOwner:=Self;
+  {$ENDIF}
 end;
 
 
 procedure TComponent.Remove(AComponent: TComponent);
-
 begin
+  {$IFDEF PAS2JS}
   AComponent.FOwner:=Nil;
-  If assigned(FCOmponents) then
-    begin
+  if assigned(FCOmponents) then
+  begin
     FComponents.Remove(AComponent);
-    IF FComponents.Count=0 then
-      begin
+    if FComponents.Count=0 then
+    begin
       FComponents.Destroy;
-      FComponents:=Nil;
-      end;
+      FComponents:=nil;
     end;
+  end;
+  {$ENDIF}
 end;
 
 
 procedure TComponent.RemoveNotification(AComponent: TComponent);
-
 begin
+  {$IFDEF PAS2JS}
   if FFreeNotifies<>nil then
-    begin
+  begin
     FFreeNotifies.Remove(AComponent);
     if FFreeNotifies.Count=0 then
-      begin
+    begin
       FFreeNotifies.Destroy;
       FFreeNotifies:=nil;
       Exclude(FComponentState,csFreeNotification);
-      end;
     end;
+  end;
+  {$ENDIF}
 end;
 
 
 procedure TComponent.SetComponentIndex(Value: Integer);
-
 Var Temp,Count : longint;
 
 begin
+  {$IFDEF PAS2JS}
   If Not assigned(Fowner) then exit;
   Temp:=getcomponentindex;
   If temp<0 then exit;
@@ -4374,10 +4428,11 @@ begin
   Count:=Fowner.FComponents.Count;
   If Value>=Count then value:=count-1;
   If Value<>Temp then
-    begin
+  begin
     FOWner.FComponents.Delete(Temp);
     FOwner.FComponents.Insert(Value,Self);
-    end;
+  end;
+  {$ENDIF}
 end;
 
 
@@ -4391,9 +4446,11 @@ end;
 procedure TComponent.GetChildren(Proc: TGetChildProc; Root: TComponent);
 
 begin
+  {$IFDEF PAS2JS}
   // Does nothing.
   if Proc=nil then ;
   if Root=nil then ;
+  {$ENDIF}
 end;
 
 
@@ -4455,23 +4512,24 @@ end;
 
 
 procedure TComponent.Notification(AComponent: TComponent; Operation: TOperation);
-
 Var
   C : Longint;
 
 begin
+  {$IFDEF PAS2JS}
   If (Operation=opRemove) then
     RemoveFreeNotification(AComponent);
   If Not assigned(FComponents) then
     exit;
   C:=FComponents.Count-1;
   While (C>=0) do
-    begin
+  begin
     TComponent(FComponents.Items[C]).Notification(AComponent,Operation);
     Dec(C);
     if C>=FComponents.Count then
       C:=FComponents.Count-1;
-    end;
+  end;
+  {$ENDIF}
 end;
 
 
@@ -4480,17 +4538,16 @@ begin
 end;
 
 procedure TComponent.ReadState(Reader: TReader);
-
 begin
   Reader.ReadData(Self);
 end;
 
 
 procedure TComponent.SetAncestor(Value: Boolean);
-
 Var Runner : Longint;
 
 begin
+  {$IFDEF PAS2JS}
   If Value then
     Include(FComponentState,csAncestor)
   else
@@ -4498,14 +4555,15 @@ begin
   if Assigned(FComponents) then
     For Runner:=0 To FComponents.Count-1 do
       TComponent(FComponents.Items[Runner]).SetAncestor(Value);
+  {$ENDIF}
 end;
 
 
 procedure TComponent.SetDesigning(Value: Boolean; SetChildren: Boolean);
-
 Var Runner : Longint;
 
 begin
+  {$IFDEF PAS2JS}
   If Value then
     Include(FComponentState,csDesigning)
   else
@@ -4513,6 +4571,7 @@ begin
   if Assigned(FComponents) and SetChildren then
     For Runner:=0 To FComponents.Count - 1 do
       TComponent(FComponents.items[Runner]).SetDesigning(Value);
+  {$ENDIF}
 end;
 
 procedure TComponent.SetDesignInstance(Value: Boolean);
@@ -4537,6 +4596,7 @@ end;
 procedure TComponent.SetName(const NewName: TComponentName);
 
 begin
+  {$IFDEF PAS2JS}
   If FName=NewName then exit;
   If (NewName<>'') and not IsValidIdent(NewName) then
     Raise EComponentError.CreateFmt(SInvalidName,[NewName]);
@@ -4547,6 +4607,7 @@ begin
   SetReference(False);
   ChangeName(NewName);
   SetReference(True);
+  {$ENDIF}
 end;
 
 
@@ -4582,22 +4643,23 @@ end;
 
 
 procedure TComponent.ValidateRename(AComponent: TComponent; const CurName, NewName: string);
-
 begin
+  {$IFDEF PAS2JS}
 //!! This contradicts the Delphi manual.
   If (AComponent<>Nil) and (CompareText(CurName,NewName)<>0) and (AComponent.Owner = Self) and
      (FindComponent(NewName)<>Nil) then
       raise EComponentError.Createfmt(SDuplicateName,[newname]);
   If (csDesigning in FComponentState) and (FOwner<>Nil) then
     FOwner.ValidateRename(AComponent,Curname,Newname);
+  {$ENDIF}
 end;
 
 Procedure TComponent.SetReference(Enable: Boolean);
-
 var
   aField, aValue, aOwner : Pointer;
 
 begin
+  {$IFDEF PAS2JS}
   if Name='' then
     exit;
   if Assigned(Owner) then
@@ -4605,14 +4667,15 @@ begin
     aOwner:=Owner; // so as not to depend on low-level names
     aField := Owner.FieldAddress(Name);
     if Assigned(aField) then
-      begin
+    begin
       if Enable then
         aValue:= Self
       else
         aValue := nil;
       TJSObject(aOwner)[String(TJSObject(aField)['name'])]:=aValue;
-      end;
+    end;
   end;
+  {$ENDIF}
 end;
 
 
@@ -4642,26 +4705,27 @@ end;
 
 
 constructor TComponent.Create(AOwner: TComponent);
-
 begin
+  {$IFDEF PAS2JS}
   FComponentStyle:=[csInheritable];
   If Assigned(AOwner) then AOwner.InsertComponent(Self);
+  {$ENDIF}
 end;
 
 
 destructor TComponent.Destroy;
-
 Var
   I : Integer;
   C : TComponent;
 
 begin
+  {$IFDEF PAS2JS}
   Destroying;
   If Assigned(FFreeNotifies) then
-    begin
+  begin
     I:=FFreeNotifies.Count-1;
     While (I>=0) do
-      begin
+    begin
       C:=TComponent(FFreeNotifies.Items[I]);
       // Delete, so one component is not notified twice, if it is owned.
       FFreeNotifies.Delete(I);
@@ -4671,12 +4735,14 @@ begin
       else if (I>FFreeNotifies.Count) then
         I:=FFreeNotifies.Count;
       dec(i);
-      end;
-    FreeAndNil(FFreeNotifies);
     end;
+    FreeAndNil(FFreeNotifies);
+  end;
   DestroyComponents;
-  If FOwner<>Nil Then FOwner.RemoveComponent(Self);
+  If FOwner<>Nil Then
+    FOwner.RemoveComponent(Self);
   inherited destroy;
+  {$ENDIF}
 end;
 
 
@@ -4688,16 +4754,16 @@ end;
 
 
 procedure TComponent.DestroyComponents;
-
 Var acomponent: TComponent;
-
 begin
+  {$IFDEF PAS2JS}
   While assigned(FComponents) do
-    begin
+  begin
     aComponent:=TComponent(FComponents.Last);
     Remove(aComponent);
     Acomponent.Destroy;
-    end;
+  end;
+  {$ENDIF}
 end;
 
 
@@ -4706,11 +4772,13 @@ procedure TComponent.Destroying;
 Var Runner : longint;
 
 begin
+  {$IFDEF PAS2JS}
   If csDestroying in FComponentstate Then Exit;
   include (FComponentState,csDestroying);
   If Assigned(FComponents) then
     for Runner:=0 to FComponents.Count-1 do
       TComponent(FComponents.Items[Runner]).Destroying;
+  {$ENDIF}
 end;
 
 function TComponent.QueryInterface(const IID: TGUID; out Obj): integer;
@@ -4729,32 +4797,34 @@ end;
 
 
 function TComponent.FindComponent(const AName: string): TComponent;
-
 Var I : longint;
 
 begin
+  {$IFDEF PAS2JS}
   Result:=Nil;
   If (AName='') or Not assigned(FComponents) then exit;
   For i:=0 to FComponents.Count-1 do
     if (CompareText(TComponent(FComponents[I]).Name,AName)=0) then
-      begin
+    begin
       Result:=TComponent(FComponents.Items[I]);
       exit;
-      end;
+    end;
+  {$ENDIF}
 end;
 
 
 procedure TComponent.FreeNotification(AComponent: TComponent);
-
 begin
+  {$IFDEF PAS2JS}
   If (Owner<>Nil) and (AComponent=Owner) then exit;
   If not (Assigned(FFreeNotifies)) then
     FFreeNotifies:=TFpList.Create;
   If FFreeNotifies.IndexOf(AComponent)=-1 then
-    begin
+  begin
     FFreeNotifies.Add(AComponent);
     AComponent.FreeNotification (self);
-    end;
+  end;
+  {$ENDIF}
 end;
 
 
@@ -4828,12 +4898,12 @@ Resourcestring
 
 procedure TStream.ReadNotImplemented;
 begin
-  raise EStreamError.CreateFmt(SStreamNoReading, [ClassName]);
+  {$IFDEF PAS2JS}raise EStreamError.CreateFmt(SStreamNoReading, [ClassName]);{$ENDIF}
 end;
 
 procedure TStream.WriteNotImplemented;
 begin
-  raise EStreamError.CreateFmt(SStreamNoWriting, [ClassName]);
+  {$IFDEF PAS2JS}raise EStreamError.CreateFmt(SStreamNoWriting, [ClassName]);{$ENDIF}
 end;
 
 function TStream.Read(var Buffer: TBytes; Count: Longint): Longint;
@@ -4932,7 +5002,7 @@ end;
 procedure TStream.InvalidSeek;
 
 begin
-  raise EStreamError.CreateFmt(SStreamInvalidSeek, [ClassName]);
+  {$IFDEF PAS2JS}raise EStreamError.CreateFmt(SStreamInvalidSeek, [ClassName]);{$ENDIF}
 end;
 
 procedure TStream.FakeSeekForward(Offset: NativeInt;  const Origin: TSeekOrigin; const Pos: NativeInt);
@@ -5950,22 +6020,21 @@ begin
 end;
 
 
-Class Function TCustomMemoryStream.MemoryToBytes(Mem : TJSArrayBuffer) : TBytes; overload;
-
+Class Function TCustomMemoryStream.MemoryToBytes(Mem : TJSArrayBuffer) : TBytes;
 begin
   Result:=MemoryToBytes(TJSUint8Array.New(Mem));
 end;
 
 class function TCustomMemoryStream.MemoryToBytes(Mem: TJSUint8Array): TBytes;
-
 Var
   I : Integer;
-
 begin
+  {$IFDEF PAS2JS}
   // This must be improved, but needs some asm or TJSFunction.call() to implement answers in
   // https://stackoverflow.com/questions/29676635/convert-uint8array-to-array-in-javascript
   for i:=0 to mem.length-1 do
     Result[i]:=Mem[i];
+  {$ENDIF}
 end;
 
 class function TCustomMemoryStream.BytesToMemory(aBytes: TBytes): TJSArrayBuffer;
@@ -6075,30 +6144,30 @@ end;
 
 
 function TMemoryStream.Realloc(var NewCapacity: PtrInt): TJSArrayBuffer;
-
 Var
   GC : PtrInt;
   DestView : TJSUInt8array;
 
 begin
+  {$IFDEF PAS2JS}
   If NewCapacity<0 Then
     NewCapacity:=0
   else
-    begin
-      GC:=FCapacity + (FCapacity div 4);
-      // if growing, grow at least a quarter
-      if (NewCapacity>FCapacity) and (NewCapacity < GC) then
-        NewCapacity := GC;
-      // round off to block size.
-      NewCapacity := (NewCapacity + (TMSGrow-1)) and not (TMSGROW-1);
-    end;
+  begin
+    GC:=FCapacity + (FCapacity div 4);
+    // if growing, grow at least a quarter
+    if (NewCapacity>FCapacity) and (NewCapacity < GC) then
+      NewCapacity := GC;
+    // round off to block size.
+    NewCapacity := (NewCapacity + (TMSGrow-1)) and not (TMSGROW-1);
+  end;
   // Only now check !
   If NewCapacity=FCapacity then
     Result:=FMemory
   else if NewCapacity=0 then
     Result:=Nil
   else
-    begin
+  begin
     // New buffer
     Result:=TJSArrayBuffer.New(NewCapacity);
     If (Result=Nil)  then
@@ -6106,9 +6175,9 @@ begin
     // Transfer
     DestView:=TJSUInt8array.New(Result);
     Destview._Set(Self.DataArray);
-    end;
+  end;
+  {$ENDIF}
 end;
-
 
 destructor TMemoryStream.Destroy;
 
@@ -6116,7 +6185,6 @@ begin
   Clear;
   Inherited Destroy;
 end;
-
 
 procedure TMemoryStream.Clear;
 
@@ -6128,15 +6196,16 @@ end;
 
 
 procedure TMemoryStream.LoadFromStream(Stream: TStream);
-
 begin
+  {$IFDEF PAS2JS}
   Stream.Position:=0;
   SetSize(Stream.Size);
-  If FSize>0 then Stream.ReadBuffer(MemoryToBytes(FMemory),FSize);
+  If FSize>0 then
+    Stream.ReadBuffer(MemoryToBytes(FMemory),FSize);
+  {$ENDIF}
 end;
 
 procedure TMemoryStream.SetSize(const NewSize: NativeInt);
-
 begin
   SetCapacity (NewSize);
   FSize:=NewSize;
@@ -6145,22 +6214,22 @@ begin
 end;
 
 function TMemoryStream.Write(Const Buffer : TBytes; OffSet, Count: LongInt): LongInt;
-
 Var NewPos : PtrInt;
-
 begin
+  {$IFDEF PAS2JS}
   If (Count=0) or (FPosition<0) then
     exit(0);
   NewPos:=FPosition+Count;
   If NewPos>Fsize then
-    begin
+  begin
     IF NewPos>FCapacity then
       SetCapacity (NewPos);
     FSize:=Newpos;
-    end;
+  end;
   DataArray._set(Copy(Buffer,Offset,Count),FPosition);
   FPosition:=NewPos;
   Result:=Count;
+  {$ENDIF}
 end;
 
 {****************************************************************************}
@@ -6653,12 +6722,14 @@ begin
   EnterCriticalSection(ResolveSection);
   Try
 {$endif}
+    {$IFDEF PAS2JS}
     If Assigned(NeedResolving) then
-      begin
+    begin
       Result:=TUnResolvedInstance(NeedResolving.Root);
       While (Result<>Nil) and (Result.Instance<>AInstance) do
         Result:=TUnResolvedInstance(Result.Next);
-      end;
+    end;
+    {$ENDIF}
 {$ifdef FPC_HAS_FEATURE_THREADING}
   finally
     LeaveCriticalSection(ResolveSection);
@@ -6671,21 +6742,23 @@ Function AddtoResolveList(AInstance: TPersistent) : TUnResolvedInstance;
 begin
   Result:=FindUnresolvedInstance(AInstance);
   If (Result=Nil) then
-    begin
+  begin
 {$ifdef FPC_HAS_FEATURE_THREADING}
     EnterCriticalSection(ResolveSection);
     Try
 {$endif}
+      {$IFDEF PAS2JS}
       If not Assigned(NeedResolving) then
         NeedResolving:=TLinkedList.Create(TUnResolvedInstance);
       Result:=NeedResolving.Add as TUnResolvedInstance;
       Result.Instance:=AInstance;
+      {$ENDIF}
 {$ifdef FPC_HAS_FEATURE_THREADING}
     finally
       LeaveCriticalSection(ResolveSection);
     end;
 {$endif}
-    end;
+  end;
 end;
 
 // Walk through the global list of instances to be resolved.
@@ -6830,11 +6903,12 @@ begin
 end;
 
 Function TUnResolvedInstance.RootUnresolved : TUnresolvedReference;
-
 begin
+  {$IFDEF PAS2JS}
   Result:=Nil;
   If Assigned(FUnResolved) then
     Result:=TUnresolvedReference(FUnResolved.Root);
+  {$ENDIF}
 end;
 
 Function TUnResolvedInstance.ResolveReferences:Boolean;
@@ -6951,61 +7025,65 @@ Var
   L : TFPList;
 
 begin
+  {$IFDEF PAS2JS}
   UI:=TUnResolvedInstance(Item);
   R:=UI.RootUnresolved;
   L:=Nil;
   Try
     // Collect all matches.
     While (R<>Nil) do
-      begin
+    begin
       If R.RootMatches(FRoot) and ((FRef = '') or (FRef=UpperCase(R.FGLobal))) Then
-        begin
+      begin
         If Not Assigned(L) then
           L:=TFPList.Create;
         L.Add(R);
-        end;
-      R:=R.NextRef;
       end;
+      R:=R.NextRef;
+    end;
     // Remove all matches.
-    IF Assigned(L) then
-      begin
+    if Assigned(L) then
+    begin
       For I:=0 to L.Count-1 do
         UI.FUnresolved.RemoveItem(TLinkedListitem(L[i]),True);
-      end;
+    end;
     // If any references are left, leave them.
     If UI.FUnResolved.Root=Nil then
-      begin
+    begin
       If List=Nil then
         List:=TFPList.Create;
       List.Add(UI);
-      end;
+    end;
   Finally
     L.Free;
   end;
   Result:=True;
+  {$ENDIF}
 end;
 
 { TBuildListVisitor }
 
 Procedure TBuildListVisitor.Add(Item : TlinkedListItem);
-
 begin
+  {$IFDEF PAS2JS}
   If (List=Nil) then
     List:=TFPList.Create;
   List.Add(Item);
+  {$ENDIF}
 end;
 
 Destructor TBuildListVisitor.Destroy;
-
 Var
   I : Integer;
 
 begin
+  {$IFDEF PAS2JS}
   If Assigned(List) then
     For I:=0 to List.Count-1 do
       NeedResolving.RemoveItem(TLinkedListItem(List[I]),True);
   FreeAndNil(List);
   Inherited;
+  {$ENDIF}
 end;
 
 { TResolveReferenceVisitor }
@@ -7066,12 +7144,14 @@ end;
 procedure TReader.DefineProperty(const Name: String; AReadData: TReaderProc;
   WriteData: TWriterProc; HasData: Boolean);
 begin
+  {$IFDEF PAS2JS}
   if Assigned(AReadData) and SameText(Name,FPropName) then
   begin
     AReadData(Self);
     SetLength(FPropName, 0);
   end else if assigned(WriteData) and HasData then
     ;
+  {$ENDIF}
 end;
 
 procedure TReader.DefineBinaryProperty(const Name: String;
@@ -7079,6 +7159,7 @@ procedure TReader.DefineBinaryProperty(const Name: String;
 var
   MemBuffer: TMemoryStream;
 begin
+  {$IFDEF PAS2JS}
   if Assigned(AReadData) and SameText(Name,FPropName) then
   begin
     { Check if the next property really is a binary property}
@@ -7087,7 +7168,8 @@ begin
       FDriver.SkipValue;
       FCanHandleExcepts := True;
       raise EReadError.Create(SInvalidPropertyValue);
-    end else
+    end
+    else
       FDriver.ReadValue;
 
     MemBuffer := TMemoryStream.Create;
@@ -7099,7 +7181,9 @@ begin
       MemBuffer.Free;
     end;
     SetLength(FPropName, 0);
-  end else if assigned(WriteData) and HasData then ;
+  end
+  else if assigned(WriteData) and HasData then ;
+  {$ENDIF}
 end;
 
 function TReader.EndOfList: Boolean;
@@ -7115,15 +7199,18 @@ end;
 
 function TReader.Error(const Message: String): Boolean;
 begin
+  {$IFDEF PAS2JS}
   Result := False;
   if Assigned(FOnError) then
     FOnError(Self, Message, Result);
+  {$ENDIF}
 end;
 
 function TReader.FindMethod(ARoot: TComponent; const AMethodName: String): CodePointer;
 var
   ErrorResult: Boolean;
 begin
+  {$IFDEF PAS2JS}
   Result:=nil;
   if (ARoot=Nil) or (aMethodName='') then
     exit;
@@ -7136,10 +7223,10 @@ begin
 
   if ErrorResult then
     raise EReadError.Create(SInvalidPropertyValue);
+  {$ENDIF}
 end;
 
 procedure TReader.DoFixupReferences;
-
 Var
   R,RN : TLocalUnresolvedReference;
   G : TUnresolvedInstance;
@@ -7147,14 +7234,14 @@ Var
   C : TComponent;
   P : integer;
   L : TLinkedList;
-
 begin
+  {$IFDEF PAS2JS}
   If Assigned(FFixups) then
-    begin
+  begin
     L:=TLinkedList(FFixups);
     R:=TLocalUnresolvedReference(L.Root);
     While (R<>Nil) do
-      begin
+    begin
       RN:=TLocalUnresolvedReference(R.Next);
       Ref:=R.FRelative;
       If Assigned(FOnReferenceName) then
@@ -7167,18 +7254,19 @@ begin
           SetObjectProp(R.FInstance,R.FPropInfo,C)
       else
         begin
-        P:=Pos('.',R.FRelative);
-        If (P<>0) then
+          P:=Pos('.',R.FRelative);
+          If (P<>0) then
           begin
-          G:=AddToResolveList(R.FInstance);
-          G.Addreference(R.FRoot,R.FPropInfo,Copy(R.FRelative,1,P-1),Copy(R.FRelative,P+1,Length(R.FRelative)-P));
+            G:=AddToResolveList(R.FInstance);
+            G.Addreference(R.FRoot,R.FPropInfo,Copy(R.FRelative,1,P-1),Copy(R.FRelative,P+1,Length(R.FRelative)-P));
           end;
         end;
       L.RemoveItem(R,True);
       R:=RN;
-      end;
-    FreeAndNil(FFixups);
     end;
+    FreeAndNil(FFixups);
+  end;
+  {$ENDIF}
 end;
 
 procedure TReader.FixupReferences;
@@ -7207,7 +7295,7 @@ end;
 procedure TReader.PropertyError;
 begin
   FDriver.SkipValue;
-  raise EReadError.CreateFmt(SUnknownProperty,[FPropName]);
+  {$IFDEF PAS2JS}raise EReadError.CreateFmt(SUnknownProperty,[FPropName]);{$ENDIF}
 end;
 
 function TReader.ReadBoolean: Boolean;
@@ -7281,7 +7369,7 @@ end;
 function TReader.ReadComponent(Component: TComponent): TComponent;
 var
   Flags: TFilerFlags;
-
+  {$IFDEF PAS2JS}
   function Recover(E : Exception; var aComponent: TComponent): Boolean;
   begin
     Result := False;
@@ -7291,6 +7379,7 @@ var
     FDriver.SkipComponent(False);
     Result := Error(E.Message);
   end;
+  {$ENDIF}
 
 var
   CompClassName, Name: String;
@@ -7300,6 +7389,7 @@ var
   C, NewComponent: TComponent;
   SubComponents: TList;
 begin
+  {$IFDEF PAS2JS}
   FDriver.BeginComponent(Flags, ChildPos, CompClassName, Name);
   SavedParent := Parent;
   SavedLookupRoot := FLookupRoot;
@@ -7426,6 +7516,7 @@ begin
     FLookupRoot := SavedLookupRoot;
     Subcomponents.Free;
   end;
+  {$ENDIF}
 end;
 
 procedure TReader.ReadData(Instance: TComponent);
@@ -7433,6 +7524,7 @@ var
   SavedOwner, SavedParent: TComponent;
 
 begin
+  {$IFDEF PAS2JS}
   { Read properties }
   while not EndOfList do
     ReadProperty(Instance);
@@ -7458,6 +7550,7 @@ begin
   { Fixup references if necessary (normally only if this is the root) }
   If (Instance=FRoot) then
     DoFixupReferences;
+  {$ENDIF}
 end;
 
 function TReader.ReadFloat: Extended;
@@ -7548,6 +7641,7 @@ function TReader.ReadVariant: JSValue;
 var
   nv: TValueType;
 begin
+  {$IFDEF PAS2JS}
   nv:=NextValue;
   case nv of
     vaNil:
@@ -7594,6 +7688,7 @@ begin
     else
       raise EReadError.CreateFmt(SUnsupportedPropertyVariantType, [Ord(nv)]);
   end;
+  {$ENDIF}
 end;
 
 procedure TReader.ReadProperty(AInstance: TPersistent);
@@ -7608,7 +7703,7 @@ var
   OldPropName: String;
   DotPos : String;
   NextPos: Integer;
-
+  {$IFDEF PAS2JS}
   function HandleMissingProperty(IsPath: Boolean): boolean;
   begin
     Result:=true;
@@ -7628,8 +7723,10 @@ var
       end;
     end;
   end;
+  {$ENDIF}
 
 begin
+  {$IFDEF PAS2JS}
   try
     Path := FDriver.BeginProperty;
     try
@@ -7701,6 +7798,7 @@ begin
       if not FCanHandleExcepts or not Error(E.Message) then
         raise;
   end;
+  {$ENDIF}
 end;
 
 procedure TReader.ReadPropValue(Instance: TPersistent; PropInfo: TTypeMemberProperty);
@@ -7767,8 +7865,10 @@ begin
       begin
         Handled:=false;
         Ident:=ReadIdent;
+        {$IFDEF PAS2JS}
         if Assigned(OnSetMethodProperty) then
           OnSetMethodProperty(Self,Instance,PropInfo,Ident,Handled);
+        {$ENDIF}
         if not Handled then begin
           Method.Code := FindMethod(Root, Ident);
           Method.Data := Root;
@@ -7779,8 +7879,10 @@ begin
     tkString:
       begin
         TmpStr:=ReadString;
+        {$IFDEF PAS2JS}
         if Assigned(FOnReadStringProperty) then
           FOnReadStringProperty(Self,Instance,PropInfo,TmpStr);
+        {$ENDIF}
         SetStrProp(Instance, PropInfo, TmpStr);
       end;
     tkJSValue:
@@ -7801,8 +7903,10 @@ begin
           end
         else
           begin
+          {$IFDEF PAS2JS}
           If Not Assigned(FFixups) then
             FFixups:=TLinkedList.Create(TLocalUnresolvedReference);
+          {$ENDIF}
           With TLocalUnresolvedReference(TLinkedList(FFixups).Add) do
             begin
             FInstance:=Instance;
@@ -7815,7 +7919,7 @@ begin
     {tkint64:
       SetInt64Prop(Instance, PropInfo, ReadInt64);}
     else
-      raise EReadError.CreateFmt(SUnknownPropertyType, [Ord(PropType.Kind)]);
+      {$IFDEF PAS2JS}raise EReadError.CreateFmt(SUnknownPropertyType, [Ord(PropType.Kind)]);{$ENDIF}
   end;
 end;
 
@@ -7831,6 +7935,7 @@ begin
   try}
     try
       FDriver.BeginComponent(Flags, Dummy, CompClassName, CompName);
+      {$IFDEF PAS2JS}
       if not Assigned(ARoot) then
       begin
         { Read the class name and the object name and create a new object: }
@@ -7858,36 +7963,44 @@ begin
             Result.Name := ResultName;
         end;
       end;
-
+      {$ENDIF}
       FRoot := Result;
       FLookupRoot := Result;
+      {$IFDEF PAS2JS}
       if Assigned(GlobalLoaded) then
         FLoaded := GlobalLoaded
       else
         FLoaded := TFpList.Create;
-
+      {$ENDIF}
       try
+        {$IFDEF PAS2JS}
         if FLoaded.IndexOf(FRoot) < 0 then
           FLoaded.Add(FRoot);
+        {$ENDIF}
         FOwner := FRoot;
         FRoot.FComponentState := FRoot.FComponentState + [csLoading, csReading];
         FRoot.ReadState(Self);
         Exclude(FRoot.FComponentState, csReading);
-
+        {$IFDEF PAS2JS}
         if not Assigned(GlobalLoaded) then
           for i := 0 to FLoaded.Count - 1 do
             TComponent(FLoaded[i]).Loaded;
+        {$ENDIF}
 
       finally
+        {$IFDEF PAS2JS}
         if not Assigned(GlobalLoaded) then
           FLoaded.Free;
+        {$ENDIF}
         FLoaded := nil;
       end;
       GlobalFixupReferences;
     except
       RemoveFixupReferences(ARoot, '');
+      {$IFDEF PAS2JS}
       if not Assigned(ARoot) then
         Result.Free;
+      {$ENDIF}
       raise;
     end;
   {finally
@@ -7909,8 +8022,10 @@ begin
     begin
       FDriver.BeginRootComponent;
       Component := ReadComponent(nil);
+      {$IFDEF PAS2JS}
       if Assigned(Proc) then
         Proc(Component);
+      {$ENDIF}
     end;
     ReadListEnd;
     FixupReferences;
@@ -8030,30 +8145,33 @@ var
     MemberTI: TTypeInfo;
   begin
     aClass:=Instance.ClassType;
+    {$IFDEF PAS2JS}
     while aClass<>nil do
-      begin
+    begin
       ClassTI:=typeinfo(aClass);
       for i:=0 to ClassTI.FieldCount-1 do
-        begin
+      begin
         MemberTI:=ClassTI.GetField(i).TypeInfo;
         if MemberTI.Kind=tkClass then
-          begin
+        begin
           MemberClassTI:=TTypeInfoClass(MemberTI);
           if SameText(MemberClassTI.Name,aClassName)
               and (MemberClassTI.ClassType is TComponent) then
             exit(TComponentClass(MemberClassTI.ClassType));
-          end;
         end;
-      aClass:=aClass.ClassParent;
       end;
+      aClass:=aClass.ClassParent;
+    end;
+    {$ENDIF}
   end;
 
 begin
   Result := nil;
   Result:=FindClassInFieldTable(Root);
-
+  {$IFDEF PAS2JS}
   if (Result=nil) and assigned(LookupRoot) and (LookupRoot<>Root) then
     Result:=FindClassInFieldTable(LookupRoot);
+  {$ENDIF}
 
   if (Result=nil) then begin
     PersistentClass := GetClass(AClassName);
@@ -8061,11 +8179,15 @@ begin
       Result := TComponentClass(PersistentClass);
   end;
 
+  {$IFDEF PAS2JS}
   if (Result=nil) and assigned(OnFindComponentClass) then
     OnFindComponentClass(Self, AClassName, Result);
+  {$ENDIF}
 
+  {$IFDEF PAS2JS}
   if (Result=nil) or (not Result.InheritsFrom(TComponent)) then
     raise EClassNotFound.CreateFmt(SClassNotFound, [AClassName]);
+  {$ENDIF}
 end;
 
 
@@ -8122,7 +8244,7 @@ end;
 procedure TBinaryObjectWriter.WriteSignature;
 
 begin
-  FStream.WriteBufferData(FilerSignatureInt);
+  {$IFDEF PAS2JS}FStream.WriteBufferData(FilerSignatureInt);{$ENDIF}
 end;
 
 procedure TBinaryObjectWriter.BeginComponent(Component: TComponent;
@@ -8338,23 +8460,25 @@ end;
 
 procedure TBinaryObjectWriter.WriteVariant(const VarValue: JSValue);
 begin
+  {$IFDEF PAS2JS}
   if isUndefined(varValue) then
     WriteValue(vaNil)
   else if IsNull(VarValue) then
     WriteValue(vaNull)
   else if IsNumber(VarValue) then
-    begin
+  begin
     if Frac(Double(varValue))=0 then
       WriteInteger(NativeInt(VarValue))
-     else
+    else
       WriteFloat(Double(varValue))
-    end
+  end
   else if isBoolean(varValue) then
     WriteBoolean(Boolean(VarValue))
   else if isString(varValue) then
     WriteString(String(VarValue))
   else
     raise EWriteError.Create(SUnsupportedPropertyVariantType);
+  {$ENDIF}
 end;
 
 
@@ -8445,6 +8569,7 @@ end;
 procedure TWriter.DefineProperty(const Name: String;
   ReadData: TReaderProc; AWriteData: TWriterProc; HasData: Boolean);
 begin
+  {$IFDEF PAS2JS}
   if HasData and Assigned(AWriteData) then
   begin
     // Write the property name and then the data itself
@@ -8452,11 +8577,13 @@ begin
     AWriteData(Self);
     Driver.EndProperty;
   end else if assigned(ReadData) then ;
+  {$ENDIF}
 end;
 
 procedure TWriter.DefineBinaryProperty(const Name: String;
   ReadData, AWriteData: TStreamProc; HasData: Boolean);
 begin
+  {$IFDEF PAS2JS}
   if HasData and Assigned(AWriteData) then
   begin
     // Write the property name and then the data itself
@@ -8464,6 +8591,7 @@ begin
     WriteBinary(AWriteData);
     Driver.EndProperty;
   end else if assigned(ReadData) then ;
+  {$ENDIF}
 end;
 
 procedure TWriter.FlushBuffer;
@@ -8527,6 +8655,7 @@ procedure TWriter.WriteCollection(Value: TCollection);
 var
   i: Integer;
 begin
+  {$IFDEF PAS2JS}
   Driver.BeginCollection;
   if Assigned(Value) then
     for i := 0 to Value.Count - 1 do
@@ -8539,6 +8668,7 @@ begin
       WriteListEnd;
     end;
   WriteListEnd;
+  {$ENDIF}
 end;
 
 procedure TWriter.DetermineAncestor(Component : TComponent);
@@ -8547,6 +8677,7 @@ Var
   I : Integer;
 
 begin
+  {$IFDEF PAS2JS}
   // Should be set only when we write an inherited with children.
   if Not Assigned(FAncestors) then
     exit;
@@ -8562,6 +8693,7 @@ begin
       FAncestor:=FComponent;
       FAncestorPos:=FPos;
       end;
+  {$ENDIF}
 end;
 
 procedure TWriter.DoFindAncestor(Component : TComponent);
@@ -8570,6 +8702,7 @@ Var
   C : TComponent;
 
 begin
+  {$IFDEF PAS2JS}
   if Assigned(FOnFindAncestor) then
     if (Ancestor=Nil) or (Ancestor is TComponent) then
       begin
@@ -8577,6 +8710,7 @@ begin
       FOnFindAncestor(Self,Component,Component.Name,C,FRootAncestor);
       Ancestor:=C;
       end;
+  {$ENDIF}
 end;
 
 procedure TWriter.WriteComponent(Component: TComponent);
@@ -8616,6 +8750,7 @@ Var
   O : TObject;
 
 begin
+  {$IFDEF PAS2JS}
   // Write children list.
   // While writing children, the ancestor environment must be saved
   // This is recursive...
@@ -8657,12 +8792,14 @@ begin
     FCurrentPos:=SPos;
     FAncestorPos:=SAncestorPos;
   end;
+  {$ENDIF}
 end;
 
 procedure TWriter.WriteComponentData(Instance: TComponent);
 var
   Flags: TFilerFlags;
 begin
+  {$IFDEF PAS2JS}
   Flags := [];
   If (Assigned(FAncestor)) and  //has ancestor
      (not (csInline in Instance.ComponentState) or // no inline component
@@ -8681,6 +8818,7 @@ begin
   // Needs special handling of ancestor.
   If not IgnoreChildren then
     WriteChildren(Instance);
+  {$ENDIF}
 end;
 
 procedure TWriter.WriteDescendent(ARoot: TComponent; AAncestor: TComponent);
@@ -8781,6 +8919,7 @@ var
   Handled: Boolean;
   O : TJSObject;
 begin
+  {$IFDEF PAS2JS}
   // do not stream properties without getter
   if PropInfo.Getter='' then
     exit;
@@ -9151,6 +9290,7 @@ begin
                //else write NIL ?
 }      end;
   end;
+  {$ENDIF}
 end;
 
 procedure TWriter.WriteRootComponent(ARoot: TComponent);
@@ -9188,7 +9328,7 @@ var
 Procedure RegisterClass(AClass : TPersistentClass);
 
 begin
-  ClassList[AClass.ClassName]:=AClass;
+  {$IFDEF PAS2JS}ClassList[AClass.ClassName]:=AClass;{$ENDIF}
 end;
 
 Function GetClass(AClassName : string) : TPersistentClass;
@@ -9202,36 +9342,41 @@ end;
 
 
 procedure RegisterFindGlobalComponentProc(AFindGlobalComponent: TFindGlobalComponent);
-  begin
-    if not(assigned(FindGlobalComponentList)) then
-      FindGlobalComponentList:=TFPList.Create;
-    if FindGlobalComponentList.IndexOf(CodePointer(AFindGlobalComponent))<0 then
-      FindGlobalComponentList.Add(CodePointer(AFindGlobalComponent));
-  end;
+begin
+  {$IFDEF PAS2JS}
+  if not(assigned(FindGlobalComponentList)) then
+    FindGlobalComponentList:=TFPList.Create;
+  if FindGlobalComponentList.IndexOf(CodePointer(AFindGlobalComponent))<0 then
+    FindGlobalComponentList.Add(CodePointer(AFindGlobalComponent));
+  {$ENDIF}
+end;
 
 
 procedure UnregisterFindGlobalComponentProc(AFindGlobalComponent: TFindGlobalComponent);
-  begin
-    if assigned(FindGlobalComponentList) then
-      FindGlobalComponentList.Remove(CodePointer(AFindGlobalComponent));
-  end;
+begin
+  {$IFDEF PAS2JS}
+  if assigned(FindGlobalComponentList) then
+    FindGlobalComponentList.Remove(CodePointer(AFindGlobalComponent));
+  {$ENDIF}
+end;
 
 
 function FindGlobalComponent(const Name: string): TComponent;
-
 var
       i : sizeint;
 begin
+  {$IFDEF PAS2JS}
   Result:=nil;
   if assigned(FindGlobalComponentList) then
+  begin
+    for i:=FindGlobalComponentList.Count-1 downto 0 do
     begin
-      for i:=FindGlobalComponentList.Count-1 downto 0 do
-      	begin
-      	  FindGlobalComponent:=TFindGlobalComponent(FindGlobalComponentList[i])(name);
-      	  if assigned(Result) then
-      	    break;
-      	end;
+      FindGlobalComponent:=TFindGlobalComponent(FindGlobalComponentList[i])(name);
+      if assigned(Result) then
+        break;
     end;
+  end;
+  {$ENDIF}
 end;
 
 Function FindNestedComponent(Root : TComponent; APath : String; CStyle : Boolean = True) : TComponent;
@@ -9243,6 +9388,7 @@ Function FindNestedComponent(Root : TComponent; APath : String; CStyle : Boolean
     CM : Boolean;
 
   begin
+    {$IFDEF PAS2JS}
     P:=Pos('.',APath);
     CM:=False;
     If (P=0) then
@@ -9257,6 +9403,7 @@ Function FindNestedComponent(Root : TComponent; APath : String; CStyle : Boolean
       end;
     Result:=Copy(APath,1,P-1);
     Delete(APath,1,P+Ord(CM));
+    {$ENDIF}
   end;
 
 Var
@@ -9281,6 +9428,7 @@ end;
 
 Type
   TInitHandler = Class(TObject)
+  public
     AHandler : TInitComponentHandler;
     AClass : TComponentClass;
   end;
@@ -9292,6 +9440,7 @@ Var
   I : Integer;
   H: TInitHandler;
 begin
+  {$IFDEF PAS2JS}
   If (InitHandlerList=Nil) then
     InitHandlerList:=TList.Create;
   H:=TInitHandler.Create;
@@ -9316,6 +9465,7 @@ begin
      H.Free;
      raise;
   end;
+  {$ENDIF}
 end;
 
 
@@ -9510,6 +9660,7 @@ var
 {$endif}
 
 begin
+  {$IFDEF PAS2JS}
   case ValueType of
     vaList: begin
         OutStr('(');
@@ -9578,6 +9729,7 @@ begin
     else
       Raise EReadError.CreateFmt(SErrInvalidPropertyType,[Ord(ValueType)]);
   end;
+  {$ENDIF}
 end;
 
 
@@ -9643,8 +9795,8 @@ begin
 end;
 
 procedure TObjectStreamConverter.Execute;
-
 begin
+  {$IFDEF PAS2JS}
   if FIndent = '' then FInDent:='  ';
   If Not Assigned(Input) then
     raise EReadError.Create('Missing input stream');
@@ -9653,6 +9805,7 @@ begin
   if Input.ReadDWord <> FilerSignatureInt then
     raise EReadError.Create('Illegal stream image');
   ReadObject('');
+  {$ENDIF}
 end;
 
 procedure TObjectStreamConverter.ObjectBinaryToText(aInput, aOutput: TStream);
@@ -9777,6 +9930,7 @@ end;
 
 function TParser.GetAlphaNum: string;
 begin
+  {$IFDEF PAS2JS}
   if not IsAlpha then
     ErrorFmt(SParserExpected,[GetTokenName(toSymbol)]);
   Result:='';
@@ -9786,6 +9940,7 @@ begin
     inc(fPos);
     CheckLoadBuffer;
   end;
+  {$ENDIF}
 end;
 
 procedure TParser.HandleNewLine;
@@ -9849,6 +10004,7 @@ type
 var
   allowed : floatPuncts;
 begin
+  {$IFDEF PAS2JS}
   fLastTokenStr:='';
   while IsNumber do
     ProcessChar;
@@ -9882,6 +10038,7 @@ begin
     fToken:=toFloat;
   end
   else fFloatType:=#0;
+  {$ENDIF}
 end;
 
 procedure TParser.HandleHexNumber;
@@ -9896,8 +10053,10 @@ begin
     valid:=true;
     ProcessChar;
   end;
+  {$IFDEF PAS2JS}
   if not valid then
     ErrorFmt(SParserInvalidInteger,[fLastTokenStr]);
+  {$ENDIF}
   fToken:=toInteger;
 end;
 
@@ -10021,15 +10180,19 @@ end;
 
 procedure TParser.CheckToken(T: tParserToken);
 begin
+  {$IFDEF PAS2JS}
   if fToken<>T then
     ErrorFmt(SParserWrongTokenType,[GetTokenName(T),GetTokenName(fToken)]);
+  {$ENDIF}
 end;
 
 procedure TParser.CheckTokenSymbol(const S: string);
 begin
+  {$IFDEF PAS2JS}
   CheckToken(toSymbol);
   if CompareText(fLastTokenStr,S)<>0 then
     ErrorFmt(SParserWrongTokenSymbol,[s,fLastTokenStr]);
+  {$ENDIF}
 end;
 
 procedure TParser.Error(const Ident: string);
@@ -10044,7 +10207,7 @@ end;
 
 procedure TParser.ErrorStr(const Message: string);
 begin
-  raise EParserError.CreateFmt(Message+SParserLocInfo,[SourceLine,fPos+fDeltaPos,SourcePos]);
+  {$IFDEF PAS2JS}raise EParserError.CreateFmt(Message+SParserLocInfo,[SourceLine,fPos+fDeltaPos,SourcePos]);{$ENDIF}
 end;
 
 procedure TParser.HexToBinary(Stream: TStream);
@@ -10126,8 +10289,10 @@ end;
 
 function TParser.TokenComponentIdent: string;
 begin
+  {$IFDEF PAS2JS}
   if fToken<>toSymbol then
     ErrorFmt(SParserExpected,[GetTokenName(toSymbol)]);
+  {$ENDIF}
   CheckLoadBuffer;
   while fBuf[fPos]='.' do
   begin
@@ -10143,9 +10308,11 @@ var
   errcode : integer;
 
 begin
+  {$IFDEF PAS2JS}
   Val(fLastTokenStr,Result,errcode);
   if errcode<>0 then
     ErrorFmt(SParserInvalidFloat,[fLastTokenStr]);
+  {$ENDIF}
 end;
 
 Function TParser.TokenInt: NativeInt;
@@ -10443,6 +10610,7 @@ end;
 
 procedure TObjectTextConverter.Execute;
 begin
+  {$IFDEF PAS2JS}
   If Not Assigned(Input) then
     raise EReadError.Create('Missing input stream');
   If Not Assigned(Output) then
@@ -10454,6 +10622,7 @@ begin
   finally
     FParser.Free;
   end;
+  {$ENDIF}
 end;
 
 procedure ObjectTextToBinary(aInput, aOutput: TStream);

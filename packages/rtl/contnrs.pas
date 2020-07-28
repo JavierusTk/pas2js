@@ -15,7 +15,7 @@ unit contnrs;
 interface
 
 uses
-  SysUtils, Classes;
+  SysUtils, Classes {$IFDEF DCC}, types{$ENDIF};
 
 
 Type
@@ -266,8 +266,8 @@ Type
     Function GetData(const index: string):JSValue; virtual;
     Function ForEachCall(aMethod: TDataIteratorMethod): THTDataNode; virtual;
   Public
-    Function Iterate(aMethod: TDataIteratorMethod): JSValue; virtual; overload;
-    Function Iterate(aMethod: TDataIteratorCallBack): JSValue; virtual; overload;
+    Function Iterate(aMethod: TDataIteratorMethod): JSValue; overload; virtual;
+    Function Iterate(aMethod: TDataIteratorCallBack): JSValue; overload; virtual;
     Procedure Add(const aKey: string; AItem: JSValue); virtual;
     property Items[const index: string]: JSValue read GetData write SetData; default;
   end;
@@ -294,8 +294,8 @@ Type
     Function GetData(const index: string): String; virtual;
     Function ForEachCall(aMethod: TStringIteratorMethod): THTStringNode; virtual;
   Public
-    Function Iterate(aMethod: TStringIteratorMethod): String; virtual; overload;
-    Function Iterate(aMethod: TStringIteratorCallback): String; virtual; overload;
+    Function Iterate(aMethod: TStringIteratorMethod): String; overload; virtual;
+    Function Iterate(aMethod: TStringIteratorCallback): String; overload; virtual;
     Procedure Add(const aKey,aItem: string); virtual;
     property Items[const index: string]: String read GetData write SetData; default;
   end;
@@ -332,8 +332,8 @@ Type
   Public
     constructor Create(AOwnsObjects : Boolean = True); reintroduce;
     constructor CreateWith(AHashTableSize: Longword; aHashFunc: THashFunction; AOwnsObjects : Boolean = True); reintroduce;
-    Function Iterate(aMethod: TObjectIteratorMethod): TObject; virtual; overload;
-    Function Iterate(aMethod: TObjectIteratorCallback): TObject; virtual; overload;
+    Function Iterate(aMethod: TObjectIteratorMethod): TObject; overload; virtual;
+    Function Iterate(aMethod: TObjectIteratorCallback): TObject; overload; virtual;
     Procedure Add(const aKey: string; AItem : TObject); virtual;
     property Items[const index: string]: TObject read GetData write SetData; default;
     Property OwnsObjects : Boolean Read FOwnsObjects;
@@ -516,6 +516,7 @@ Var
   O : TObject;
 
 begin
+  {$IFDEF PAS2JS}
   if OwnsObjects then
     begin
     O:=TObject(FList[Index]);
@@ -524,6 +525,7 @@ begin
     end
   else
     FList[index]:=AObject;
+  {$ENDIF}
 end;
 
 Procedure TFPObjectList.SetCapacity(NewCapacity: Integer);
@@ -538,7 +540,7 @@ end;
 
 Function TFPObjectList.Add(AObject: TObject): Integer;
 begin
-  Result:=FList.Add(AObject);
+  {$IFDEF PAS2JS}Result:=FList.Add(AObject);{$ENDIF}
 end;
 
 Procedure TFPObjectList.Delete(Index: Integer);
@@ -569,7 +571,7 @@ end;
 
 Function TFPObjectList.Extract(Item: TObject): TObject;
 begin
-  Result:=TObject(FList.Extract(Item));
+  {$IFDEF PAS2JS}Result:=TObject(FList.Extract(Item));{$ENDIF}
 end;
 
 Function TFPObjectList.Remove(AObject: TObject): Integer;
@@ -657,7 +659,7 @@ end;
 
 Procedure TFPObjectList.ForEachCall(proc2call:TObjectListCallback;arg:JSValue);
 begin
-  FList.ForEachCall(TListCallBack(proc2call),arg);
+  {$IFDEF PAS2JS}FList.ForEachCall(TListCallBack(proc2call),arg);{$ENDIF}
 end;
 
 { TObjectList }
@@ -857,7 +859,7 @@ end;
 
 Procedure TComponentList.SetItems(Index: Integer; AComponent: TComponent);
 begin
-  Put(Index,AComponent);
+  {$IFDEF PAS2JS}Put(Index,AComponent);{$ENDIF}
 end;
 
 { TClassList }
@@ -1214,6 +1216,7 @@ var
   hashCode: Longword;
   i: Longword;
 begin
+  {$IFDEF PAS2JS}
   hashCode:=FHashFunction(aKey, FHashTableSize);
   Result:=Chain(hashCode);
   if Assigned(Result)  then
@@ -1229,6 +1232,7 @@ begin
     Result:=Chain(hashCode);
     end;
   Inc(FCount);
+  {$ENDIF}
 end;
 
 
@@ -1395,7 +1399,7 @@ end;
 Function TFPDataHashTable.Iterate(aMethod: TDataIteratorCallBack): JSValue;
 begin
   FIteratorCallBack := aMethod;
-  Result := Iterate(@CallbackIterator);
+  {$IFDEF PAS2JS}Result := Iterate(@CallbackIterator);{$ENDIF}
 end;
 
 Function TFPDataHashTable.ForEachCall(aMethod: TDataIteratorMethod): THTDataNode;
@@ -1485,7 +1489,7 @@ end;
 Function TFPStringHashTable.Iterate(aMethod: TStringIteratorCallback): String;
 begin
   FIteratorCallBack := aMethod;
-  Result := Iterate(@CallbackIterator);
+  {$IFDEF PAS2JS}Result := Iterate(@CallbackIterator);{$ENDIF}
 end;
 
 Function TFPStringHashTable.ForEachCall(aMethod: TStringIteratorMethod): THTStringNode;
@@ -1573,7 +1577,7 @@ end;
 Function TFPObjectHashTable.Iterate(aMethod: TObjectIteratorCallback): TObject;
 begin
   FIteratorCallBack := aMethod;
-  Result := Iterate(@CallbackIterator);
+  {$IFDEF PAS2JS}Result := Iterate(@CallbackIterator);{$ENDIF}
 end;
 
 Function TFPObjectHashTable.ForEachCall(aMethod: TObjectIteratorMethod): THTObjectNode;
@@ -1834,7 +1838,7 @@ end;
 
 Function TObjectBucketList.GetData(AItem: TObject): TObject;
 begin
-  Result:=TObject(inherited GetData(AItem));
+  {$IFDEF PAS2JS}Result:=TObject(inherited GetData(AItem));{$ENDIF}
 end;
 
 Procedure TObjectBucketList.SetData(AItem: TObject; const AData: TObject);

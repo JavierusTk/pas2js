@@ -11,8 +11,9 @@
 
  **********************************************************************}
 unit TypInfo;
-
+{$IFDEF PAS2JS}
 {$modeswitch externalclass}
+{$ENDIF}
 
 interface
 
@@ -71,21 +72,21 @@ type
 
   { TTypeInfoModule }
 
-  TTypeInfoModule = class external name 'pasmodule'
+  TTypeInfoModule = class {$IFDEF PAS2JS}external name 'pasmodule'{$ENDIF}
   public
-    Name: String external name '$name';
+    Name: String; {$IFDEF PAS2JS}external name '$name';{$ENDIF}
   end;
 
   TTypeInfoAttributes = type TJSValueDynArray;
 
   { TTypeInfo }
 
-  TTypeInfo = class external name 'rtl.tTypeInfo'
+  TTypeInfo = class {$IFDEF PAS2JS}external name 'rtl.tTypeInfo'{$ENDIF}
   public
-    Name: String external name 'name';
-    Kind: TTypeKind external name 'kind';
-    Attributes: TTypeInfoAttributes external name 'attr'; // can be undefined
-    Module: TTypeInfoModule external name '$module'; // can be undefined
+    Name: String; {$IFDEF PAS2JS}external name 'name';{$ENDIF}
+    Kind: TTypeKind; {$IFDEF PAS2JS}external name 'kind';{$ENDIF}
+    Attributes: TTypeInfoAttributes; {$IFDEF PAS2JS}external name 'attr';{$ENDIF} // can be undefined
+    Module: TTypeInfoModule; {$IFDEF PAS2JS}external name '$module';{$ENDIF} // can be undefined
   end;
   TTypeInfoClassOf = class of TTypeInfo;
 
@@ -104,19 +105,19 @@ type
 
   { TTypeInfoInteger - Kind = tkInteger }
 
-  TTypeInfoInteger = class external name 'rtl.tTypeInfoInteger'(TTypeInfo)
+  TTypeInfoInteger = class {$IFDEF PAS2JS}external name 'rtl.tTypeInfoInteger'(TTypeInfo){$ENDIF}
   public
-    MinValue: NativeInt external name 'minvalue';
-    MaxValue: NativeInt external name 'maxvalue';
-    OrdType : TOrdType external name 'ordtype';
+    MinValue: NativeInt; {$IFDEF PAS2JS}external name 'minvalue';{$ENDIF}
+    MaxValue: NativeInt; {$IFDEF PAS2JS}external name 'maxvalue';{$ENDIF}
+    OrdType : TOrdType; {$IFDEF PAS2JS}external name 'ordtype';{$ENDIF}
   end;
 
   { TEnumType }
 
-  TEnumType = class external name 'anonymous'
+  TEnumType = class {$IFDEF PAS2JS}external name 'anonymous'{$ENDIF}
   private
-    function GetIntToName(Index: NativeInt): String; external name '[]';
-    function GetNameToInt(Name: String): NativeInt; external name '[]';
+    function GetIntToName(Index: NativeInt): String; {$IFDEF PAS2JS}external name '[]';{$ENDIF}
+    function GetNameToInt(Name: String): NativeInt; {$IFDEF PAS2JS}external name '[]';{$ENDIF}
   public
     property IntToName[Index: NativeInt]: String read GetIntToName;
     property NameToInt[Name: String]: NativeInt read GetNameToInt;
@@ -124,34 +125,34 @@ type
 
   { TTypeInfoEnum - Kind = tkEnumeration }
 
-  TTypeInfoEnum = class external name 'rtl.tTypeInfoEnum'(TTypeInfoInteger)
+  TTypeInfoEnum = class {$IFDEF PAS2JS}external name 'rtl.tTypeInfoEnum'(TTypeInfoInteger){$ENDIF}
   public
     // not supported: BaseType: TTypeInfo
-    EnumType: TEnumType external name 'enumtype';
+    EnumType: TEnumType; {$IFDEF PAS2JS}external name 'enumtype';{$ENDIF}
   end;
 
   { TTypeInfoSet - Kind = tkSet }
 
-  TTypeInfoSet = class external name 'rtl.tTypeInfoSet'(TTypeInfo)
+  TTypeInfoSet = class {$IFDEF PAS2JS}external name 'rtl.tTypeInfoSet'(TTypeInfo){$ENDIF}
   public
     // not supported: BaseType: TTypeInfo
-    CompType: TTypeInfo external name 'comptype';
+    CompType: TTypeInfo; {$IFDEF PAS2JS}external name 'comptype';{$ENDIF}
   end;
 
   { TTypeInfoStaticArray - Kind = tkArray }
 
-  TTypeInfoStaticArray = class external name 'rtl.tTypeInfoStaticArray'(TTypeInfo)
+  TTypeInfoStaticArray = class {$IFDEF PAS2JS}external name 'rtl.tTypeInfoStaticArray'(TTypeInfo){$ENDIF}
   public
     Dims: TIntegerDynArray;
-    ElType: TTypeInfo external name 'eltype';
+    ElType: TTypeInfo; {$IFDEF PAS2JS}external name 'eltype';{$ENDIF}
   end;
 
   { TTypeInfoDynArray - Kind = tkDynArray }
 
-  TTypeInfoDynArray = class external name 'rtl.tTypeInfoDynArray'(TTypeInfo)
+  TTypeInfoDynArray = class {$IFDEF PAS2JS}external name 'rtl.tTypeInfoDynArray'(TTypeInfo){$ENDIF}
   public
-    DimCount: NativeInt external name 'dimcount';
-    ElType: TTypeInfo external name 'eltype';
+    DimCount: NativeInt; {$IFDEF PAS2JS}external name 'dimcount';{$ENDIF}
+    ElType: TTypeInfo; {$IFDEF PAS2JS}external name 'eltype';{$ENDIF}
   end;
 
   TParamFlag     = (
@@ -166,11 +167,11 @@ type
 
   { TProcedureParam }
 
-  TProcedureParam = class external name 'anonymous'
+  TProcedureParam = class {$IFDEF PAS2JS}external name 'anonymous'{$ENDIF}
   public
-    Name: String external name 'name';
-    TypeInfo: TTypeInfo external name 'typeinfo';
-    Flags: NativeInt external name 'flags'; // TParamFlags as bit vector
+    Name: String; {$IFDEF PAS2JS}external name 'name';{$ENDIF}
+    TypeInfo: TTypeInfo; {$IFDEF PAS2JS}external name 'typeinfo';{$ENDIF}
+    Flags: NativeInt; {$IFDEF PAS2JS}external name 'flags';{$ENDIF} // TParamFlags as bit vector
   end;
 
   TProcedureParams = array of TProcedureParam;
@@ -184,23 +185,23 @@ type
 
   { TProcedureSignature }
 
-  TProcedureSignature = class external name 'anonymous'
+  TProcedureSignature = class {$IFDEF PAS2JS}external name 'anonymous'{$ENDIF}
   public
-    Params: TProcedureParams external name 'params'; // can be null
-    ResultType: TTypeInfo external name 'resulttype'; // can be null
-    Flags: NativeInt external name 'flags'; // TProcedureFlags as bit vector
+    Params: TProcedureParams; {$IFDEF PAS2JS}external name 'params';{$ENDIF} // can be null
+    ResultType: TTypeInfo; {$IFDEF PAS2JS}external name 'resulttype';{$ENDIF} // can be null
+    Flags: NativeInt; {$IFDEF PAS2JS}external name 'flags';{$ENDIF} // TProcedureFlags as bit vector
   end;
 
   { TTypeInfoProcVar - Kind = tkProcVar }
 
-  TTypeInfoProcVar = class external name 'rtl.tTypeInfoProcVar'(TTypeInfo)
+  TTypeInfoProcVar = class {$IFDEF PAS2JS}external name 'rtl.tTypeInfoProcVar'(TTypeInfo){$ENDIF}
   public
-    ProcSig: TProcedureSignature external name 'procsig';
+    ProcSig: TProcedureSignature; {$IFDEF PAS2JS}external name 'procsig';{$ENDIF}
   end;
 
   { TTypeInfoRefToProcVar - Kind = tkRefToProcVar }
 
-  TTypeInfoRefToProcVar = class external name 'rtl.tTypeInfoRefToProcVar'(TTypeInfoProcVar)
+  TTypeInfoRefToProcVar = class {$IFDEF PAS2JS}external name 'rtl.tTypeInfoRefToProcVar'(TTypeInfoProcVar){$ENDIF}
   end;
 
   TMethodKind = (
@@ -216,9 +217,9 @@ type
 
   { TTypeInfoMethodVar - Kind = tkMethod }
 
-  TTypeInfoMethodVar = class external name 'rtl.tTypeInfoMethodVar'(TTypeInfoProcVar)
+  TTypeInfoMethodVar = class {$IFDEF PAS2JS}external name 'rtl.tTypeInfoMethodVar'(TTypeInfoProcVar){$ENDIF}
   public
-    MethodKind: TMethodKind external name 'methodkind';
+    MethodKind: TMethodKind {$IFDEF PAS2JS}external name 'methodkind';{$ENDIF}
   end;
 
   TTypeMemberKind = (
@@ -231,27 +232,27 @@ type
 
   { TTypeMember }
 
-  TTypeMember = class external name 'rtl.tTypeMember'
+  TTypeMember = class {$IFDEF PAS2JS}external name 'rtl.tTypeMember'{$ENDIF}
   public
-    Name: String external name 'name';
-    Kind: TTypeMemberKind external name 'kind';
-    Attributes: TTypeInfoAttributes external name 'attr'; // can be undefined
+    Name: String; {$IFDEF PAS2JS}external name 'name';{$ENDIF}
+    Kind: TTypeMemberKind; {$IFDEF PAS2JS}external name 'kind';{$ENDIF}
+    Attributes: TTypeInfoAttributes; {$IFDEF PAS2JS}external name 'attr';{$ENDIF} // can be undefined
   end;
   TTypeMemberDynArray = array of TTypeMember;
 
   { TTypeMemberField - Kind = tmkField }
 
-  TTypeMemberField = class external name 'rtl.tTypeMemberField'(TTypeMember)
+  TTypeMemberField = class {$IFDEF PAS2JS}external name 'rtl.tTypeMemberField'(TTypeMember){$ENDIF}
   public
-    TypeInfo: TTypeInfo external name 'typeinfo';
+    TypeInfo: TTypeInfo; {$IFDEF PAS2JS}external name 'typeinfo';{$ENDIF}
   end;
 
   { TTypeMemberMethod - Kind = tmkMethod }
 
-  TTypeMemberMethod = class external name 'rtl.tTypeMemberMethod'(TTypeMember)
+  TTypeMemberMethod = class {$IFDEF PAS2JS}external name 'rtl.tTypeMemberMethod'(TTypeMember){$ENDIF}
   public
-    MethodKind: TMethodKind external name 'methodkind';
-    ProcSig: TProcedureSignature external name 'procsig';
+    MethodKind: TMethodKind; {$IFDEF PAS2JS}external name 'methodkind';{$ENDIF}
+    ProcSig: TProcedureSignature; {$IFDEF PAS2JS}external name 'procsig';{$ENDIF}
   end;
   TTypeMemberMethodDynArray = array of TTypeMemberMethod;
 
@@ -267,108 +268,108 @@ const
 type
   { TTypeMemberProperty - Kind = tmkProperty }
 
-  TTypeMemberProperty = class external name 'rtl.tTypeMemberProperty'(TTypeMember)
+  TTypeMemberProperty = class {$IFDEF PAS2JS}external name 'rtl.tTypeMemberProperty'(TTypeMember){$ENDIF}
   public
-    TypeInfo: TTypeInfo external name 'typeinfo';
-    Flags: NativeInt external name 'flags'; // bit vector, see pf constants above
-    Params: TProcedureParams external name 'params'; // can be null or undefined
-    Index: JSValue external name 'index'; // can be undefined
-    Getter: String external name 'getter'; // name of field or function
-    Setter: String external name 'setter'; // name of field or function
-    Stored: String external name 'stored'; // name of field or function, can be undefined
-    Default: JSValue external name 'Default'; // can be undefined
+    TypeInfo: TTypeInfo; {$IFDEF PAS2JS}external name 'typeinfo';{$ENDIF}
+    Flags: NativeInt; {$IFDEF PAS2JS}external name 'flags';{$ENDIF} // bit vector, see pf constants above
+    Params: TProcedureParams; {$IFDEF PAS2JS}external name 'params';{$ENDIF} // can be null or undefined
+    Index: JSValue; {$IFDEF PAS2JS}external name 'index';{$ENDIF} // can be undefined
+    Getter: String; {$IFDEF PAS2JS}external name 'getter';{$ENDIF} // name of field or function
+    Setter: String; {$IFDEF PAS2JS}external name 'setter';{$ENDIF} // name of field or function
+    Stored: String; {$IFDEF PAS2JS}external name 'stored';{$ENDIF} // name of field or function, can be undefined
+    Default: JSValue; {$IFDEF PAS2JS}external name 'Default';{$ENDIF} // can be undefined
   end;
   TTypeMemberPropertyDynArray = array of TTypeMemberProperty;
 
   { TTypeMembers }
 
-  TTypeMembers = class external name 'rtl.tTypeMembers'
+  TTypeMembers = class {$IFDEF PAS2JS}external name 'rtl.tTypeMembers'{$ENDIF}
   private
-    function GetItems(Name: String): TTypeMember; external name '[]';
-    procedure SetItems(Name: String; const AValue: TTypeMember); external name '[]';
+    function GetItems(Name: String): TTypeMember;{$IFDEF PAS2JS} external name '[]';{$ENDIF}
+    procedure SetItems(Name: String; const AValue: TTypeMember); {$IFDEF PAS2JS}external name '[]';{$ENDIF}
   public
     property Members[Name: String]: TTypeMember read GetItems write SetItems; default;
   end;
 
   { TTypeInfoStruct }
 
-  TTypeInfoStruct = class external name 'rtl.tTypeInfoStruct'(TTypeInfo)
+  TTypeInfoStruct = class {$IFDEF PAS2JS}external name 'rtl.tTypeInfoStruct'(TTypeInfo){$ENDIF}
   private
-    FFieldCount: NativeInt external name 'fields.length';
-    FMethodCount: NativeInt external name 'methods.length';
-    FPropCount: NativeInt external name 'properties.length';
+    FFieldCount: NativeInt; {$IFDEF PAS2JS}external name 'fields.length';{$ENDIF}
+    FMethodCount: NativeInt; {$IFDEF PAS2JS}external name 'methods.length';{$ENDIF}
+    FPropCount: NativeInt; {$IFDEF PAS2JS}external name 'properties.length';{$ENDIF}
   public
-    Members: TTypeMembers external name 'members';
-    Names: TStringDynArray external name 'names'; // all member names with TTypeInfo
-    Fields: TStringDynArray external name 'fields';
-    Methods: TStringDynArray external name 'methods';
-    Properties: TStringDynArray external name 'properties';
+    Members: TTypeMembers; {$IFDEF PAS2JS}external name 'members';{$ENDIF}
+    Names: TStringDynArray; {$IFDEF PAS2JS}external name 'names';{$ENDIF} // all member names with TTypeInfo
+    Fields: TStringDynArray; {$IFDEF PAS2JS}external name 'fields';{$ENDIF}
+    Methods: TStringDynArray; {$IFDEF PAS2JS}external name 'methods';{$ENDIF}
+    Properties: TStringDynArray; {$IFDEF PAS2JS}external name 'properties';{$ENDIF}
     property FieldCount: NativeInt read FFieldCount;
-    function GetField(Index: NativeInt): TTypeMemberField; external name 'getField';
+    function GetField(Index: NativeInt): TTypeMemberField; {$IFDEF PAS2JS}external name 'getField';{$ENDIF}
     function AddField(aName: String; aType: TTypeInfo; Options: TJSObject = nil
-      ): TTypeMemberField; external name 'addField';
+      ): TTypeMemberField; {$IFDEF PAS2JS}external name 'addField';{$ENDIF}
     property MethodCount: NativeInt read FMethodCount;
-    function GetMethod(Index: NativeInt): TTypeMemberMethod; external name 'getMethod';
+    function GetMethod(Index: NativeInt): TTypeMemberMethod; {$IFDEF PAS2JS}external name 'getMethod';{$ENDIF}
     function AddMethod(aName: String; MethodKind: TMethodKind = mkProcedure;
       Params: TJSArray = nil; ResultType: TTypeInfo = nil;
-      Options: TJSObject = nil): TTypeMemberMethod; external name 'addMethod';
+      Options: TJSObject = nil): TTypeMemberMethod; {$IFDEF PAS2JS}external name 'addMethod';{$ENDIF}
     property PropCount: NativeInt read FPropCount;
-    function GetProp(Index: NativeInt): TTypeMemberProperty; external name 'getProperty';
+    function GetProp(Index: NativeInt): TTypeMemberProperty; {$IFDEF PAS2JS}external name 'getProperty';{$ENDIF}
     function AddProperty(aName: String; Flags: NativeInt; ResultType: TTypeInfo;
-      Getter, Setter: String; Options: TJSObject = nil): TTypeMemberProperty; external name 'addProperty';
+      Getter, Setter: String; Options: TJSObject = nil): TTypeMemberProperty; {$IFDEF PAS2JS}external name 'addProperty';{$ENDIF}
   end;
 
   { TTypeInfoRecord - Kind = tkRecord }
 
-  TTypeInfoRecord = class external name 'rtl.tTypeInfoRecord'(TTypeInfoStruct)
+  TTypeInfoRecord = class {$IFDEF PAS2JS}external name 'rtl.tTypeInfoRecord'(TTypeInfoStruct){$ENDIF}
   public
-    RecordType: TJSObject external name 'record';
+    RecordType: TJSObject; {$IFDEF PAS2JS}external name 'record';{$ENDIF}
   end;
 
   { TTypeInfoClass - Kind = tkClass }
 
-  TTypeInfoClass = class external name 'rtl.tTypeInfoClass'(TTypeInfoStruct)
+  TTypeInfoClass = class {$IFDEF PAS2JS}external name 'rtl.tTypeInfoClass'(TTypeInfoStruct){$ENDIF}
   public
-    ClassType: TClass external name 'class';
-    Ancestor: TTypeInfoClass external name 'ancestor';
+    ClassType: TClass; {$IFDEF PAS2JS}external name 'class';{$ENDIF}
+    Ancestor: TTypeInfoClass; {$IFDEF PAS2JS}external name 'ancestor';{$ENDIF}
   end;
 
   { TTypeInfoExtClass - Kind = tkExtClass }
 
-  TTypeInfoExtClass = class external name 'rtl.tTypeInfoExtClass'(TTypeInfoClass)
+  TTypeInfoExtClass = class {$IFDEF PAS2JS}external name 'rtl.tTypeInfoExtClass'(TTypeInfoClass){$ENDIF}
   public
-    JSClassName: String external name 'jsclass';
+    JSClassName: String; {$IFDEF PAS2JS}external name 'jsclass';{$ENDIF}
   end;
 
   { TTypeInfoClassRef - class-of, Kind = tkClassRef }
 
-  TTypeInfoClassRef = class external name 'rtl.tTypeInfoClassRef'(TTypeInfo)
+  TTypeInfoClassRef = class {$IFDEF PAS2JS}external name 'rtl.tTypeInfoClassRef'(TTypeInfo){$ENDIF}
   public
-    InstanceType: TTypeInfo external name 'instancetype';
+    InstanceType: TTypeInfo; {$IFDEF PAS2JS}external name 'instancetype';{$ENDIF}
   end;
 
   { TTypeInfoPointer - Kind = tkPointer }
 
-  TTypeInfoPointer = class external name 'rtl.tTypeInfoPointer'(TTypeInfo)
+  TTypeInfoPointer = class {$IFDEF PAS2JS}external name 'rtl.tTypeInfoPointer'(TTypeInfo){$ENDIF}
   public
-    RefType: TTypeInfo external name 'reftype'; // can be null
+    RefType: TTypeInfo; {$IFDEF PAS2JS}external name 'reftype';{$ENDIF} // can be null
   end;
 
   { TTypeInfoInterface - Kind = tkInterface }
 
-  TTypeInfoInterface = class external name 'rtl.tTypeInfoInterface'(TTypeInfoStruct)
+  TTypeInfoInterface = class {$IFDEF PAS2JS}external name 'rtl.tTypeInfoInterface'(TTypeInfoStruct){$ENDIF}
   public
-    InterfaceType: TJSObject external name 'interface';
-    Ancestor: TTypeInfoInterface external name 'ancestor';
+    InterfaceType: TJSObject; {$IFDEF PAS2JS}external name 'interface';{$ENDIF}
+    Ancestor: TTypeInfoInterface; {$IFDEF PAS2JS}external name 'ancestor';{$ENDIF}
   end;
 
   { TTypeInfoHelper - Kind = tkHelper }
 
-  TTypeInfoHelper = class external name 'rtl.tTypeInfoHelper'(TTypeInfoStruct)
+  TTypeInfoHelper = class {$IFDEF PAS2JS}external name 'rtl.tTypeInfoHelper'(TTypeInfoStruct){$ENDIF}
   public
-    HelperType: TJSObject external name 'helper';
-    Ancestor: TTypeInfoHelper external name 'ancestor';
-    HelperFor: TTypeInfo external name 'helperfor';
+    HelperType: TJSObject; {$IFDEF PAS2JS}external name 'helper';{$ENDIF}
+    Ancestor: TTypeInfoHelper; {$IFDEF PAS2JS}external name 'ancestor';{$ENDIF}
+    HelperFor: TTypeInfo; {$IFDEF PAS2JS}external name 'helperfor';{$ENDIF}
   end;
 
   EPropertyError  = class(Exception);
@@ -377,13 +378,12 @@ function GetClassMembers(aTIStruct: TTypeInfoStruct): TTypeMemberDynArray;
 function GetClassMember(aTIStruct: TTypeInfoStruct; const aName: String): TTypeMember;
 function GetInstanceMethod(Instance: TObject; const aName: String): Pointer;
 function GetClassMethods(aTIStruct: TTypeInfoStruct): TTypeMemberMethodDynArray;
-function CreateMethod(Instance: TObject; FuncName: String): Pointer; external name 'rtl.createCallback';
-
+function CreateMethod(Instance: TObject; FuncName: String): Pointer; {$IFDEF PAS2JS}external name 'rtl.createCallback';{$ENDIF}
 function GetInterfaceMembers(aTIInterface: TTypeInfoInterface): TTypeMemberDynArray;
 function GetInterfaceMember(aTIInterface: TTypeInfoInterface; const aName: String): TTypeMember;
 function GetInterfaceMethods(aTIInterface: TTypeInfoInterface): TTypeMemberMethodDynArray;
 
-function GetRTTIAttributes(const Attributes: TTypeInfoAttributes): TCustomAttributeArray;
+{$IFDEF PAS2JS}function GetRTTIAttributes(const Attributes: TTypeInfoAttributes): TCustomAttributeArray;{$ENDIF}
 
 function GetPropInfos(aTIStruct: TTypeInfoStruct): TTypeMemberPropertyDynArray;
 function GetPropList(aTIStruct: TTypeInfoStruct; TypeKinds: TTypeKinds; Sorted: boolean = true): TTypeMemberPropertyDynArray; overload;
@@ -499,6 +499,7 @@ var
   PropName: String;
   Names: TJSObject;
 begin
+  {$IFDEF PAS2JS}
   Result:=nil;
   Names:=TJSObject.new;
   C:=aTIStruct;
@@ -514,6 +515,7 @@ begin
     if not (C is TTypeInfoClass) then break;
     C:=TTypeInfoClass(C).Ancestor;
   end;
+  {$ENDIF}
 end;
 
 function GetClassMember(aTIStruct: TTypeInfoStruct; const aName: String): TTypeMember;
@@ -521,6 +523,7 @@ var
   C: TTypeInfoStruct;
   i: Integer;
 begin
+  {$IFDEF PAS2JS}
   // quick search: case sensitive
   C:=aTIStruct;
   while C<>nil do
@@ -541,23 +544,34 @@ begin
     C:=TTypeInfoClass(C).Ancestor;
   end;
   Result:=nil;
+  {$ENDIF}
 end;
 
 function GetInstanceMethod(Instance: TObject; const aName: String): Pointer;
 var
   TI: TTypeMember;
 begin
+  {$IFDEF PAS2JS}
   if Instance=nil then exit(nil);
   TI:=GetClassMember(TypeInfo(Instance),aName);
   if not (TI is TTypeMemberMethod) then exit(nil);
   Result:=CreateMethod(Instance,TI.Name); // Note: use TI.Name for the correct case!
+  {$ENDIF}
 end;
+
+{$IFDEF DCC}
+function CreateMethod(Instance: TObject; FuncName: String): Pointer;
+begin
+  Result := nil;
+end;
+{$ENDIF}
 
 function GetClassMethods(aTIStruct: TTypeInfoStruct): TTypeMemberMethodDynArray;
 var
   C: TTypeInfoStruct;
   i, Cnt, j: Integer;
 begin
+  {$IFDEF PAS2JS}
   Cnt:=0;
   C:=aTIStruct;
   while C<>nil do
@@ -579,6 +593,7 @@ begin
     if not (C is TTypeInfoClass) then break;
     C:=TTypeInfoClass(C).Ancestor;
   end;
+  {$ENDIF}
 end;
 
 function GetInterfaceMembers(aTIInterface: TTypeInfoInterface
@@ -587,6 +602,7 @@ var
   Intf: TTypeInfoInterface;
   i, Cnt, j: Integer;
 begin
+  {$IFDEF PAS2JS}
   Cnt:=0;
   Intf:=aTIInterface;
   while Intf<>nil do
@@ -606,6 +622,7 @@ begin
     end;
     Intf:=Intf.Ancestor;
   end;
+  {$ENDIF}
 end;
 
 function GetInterfaceMember(aTIInterface: TTypeInfoInterface;
@@ -615,6 +632,7 @@ var
   i: Integer;
 begin
   // quick search: case sensitive
+  {$IFDEF PAS2JS}
   Intf:=aTIInterface;
   while Intf<>nil do
   begin
@@ -632,6 +650,7 @@ begin
     Intf:=Intf.Ancestor;
   end;
   Result:=nil;
+  {$ENDIF}
 end;
 
 function GetInterfaceMethods(aTIInterface: TTypeInfoInterface
@@ -640,6 +659,7 @@ var
   Intf: TTypeInfoInterface;
   i, Cnt, j: Integer;
 begin
+  {$IFDEF PAS2JS}
   Cnt:=0;
   Intf:=aTIInterface;
   while Intf<>nil do
@@ -659,15 +679,16 @@ begin
     end;
     Intf:=Intf.Ancestor;
   end;
+  {$ENDIF}
 end;
 
 type
-  TCreatorAttribute = class external name 'attr'
-    class function Create(const ProcName: string): TCustomAttribute; overload; external name '$create';
-    class function Create(const ProcName: string; Params: jsvalue): TCustomAttribute; overload; external name '$create';
+  TCreatorAttribute = class {$IFDEF PAS2JS}external name 'attr'{$ENDIF}
+    class function Create(const ProcName: string): TCustomAttribute; overload; {$IFDEF PAS2JS}external name '$create';{$ENDIF}
+    class function Create(const ProcName: string; Params: jsvalue): TCustomAttribute; overload; {$IFDEF PAS2JS}external name '$create';{$ENDIF}
   end;
   TCreatorAttributeClass = class of TCreatorAttribute;
-
+{$IFDEF PAS2JS}
 function GetRTTIAttributes(const Attributes: TTypeInfoAttributes
   ): TCustomAttributeArray;
 var
@@ -696,6 +717,7 @@ begin
     Insert(Attr,Result,length(Result));
     end;
 end;
+{$ENDIF}
 
 function GetPropInfos(aTIStruct: TTypeInfoStruct): TTypeMemberPropertyDynArray;
 var
@@ -704,6 +726,7 @@ var
   Names: TJSObject;
   PropName: String;
 begin
+  {$IFDEF PAS2JS}
   Result:=nil;
   C:=aTIStruct;
   Names:=TJSObject.new;
@@ -720,6 +743,7 @@ begin
       break;
     C:=TTypeInfoClass(C).Ancestor;
   end;
+  {$ENDIF}
 end;
 
 function GetPropList(aTIStruct: TTypeInfoStruct; TypeKinds: TTypeKinds;
@@ -727,12 +751,14 @@ function GetPropList(aTIStruct: TTypeInfoStruct; TypeKinds: TTypeKinds;
 
   function NameSort(a,b: JSValue): NativeInt;
   begin
+    {$IFDEF PAS2JS}
     if TTypeMemberProperty(a).Name<TTypeMemberProperty(b).Name then
       Result:=-1
     else if TTypeMemberProperty(a).Name>TTypeMemberProperty(b).Name then
       Result:=1
     else
       Result:=0;
+    {$ENDIF}
   end;
 
 var
@@ -742,6 +768,7 @@ var
   PropName: String;
   Prop: TTypeMemberProperty;
 begin
+  {$IFDEF PAS2JS}
   Result:=nil;
   C:=aTIStruct;
   Names:=TJSObject.new;
@@ -762,6 +789,7 @@ begin
   end;
   if Sorted then
     TJSArray(Result).sort(@NameSort);
+  {$ENDIF}
 end;
 
 function GetPropList(aTIStruct: TTypeInfoStruct): TTypeMemberPropertyDynArray;
@@ -771,7 +799,7 @@ end;
 
 function GetPropList(AClass: TClass): TTypeMemberPropertyDynArray;
 begin
-  Result:=GetPropInfos(TypeInfo(AClass));
+  {$IFDEF PAS2JS}Result:=GetPropInfos(TypeInfo(AClass));{$ENDIF}
 end;
 
 function GetPropList(Instance: TObject): TTypeMemberPropertyDynArray;
@@ -787,6 +815,7 @@ var
   C: TTypeInfoStruct;
 begin
   // quick search case sensitive
+  {$IFDEF PAS2JS}
   C:=TI;
   while C<>nil do
   begin
@@ -813,6 +842,7 @@ begin
       break;
     TI:=TTypeInfoClass(TI).Ancestor;
   until TI=nil;
+  {$ENDIF}
 end;
 
 function GetPropInfo(TI: TTypeInfoStruct; const PropName: String;
@@ -826,57 +856,65 @@ end;
 function GetPropInfo(Instance: TObject; const PropName: String
   ): TTypeMemberProperty;
 begin
-  Result:=GetPropInfo(TypeInfo(Instance),PropName,[]);
+  {$IFDEF PAS2JS}Result:=GetPropInfo(TypeInfo(Instance),PropName,[]);{$ENDIF}
 end;
 
 function GetPropInfo(Instance: TObject; const PropName: String;
   const Kinds: TTypeKinds): TTypeMemberProperty;
 begin
-  Result:=GetPropInfo(TypeInfo(Instance),PropName,Kinds);
+  {$IFDEF PAS2JS}Result:=GetPropInfo(TypeInfo(Instance),PropName,Kinds);{$ENDIF}
 end;
 
 function GetPropInfo(aClass: TClass; const PropName: String
   ): TTypeMemberProperty;
 begin
-  Result:=GetPropInfo(TypeInfo(AClass),PropName,[]);
+  {$IFDEF PAS2JS}Result:=GetPropInfo(TypeInfo(AClass),PropName,[]);{$ENDIF}
 end;
 
 function GetPropInfo(aClass: TClass; const PropName: String;
   const Kinds: TTypeKinds): TTypeMemberProperty;
 begin
-  Result:=GetPropInfo(TypeInfo(AClass),PropName,Kinds);
+  {$IFDEF PAS2JS}Result:=GetPropInfo(TypeInfo(AClass),PropName,Kinds);{$ENDIF}
 end;
 
 function FindPropInfo(Instance: TObject; const PropName: String
   ): TTypeMemberProperty;
 begin
+  {$IFDEF PAS2JS}
   Result:=GetPropInfo(TypeInfo(Instance), PropName);
   if Result=nil then
     raise EPropertyError.CreateFmt(SErrPropertyNotFound, [PropName]);
+  {$ENDIF}
 end;
 
 function FindPropInfo(Instance: TObject; const PropName: String;
   const Kinds: TTypeKinds): TTypeMemberProperty;
 begin
+  {$IFDEF PAS2JS}
   Result:=GetPropInfo(TypeInfo(Instance), PropName, Kinds);
   if Result=nil then
     raise EPropertyError.CreateFmt(SErrPropertyNotFound, [PropName]);
+  {$ENDIF}
 end;
 
 function FindPropInfo(aClass: TClass; const PropName: String
   ): TTypeMemberProperty;
 begin
+  {$IFDEF PAS2JS}
   Result:=GetPropInfo(TypeInfo(aClass), PropName);
   if Result=nil then
     raise EPropertyError.CreateFmt(SErrPropertyNotFound, [PropName]);
+  {$ENDIF}
 end;
 
 function FindPropInfo(aClass: TClass; const PropName: String;
   const Kinds: TTypeKinds): TTypeMemberProperty;
 begin
+  {$IFDEF PAS2JS}
   Result:=GetPropInfo(TypeInfo(aClass), PropName, Kinds);
   if Result=nil then
     raise EPropertyError.CreateFmt(SErrPropertyNotFound, [PropName]);
+  {$ENDIF}
 end;
 
 function IsStoredProp(Instance: TObject; const PropInfo: TTypeMemberProperty
@@ -884,12 +922,14 @@ function IsStoredProp(Instance: TObject; const PropInfo: TTypeMemberProperty
 type
   TIsStored = function: Boolean of object;
 begin
+  {$IFDEF PAS2JS}
   case PropInfo.Flags and 12 of
   0: Result:=true;
   4: Result:=false;
   8: Result:=Boolean(TJSObject(Instance)[PropInfo.Stored]);
   else Result:=TIsStored(TJSObject(Instance)[PropInfo.Stored])();
   end;
+  {$ENDIF}
 end;
 
 function IsStoredProp(Instance: TObject; const PropName: string): Boolean;
@@ -982,10 +1022,12 @@ function GetJSValueProp(Instance: TJSObject; TI: TTypeInfoStruct;
 var
   PropInfo: TTypeMemberProperty;
 begin
+  {$IFDEF PAS2JS}
   PropInfo:=GetPropInfo(TI,PropName);
   if PropInfo=nil then
     raise EPropertyError.CreateFmt(SErrPropertyNotFound, [PropName]);
   Result:=GetJSValueProp(Instance,PropInfo);
+  {$ENDIF}
 end;
 
 function GetJSValueProp(Instance: TJSObject;
@@ -996,6 +1038,7 @@ type
 var
   gk: TGetterKind;
 begin
+  {$IFDEF PAS2JS}
   gk:=GetPropGetterKind(PropInfo);
   case gk of
     gkNone:
@@ -1010,6 +1053,7 @@ begin
     gkFunctionWithParams:
       raise EPropertyError.CreateFmt(SIndexedPropertyNeedsParams, [PropInfo.Name]);
   end;
+  {$ENDIF}
 end;
 
 function GetJSValueProp(Instance: TObject; const PropName: String): JSValue;
@@ -1028,10 +1072,12 @@ procedure SetJSValueProp(Instance: TJSObject; TI: TTypeInfoStruct;
 var
   PropInfo: TTypeMemberProperty;
 begin
+  {$IFDEF PAS2JS}
   PropInfo:=GetPropInfo(TI,PropName);
   if PropInfo=nil then
     raise EPropertyError.CreateFmt(SErrPropertyNotFound, [PropName]);
   SetJSValueProp(Instance,PropInfo,Value);
+  {$ENDIF}
 end;
 
 procedure SetJSValueProp(Instance: TJSObject;
@@ -1042,6 +1088,7 @@ type
 var
   sk: TSetterKind;
 begin
+  {$IFDEF PAS2JS}
   sk:=GetPropSetterKind(PropInfo);
   case sk of
     skNone:
@@ -1056,6 +1103,7 @@ begin
     skProcedureWithParams:
       raise EPropertyError.CreateFmt(SIndexedPropertyNeedsParams, [PropInfo.Name]);
   end;
+  {$ENDIF}
 end;
 
 procedure SetJSValueProp(Instance: TObject; const PropName: String;
@@ -1084,13 +1132,13 @@ end;
 procedure SetNativeIntProp(Instance: TObject; const PropName: String;
   Value: NativeInt);
 begin
-  SetJSValueProp(Instance,FindPropInfo(Instance,PropName),Value);
+  {$IFDEF PAS2JS}SetJSValueProp(Instance,FindPropInfo(Instance,PropName),Value);{$ENDIF}
 end;
 
 procedure SetNativeIntProp(Instance: TObject;
   const PropInfo: TTypeMemberProperty; Value: NativeInt);
 begin
-  SetJSValueProp(Instance,PropInfo,Value);
+  {$IFDEF PAS2JS}SetJSValueProp(Instance,PropInfo,Value);{$ENDIF}
 end;
 
 function GetOrdProp(Instance: TObject; const PropName: String): longint;
@@ -1105,6 +1153,7 @@ var
   Key: String;
   n: NativeInt;
 begin
+  {$IFDEF PAS2JS}
   if PropInfo.TypeInfo.Kind=tkSet then
   begin
     // a set is a JS object, with the following property: o[ElementDecimal]=true
@@ -1118,6 +1167,7 @@ begin
     end;
   end else
     Result:=longint(GetJSValueProp(Instance,PropInfo));
+  {$ENDIF}
 end;
 
 procedure SetOrdProp(Instance: TObject; const PropName: String; Value: longint);
@@ -1131,6 +1181,7 @@ var
   o: TJSObject;
   i: Integer;
 begin
+  {$IFDEF PAS2JS}
   if PropInfo.TypeInfo.Kind=tkSet then
   begin
     o:=TJSObject.new;
@@ -1140,6 +1191,7 @@ begin
     SetJSValueProp(Instance,PropInfo,o);
   end else
     SetJSValueProp(Instance,PropInfo,Value);
+  {$ENDIF}
 end;
 
 function GetEnumProp(Instance: TObject; const PropName: String): String;
@@ -1152,12 +1204,14 @@ var
   n: NativeInt;
   TIEnum: TTypeInfoEnum;
 begin
+  {$IFDEF PAS2JS}
   TIEnum:=PropInfo.TypeInfo as TTypeInfoEnum;
   n:=NativeInt(GetJSValueProp(Instance,PropInfo));
   if (n>=TIEnum.MinValue) and (n<=TIEnum.MaxValue) then
     Result:=TIEnum.EnumType.IntToName[n]
   else
     Result:=str(n);
+  {$ENDIF}
 end;
 
 procedure SetEnumProp(Instance: TObject; const PropName: String;
@@ -1172,10 +1226,12 @@ var
   TIEnum: TTypeInfoEnum;
   n: NativeInt;
 begin
+  {$IFDEF PAS2JS}
   TIEnum:=PropInfo.TypeInfo as TTypeInfoEnum;
   n:=TIEnum.EnumType.NameToInt[Value];
   if not isUndefined(n) then
     SetJSValueProp(Instance,PropInfo,n);
+  {$ENDIF}
 end;
 
 function GetEnumName(TypeInfo: TTypeInfoEnum; Value: Integer): String;
@@ -1228,6 +1284,7 @@ var
   TIEnum: TTypeInfoEnum;
   TISet: TTypeInfoSet;
 begin
+  {$IFDEF PAS2JS}
   Result:='';
   // get enum type if available
   TISet:=PropInfo.TypeInfo as TTypeInfoSet;
@@ -1248,6 +1305,7 @@ begin
     Result:=Result+Value;
   end;
   Result:='['+Result+']';
+  {$ENDIF}
 end;
 
 function GetSetPropArray(Instance: TObject; const PropName: String
@@ -1262,12 +1320,14 @@ var
   o: TJSObject;
   Key: string;
 begin
+  {$IFDEF PAS2JS}
   Result:=[];
   // read value
   o:=TJSObject(GetJSValueProp(Instance,PropInfo));
   // a set is a JS object, where included element is stored as: o[ElementDecimal]=true
   for Key in o do
     TJSArray(Result).push(parseInt(Key,10));
+  {$ENDIF}
 end;
 
 procedure SetSetPropArray(Instance: TObject; const PropName: String;
@@ -1282,10 +1342,12 @@ var
   o: TJSObject;
   i: integer;
 begin
+  {$IFDEF PAS2JS}
   o:=TJSObject.new;
   for i in Arr do
     o[str(i)]:=true;
   SetJSValueProp(Instance,PropInfo,o);
+  {$ENDIF}
 end;
 
 function GetStrProp(Instance: TObject; const PropName: String): String;
@@ -1308,7 +1370,7 @@ end;
 procedure SetStrProp(Instance: TObject; const PropInfo: TTypeMemberProperty;
   Value: String);
 begin
-  SetJSValueProp(Instance,PropInfo,Value);
+  {$IFDEF PAS2JS}SetJSValueProp(Instance,PropInfo,Value);{$ENDIF}
 end;
 
 function GetStringProp(Instance: TObject; const PropName: String): String;
@@ -1354,7 +1416,7 @@ end;
 procedure SetBoolProp(Instance: TObject; const PropInfo: TTypeMemberProperty;
   Value: boolean);
 begin
-  SetJSValueProp(Instance,PropInfo,Value);
+  {$IFDEF PAS2JS}SetJSValueProp(Instance,PropInfo,Value);{$ENDIF}
 end;
 
 function GetObjectProp(Instance: TObject; const PropName: String): TObject;
@@ -1398,7 +1460,7 @@ end;
 procedure SetObjectProp(Instance: TObject; const PropInfo: TTypeMemberProperty; Value: TObject);
 
 begin
-  SetJSValueProp(Instance,PropInfo,Value);
+  {$IFDEF PAS2JS}SetJSValueProp(Instance,PropInfo,Value);{$ENDIF}
 end;
 
 function GetMethodProp(Instance: TObject; PropInfo: TTypeMemberProperty
@@ -1406,6 +1468,7 @@ function GetMethodProp(Instance: TObject; PropInfo: TTypeMemberProperty
 var
   v, fn: JSValue;
 begin
+  {$IFDEF PAS2JS}
   Result.Code:=nil;
   Result.Data:=nil;
   v:=GetJSValueProp(Instance,PropInfo);
@@ -1424,15 +1487,17 @@ begin
   else
     // anonymous callback
     Result.Code:=CodePointer(fn);
+  {$ENDIF}
 end;
 
 function GetMethodProp(Instance: TObject; const PropName: string): TMethod;
 begin
   Result:=GetMethodProp(Instance,FindPropInfo(Instance,PropName));
 end;
-
+{$IFDEF PAS2JS}
 function createCallbackPtr(scope: Pointer; fn: CodePointer): TJSFunction; external name 'rtl.createCallback';
 function createCallbackStr(scope: Pointer; fn: string): TJSFunction; external name 'rtl.createCallback';
+{$ENDIF}
 
 procedure SetMethodProp(Instance: TObject; PropInfo: TTypeMemberProperty;
   const Value: TMethod);
@@ -1440,6 +1505,7 @@ var
   cb: TJSFunction;
   Code: Pointer;
 begin
+  {$IFDEF PAS2JS}
   // Note: Value.Data=nil is allowed and can be used by designer code
   Code:=Value.Code;
   if Code=nil then
@@ -1464,6 +1530,7 @@ begin
     // not a valid value -> for compatibility set it anyway
     cb:=createCallbackPtr(Value.Data,Code);
   SetJSValueProp(Instance,PropInfo,cb);
+  {$ENDIF}
 end;
 
 procedure SetMethodProp(Instance: TObject; const PropName: string;
@@ -1486,6 +1553,7 @@ type
 var
   gk: TGetterKind;
 begin
+  {$IFDEF PAS2JS}
   if Propinfo.TypeInfo.Kind<>tkInterface then
     raise Exception.Create('Cannot get RAW interface from IInterface interface');
   gk:=GetPropGetterKind(PropInfo);
@@ -1502,6 +1570,7 @@ begin
     gkFunctionWithParams:
       raise EPropertyError.CreateFmt(SIndexedPropertyNeedsParams, [PropInfo.Name]);
   end;
+  {$ENDIF}
 end;
 
 procedure SetInterfaceProp(Instance: TObject; const PropName: string;
@@ -1512,9 +1581,15 @@ end;
 
 procedure SetInterfaceProp(Instance: TObject; PropInfo: TTypeMemberProperty;
   const Value: IInterface);
+begin
+
+end;
+
 type
   TSetter = procedure(Value: IInterface) of object;
   TSetterWithIndex = procedure(Index: JSValue; Value: IInterface) of object;
+
+{$IFDEF PAS2JS}
 procedure setIntfP(Instance: TObject; const PropName: string; value: jsvalue); external name 'rtl.setIntfP';
 var
   sk: TSetterKind;
@@ -1538,52 +1613,125 @@ begin
       raise EPropertyError.CreateFmt(SIndexedPropertyNeedsParams, [PropInfo.Name]);
   end;
 end;
-
+{$ENDIF}
 function GetRawInterfaceProp(Instance: TObject; const PropName: string
-  ): Pointer;
+  ): Pointer; overload;
 begin
-  Result:=GetRawInterfaceProp(Instance,FindPropInfo(Instance,PropName));
+  {$IFDEF PAS2JS}Result:=GetRawInterfaceProp(Instance,FindPropInfo(Instance,PropName));{$ENDIF}
 end;
 
 function GetRawInterfaceProp(Instance: TObject; PropInfo: TTypeMemberProperty
-  ): Pointer;
+  ): Pointer; overload;
 begin
   Result:=Pointer(GetJSValueProp(Instance,PropInfo));
 end;
 
 procedure SetRawInterfaceProp(Instance: TObject; const PropName: string;
-  const Value: Pointer);
+  const Value: Pointer); overload;
 begin
-  SetRawInterfaceProp(Instance,FindPropInfo(Instance,PropName),Value);
+  {$IFDEF PAS2JS}SetRawInterfaceProp(Instance,FindPropInfo(Instance,PropName),Value);{$ENDIF}
 end;
 
 procedure SetRawInterfaceProp(Instance: TObject; PropInfo: TTypeMemberProperty;
-  const Value: Pointer);
+  const Value: Pointer); overload;
 begin
   SetJSValueProp(Instance,PropInfo,Value);
 end;
 
-function GetFloatProp(Instance: TObject; PropInfo: TTypeMemberProperty): Double;
+function GetFloatProp(Instance: TObject; PropInfo: TTypeMemberProperty): Double; overload;
 begin
-  Result:=Double(GetJSValueProp(Instance,PropInfo));
+  {$IFDEF PAS2JS}Result:=Double(GetJSValueProp(Instance,PropInfo));{$ENDIF}
 end;
 
-function GetFloatProp(Instance: TObject; const PropName: string): Double;
+function GetFloatProp(Instance: TObject; const PropName: string): Double; overload;
 begin
   Result:=GetFloatProp(Instance,FindPropInfo(Instance,PropName));
 end;
 
-procedure SetFloatProp(Instance: TObject; const PropName: string; Value: Double
-  );
+procedure SetFloatProp(Instance: TObject; const PropName: string; Value: Double); overload;
 begin
-  SetFloatProp(Instance,FindPropInfo(Instance,PropName),Value);
+  {$IFDEF PAS2JS}SetFloatProp(Instance,FindPropInfo(Instance,PropName),Value);{$ENDIF}
 end;
 
-procedure SetFloatProp(Instance: TObject; PropInfo: TTypeMemberProperty;
-  Value: Double);
+procedure SetFloatProp(Instance: TObject; PropInfo: TTypeMemberProperty; Value: Double); overload;
 begin
-  SetJSValueProp(Instance,PropInfo,Value);
+  {$IFDEF PAS2JS}SetJSValueProp(Instance,PropInfo,Value);{$ENDIF}
 end;
 
+{ TEnumType }
+{$IFDEF DCC}
+function TEnumType.GetIntToName(Index: NativeInt): String;
+begin
+  Result := '';
+end;
+
+function TEnumType.GetNameToInt(Name: String): NativeInt;
+begin
+  Result := 0;
+end;
+
+{ TTypeMembers }
+
+function TTypeMembers.GetItems(Name: String): TTypeMember;
+begin
+  Result := nil;
+end;
+
+procedure TTypeMembers.SetItems(Name: String; const AValue: TTypeMember);
+begin
+
+end;
+
+{ TTypeInfoStruct }
+
+function TTypeInfoStruct.AddField(aName: String; aType: TTypeInfo;
+  Options: TJSObject): TTypeMemberField;
+begin
+  Result := nil;
+end;
+
+function TTypeInfoStruct.AddMethod(aName: String; MethodKind: TMethodKind;
+  Params: TJSArray; ResultType: TTypeInfo;
+  Options: TJSObject): TTypeMemberMethod;
+begin
+
+end;
+
+function TTypeInfoStruct.AddProperty(aName: String; Flags: NativeInt;
+  ResultType: TTypeInfo; Getter, Setter: String;
+  Options: TJSObject): TTypeMemberProperty;
+begin
+  Result := nil;
+end;
+
+function TTypeInfoStruct.GetField(Index: NativeInt): TTypeMemberField;
+begin
+  Result := nil;
+end;
+
+function TTypeInfoStruct.GetMethod(Index: NativeInt): TTypeMemberMethod;
+begin
+  Result := nil;
+end;
+
+function TTypeInfoStruct.GetProp(Index: NativeInt): TTypeMemberProperty;
+begin
+  Result := nil;
+end;
+
+{ TCreatorAttribute }
+
+class function TCreatorAttribute.Create(const ProcName: string;
+  Params: jsvalue): TCustomAttribute;
+begin
+  Result := nil;
+end;
+
+class function TCreatorAttribute.Create(
+  const ProcName: string): TCustomAttribute;
+begin
+  Result := nil;
+end;
+{$ENDIF}
 end.
 

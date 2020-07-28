@@ -19,7 +19,7 @@ unit JS;
 interface
 
 uses
-  Types{$IFDEF DCC}, System.SysUtils{$ENDIF};
+  Types;
 
 type
   // We cannot use EConvertError or Exception, this would result in a circular dependency.
@@ -74,7 +74,7 @@ type
     function isPrototypeOf(const obj: TJSObject): boolean;
     function propertyIsEnumerable(propname: String): boolean;
     function toLocaleString: String;
-    function toString: String;
+    function toString: String; {$IFDEF DCC} reintroduce;{$ENDIF}
     function valueOf: JSValue;
     property Properties[Name: String]: JSValue read GetProperties write SetProperties; default;
   end;
@@ -267,7 +267,7 @@ type
     Constructor New(Pattern, Flags : string); overload;
     function exec(aString : string): TStringDynArray;
     function test(aString : string) : boolean;
-    function toString : String;
+    function toString : String; {$IFDEF DCC}reintroduce;{$ENDIF}
     property Global : boolean read fglobal;
     property IgnoreCase : Boolean read FIgnoreCase;
     property Multiline : Boolean Read FMultiLine;
@@ -347,7 +347,7 @@ type
     function toLocaleLowerCase : String;
     function toLocaleUpperCase : String;
     function toLowerCase : String;
-    function toString : string;
+    function toString : string; {$IFDEF DCC}reintroduce;{$ENDIF}
     function toUpperCase : String;
     function trim : string;
     function valueOf : string;
@@ -434,7 +434,7 @@ type
     function toLocaleString: String; overload;
     function toLocaleString(locales : string) : String; overload;
     function toLocaleString(locales : string; const Options : TLocaleCompareOptions) : String; overload;
-    function toString : String;
+    function toString : String; {$IFDEF DCC}reintroduce;{$ENDIF}
     function unshift : NativeInt;{$IFDEF PAS2JS} varargs; {$ENDIF}
     function values: TJSIterator;
     Property Length : NativeInt Read FLength Write FLength;
@@ -525,7 +525,7 @@ type
     function toLocaleString: String; overload;
     function toLocaleString(locales : string) : String; overload;
     function toLocaleString(locales : string; const Options : TLocaleCompareOptions) : String; overload;
-    function toString : String;
+    function toString : String; {$IFDEF DCC}reintroduce;{$ENDIF}
     function unshift : NativeInt;{$IFDEF PAS2JS} varargs; {$ENDIF}
     property buffer : TJSArrayBuffer read FBuffer;
     property byteLength : NativeInt Read FByteLength;
@@ -921,6 +921,91 @@ Const
 
 implementation
 
+{$IFDEF DCC}
+uses
+  System.SysUtils;
+
+function decodeURIComponent(encodedURI : String) : String;
+begin
+  Result := '';
+end;
+
+function encodeURIComponent(str : String) : String;
+begin
+  Result := '';
+end;
+
+function parseInt(s: String; Radix: NativeInt): NativeInt;
+begin
+  Result := 0;
+end;
+
+function parseInt(s: String): NativeInt;
+begin
+  Result := 0;
+end;
+
+function parseFloat(s: String): double;
+begin
+  Result := 0;
+end;
+
+function hasString(const v: JSValue): boolean;
+begin
+  Result := False;
+end;
+
+function isArray(const v: JSValue): boolean;
+begin
+  Result := False;
+end;
+
+function isFunction(const v: JSValue): boolean;
+begin
+  Result := False;
+end;
+
+function isModule(const v: JSValue): boolean;
+begin
+  Result := False;
+end;
+
+function isNumber(const v: JSValue): boolean;
+begin
+  Result := False;
+end;
+
+function isObject(const v: JSValue): boolean;
+begin
+  Result := False;
+end;
+
+function isString(const v: JSValue): boolean;
+begin
+  Result := False;
+end;
+
+function isExt(const InstanceOrClass, aClass: JSValue): boolean;
+begin
+  Result := False;
+end;
+
+function jsTypeOf(const v: JSValue): String;
+begin
+  Result := '';
+end;
+
+function jsIsNaN(const v: JSValue): boolean;
+begin
+  Result := False;
+end;
+
+function jsIsFinite(const v: JSValue): boolean;
+begin
+  Result := False;
+end;
+{$ENDIF}
+
 function new(aElements: TJSValueDynArray): TJSObject;
 
   function toString(I : Integer): string; {$IFDEF PAS2JS} external name 'String';{$ENDIF} overload;
@@ -1117,29 +1202,2609 @@ Var
   t : string;
 
 begin
-  if isNull(js) then   // null reported as object
+  result:=jvtNull;
+
+  if isNull(js) then
     result:=jvtNull
   else
-    begin
+  begin
     t:=jsTypeOf(js);
     if (t='string') then
       Result:=jvtString
     else if (t='boolean') then
       Result:=jvtBoolean
     else if (t='object') then
-      begin
-      if IsArray(JS) then
-        Result:=jvtArray
-      else
-        Result:=jvtObject;
-      end
+    begin
+    if IsArray(JS) then
+      Result:=jvtArray
+    else
+      Result:=jvtObject;
+    end
     else if (t='number') then
       if isInteger(JS) then
         result:=jvtInteger
       else
         result:=jvtFloat
-    end;
+  end;
 end;
+
+{$IFDEF DCC}
+{ TJSObject }
+
+class function TJSObject.assign(const Target, Source1: TJSObject): TJSObject;
+begin
+  Result := nil;
+end;
+
+class function TJSObject.create(const proto: TJSObject): TJSObject;
+begin
+  Result := nil;
+end;
+
+class function TJSObject.create(const proto,
+  propertiesObject: TJSObject): TJSObject;
+begin
+  Result := nil;
+end;
+
+class procedure TJSObject.defineProperty(const obj: TJSObject; propname: String;
+  const descriptor: TJSObjectPropertyDescriptor);
+begin
+
+end;
+
+class function TJSObject.freeze(const obj: TJSObject): TJSObject;
+begin
+  Result := nil;
+end;
+
+class function TJSObject.getOwnPropertyDescriptor(const obj: TJSObject;
+  propname: String): TJSObjectPropertyDescriptor;
+begin
+  Result := nil;
+end;
+
+class function TJSObject.getOwnPropertyNames(
+  const obj: TJSObject): TStringDynArray;
+begin
+  Result := nil;
+end;
+
+function TJSObject.GetProperties(Name: String): JSValue;
+begin
+  Result := nil;
+end;
+
+class function TJSObject.getPrototypeOf(const obj: TJSObject): TJSObject;
+begin
+  Result := nil;
+end;
+
+function TJSObject.hasOwnProperty(prop: String): boolean;
+begin
+  Result := False;
+end;
+
+class function TJSObject.isExtensible(const obj: TJSObject): boolean;
+begin
+  Result := False;
+end;
+
+class function TJSObject.isFrozen(const obj: TJSObject): boolean;
+begin
+  Result := False;
+end;
+
+function TJSObject.isPrototypeOf(const obj: TJSObject): boolean;
+begin
+  Result := False;
+end;
+
+class function TJSObject.isSealed(const obj: TJSObject): boolean;
+begin
+  Result := False;
+end;
+
+class function TJSObject.keys(const obj: TJSObject): TStringDynArray;
+begin
+  Result := nil;
+end;
+
+constructor TJSObject.new;
+begin
+
+end;
+
+class function TJSObject.preventExtensions(const obj: TJSObject): TJSObject;
+begin
+  Result := nil;
+end;
+
+function TJSObject.propertyIsEnumerable(propname: String): boolean;
+begin
+  Result := False;
+end;
+
+class function TJSObject.seal(const obj: TJSObject): TJSObject;
+begin
+  Result := nil;
+end;
+
+procedure TJSObject.SetProperties(Name: String; const AValue: JSValue);
+begin
+
+end;
+
+class function TJSObject.setPrototypeOf(const obj,
+  prototype: TJSObject): TJSObject;
+begin
+  Result := nil;
+end;
+
+function TJSObject.toLocaleString: String;
+begin
+  Result := '';
+end;
+
+function TJSObject.toString: String;
+begin
+  Result := '';
+end;
+
+function TJSObject.valueOf: JSValue;
+begin
+  Result := nil;
+end;
+
+class function TJSObject.values(const obj: JSValue): TJSObject;
+begin
+  Result := nil;
+end;
+
+{ TJSIterator }
+
+function TJSIterator.next: TJSIteratorValue;
+begin
+  Result := nil;
+end;
+
+{ TJSSet }
+
+function TJSSet.add(value: JSValue): TJSSet;
+begin
+  Result := nil;
+end;
+
+procedure TJSSet.clear;
+begin
+
+end;
+
+function TJSSet.delete(value: JSValue): Boolean;
+begin
+  Result := False;
+end;
+
+function TJSSet.entries: TJSIterator;
+begin
+  Result := nil;
+end;
+
+procedure TJSSet.forEach(const aCallBack: TJSSetEventProc; thisArg: JSValue);
+begin
+
+end;
+
+procedure TJSSet.forEach(const aCallBack: TJSSetProcCallBack);
+begin
+
+end;
+
+procedure TJSSet.forEach(const aCallBack: TJSSetEventProc);
+begin
+
+end;
+
+function TJSSet.has(value: JSValue): Boolean;
+begin
+  Result := False;
+end;
+
+function TJSSet.keys: TJSIterator;
+begin
+  Result := nil;
+end;
+
+constructor TJSSet.new(aElement1: JSValue);
+begin
+
+end;
+
+constructor TJSSet.new;
+begin
+
+end;
+
+function TJSSet.values: TJSIterator;
+begin
+  Result := nil;
+end;
+
+{ TJSMap }
+
+procedure TJSMap.clear;
+begin
+
+end;
+
+function TJSMap.delete(key: JSValue): Boolean;
+begin
+  Result := False;
+end;
+
+function TJSMap.entries: TJSIterator;
+begin
+  Result := nil;
+end;
+
+procedure TJSMap.forEach(const aCallBack: TJSMapFunctionCallBack);
+begin
+
+end;
+
+procedure TJSMap.forEach(const aCallBack: TJSMapProcCallBack);
+begin
+
+end;
+
+procedure TJSMap.forEach(const aCallBack: TJSMapFunctionCallBack;
+  thisArg: JSValue);
+begin
+
+end;
+
+function TJSMap.get(key: JSValue): JSValue;
+begin
+  Result := nil;
+end;
+
+function TJSMap.has(key: JSValue): Boolean;
+begin
+  Result := False;
+end;
+
+function TJSMap.keys: TJSIterator;
+begin
+  Result := nil;
+end;
+
+constructor TJSMap.new(aElement1: JSValue);
+begin
+
+end;
+
+constructor TJSMap.new;
+begin
+
+end;
+
+function TJSMap.&set(key, value: JSValue): TJSMap;
+begin
+  Result := nil;
+end;
+
+function TJSMap.values: TJSIterator;
+begin
+  Result := nil;
+end;
+
+{ TJSFunction }
+
+function TJSFunction.apply(thisArg: TJSObject;
+  const ArgArray: TJSValueDynArray): JSValue;
+begin
+  Result := nil;
+end;
+
+function TJSFunction.bind(thisArg: TJSObject): JSValue;
+begin
+  Result := nil;
+end;
+
+function TJSFunction.call(thisArg: TJSObject): JSValue;
+begin
+  Result := nil;
+end;
+
+{ TJSDate }
+
+function TJSDate.getDate: NativeInt;
+begin
+  Result := 0;
+end;
+
+function TJSDate.getDay: NativeInt;
+begin
+  Result := 0;
+end;
+
+function TJSDate.getFullYear: NativeInt;
+begin
+  Result := 0;
+end;
+
+function TJSDate.getHours: NativeInt;
+begin
+  Result := 0;
+end;
+
+function TJSDate.getMilliseconds: NativeInt;
+begin
+  Result := 0;
+end;
+
+function TJSDate.getMinutes: NativeInt;
+begin
+  Result := 0;
+end;
+
+function TJSDate.getMonth: NativeInt;
+begin
+  Result := 0;
+end;
+
+function TJSDate.getSeconds: NativeInt;
+begin
+  Result := 0;
+end;
+
+function TJSDate.getTime: NativeInt;
+begin
+  Result := 0;
+end;
+
+function TJSDate.getTimezoneOffset: NativeInt;
+begin
+  Result := 0;
+end;
+
+function TJSDate.getUTCDate: NativeInt;
+begin
+  Result := 0;
+end;
+
+function TJSDate.getUTCDay: NativeInt;
+begin
+  Result := 0;
+end;
+
+function TJSDate.getUTCFullYear: NativeInt;
+begin
+  Result := 0;
+end;
+
+function TJSDate.getUTCHours: NativeInt;
+begin
+  Result := 0;
+end;
+
+function TJSDate.getUTCMilliseconds: NativeInt;
+begin
+  Result := 0;
+end;
+
+function TJSDate.getUTCMinutes: NativeInt;
+begin
+  Result := 0;
+end;
+
+function TJSDate.getUTCMonth: NativeInt;
+begin
+  Result := 0;
+end;
+
+function TJSDate.getUTCSeconds: NativeInt;
+begin
+  Result := 0;
+end;
+
+function TJSDate.getYear: NativeInt;
+begin
+  Result := 0;
+end;
+
+constructor TJSDate.New(aYear, aMonth, aDayOfMonth, TheHours, TheMinutes,
+  TheSeconds, TheMilliseconds: NativeInt);
+begin
+
+end;
+
+constructor TJSDate.New;
+begin
+
+end;
+
+constructor TJSDate.New(const MilliSecsSince1970: NativeInt);
+begin
+
+end;
+
+constructor TJSDate.New(const aDateString: String);
+begin
+
+end;
+
+class function TJSDate.now: NativeInt;
+begin
+  Result := 0;
+end;
+
+class function TJSDate.parse(const aDateString: string): NativeInt;
+begin
+  Result := 0;
+end;
+
+procedure TJSDate.setDate(const AValue: NativeInt);
+begin
+
+end;
+
+procedure TJSDate.setFullYear(const AValue: NativeInt);
+begin
+
+end;
+
+procedure TJSDate.setHours(const AValue: NativeInt);
+begin
+
+end;
+
+procedure TJSDate.setMilliseconds(const AValue: NativeInt);
+begin
+
+end;
+
+procedure TJSDate.setMinutes(const AValue: NativeInt);
+begin
+
+end;
+
+procedure TJSDate.setMonth(const AValue: NativeInt);
+begin
+
+end;
+
+procedure TJSDate.setSeconds(const AValue: NativeInt);
+begin
+
+end;
+
+procedure TJSDate.setTime(const AValue: NativeInt);
+begin
+
+end;
+
+procedure TJSDate.setUTCDate(const AValue: NativeInt);
+begin
+
+end;
+
+procedure TJSDate.setUTCFullYear(const AValue: NativeInt);
+begin
+
+end;
+
+procedure TJSDate.setUTCHours(const AValue: NativeInt);
+begin
+
+end;
+
+procedure TJSDate.setUTCMilliseconds(const AValue: NativeInt);
+begin
+
+end;
+
+procedure TJSDate.setUTCMinutes(const AValue: NativeInt);
+begin
+
+end;
+
+procedure TJSDate.setUTCMonth(const AValue: NativeInt);
+begin
+
+end;
+
+procedure TJSDate.setUTCSeconds(const AValue: NativeInt);
+begin
+
+end;
+
+procedure TJSDate.setYear(const AValue: NativeInt);
+begin
+
+end;
+
+function TJSDate.toDateString: string;
+begin
+  Result := '';
+end;
+
+function TJSDate.toGMTString: string;
+begin
+  Result := '';
+end;
+
+function TJSDate.toISOString: string;
+begin
+  Result := '';
+end;
+
+function TJSDate.toJSON: string;
+begin
+  Result := '';
+end;
+
+function TJSDate.toLocaleDateString: string;
+begin
+  Result := '';
+end;
+
+function TJSDate.toLocaleString: string;
+begin
+  Result := '';
+end;
+
+function TJSDate.toLocaleTimeString: string;
+begin
+  Result := '';
+end;
+
+function TJSDate.toTimeString: string;
+begin
+  Result := '';
+end;
+
+function TJSDate.toUTCString: string;
+begin
+  Result := '';
+end;
+
+class function TJSDate.UTC(aYear, aMonth, aDayOfMonth, TheHours, TheMinutes,
+  TheSeconds, TheMilliseconds: NativeInt): NativeInt;
+begin
+  Result := 0;
+end;
+
+{ TJSRegexp }
+
+function TJSRegexp.exec(aString: string): TStringDynArray;
+begin
+  Result := nil;
+end;
+
+constructor TJSRegexp.New(Pattern: string);
+begin
+
+end;
+
+constructor TJSRegexp.New(Pattern, Flags: string);
+begin
+
+end;
+
+function TJSRegexp.test(aString: string): boolean;
+begin
+  Result := False;
+end;
+
+function TJSRegexp.toString: String;
+begin
+  Result := '';
+end;
+
+{ TJSString }
+
+function TJSString.anchor(const aName: string): string;
+begin
+  Result := '';
+end;
+
+function TJSString.charAt(aIndex: NativeInt): string;
+begin
+  Result := '';
+end;
+
+function TJSString.charCodeAt(aIndex: NativeInt): NativeInt;
+begin
+  Result := 0;
+end;
+
+function TJSString.codePointAt(aIndex: NativeInt): NativeInt;
+begin
+  Result := 0;
+end;
+
+function TJSString.concat(s: string): string;
+begin
+  Result := '';
+end;
+
+function TJSString.endsWith(aSearchString: string): boolean;
+begin
+  Result := False;
+end;
+
+function TJSString.endsWith(aSearchString: string; Pos: NativeInt): boolean;
+begin
+  Result := False;
+end;
+
+class function TJSString.fromCharCode: string;
+begin
+  Result := '';
+end;
+
+class function TJSString.fromCodePoint: string;
+begin
+  Result := '';
+end;
+
+function TJSString.includes(aSearchString: string; Pos: NativeInt): boolean;
+begin
+  Result := False;
+end;
+
+function TJSString.indexOf(aSearchString: String; Pos: NativeInt): Integer;
+begin
+  Result := 0;
+end;
+
+function TJSString.lastIndexOf(aSearchString: String): NativeInt;
+begin
+  Result := 0;
+end;
+
+function TJSString.lastIndexOf(aSearchString: String; Pos: NativeInt): Integer;
+begin
+  Result := 0;
+end;
+
+function TJSString.link(aUrl: string): String;
+begin
+  Result := '';
+end;
+
+function TJSString.localeCompare(compareString, locales: string;
+  Options: TlocaleCompareOptions): integer;
+begin
+  Result := 0;
+end;
+
+function TJSString.localeCompare(aCompareString, aLocales: string): integer;
+begin
+  Result := 0;
+end;
+
+function TJSString.localeCompare(aCompareString: string): NativeInt;
+begin
+  Result := 0;
+end;
+
+function TJSString.match(aRegexp: String): TStringDynArray;
+begin
+  Result := nil;
+end;
+
+function TJSString.match(aRegexp: TJSRegexp): TStringDynArray;
+begin
+  Result := nil;
+end;
+
+constructor TJSString.New(const S: String);
+begin
+
+end;
+
+constructor TJSString.New(const I: NativeInt);
+begin
+
+end;
+
+constructor TJSString.New(const D: double);
+begin
+
+end;
+
+function TJSString.replace(Regexp: String;
+  aCallback: TReplaceCallBack0): String;
+begin
+  Result := '';
+end;
+
+function TJSString.replace(aRegexp, NewString: String): String;
+begin
+  Result := '';
+end;
+
+function TJSString.replace(Regexp: TJSRegexp;
+  aCallback: TReplaceCallBack): String;
+begin
+  Result := '';
+end;
+
+function TJSString.replace(Regexp: String; aCallback: TReplaceCallBack): String;
+begin
+  Result := '';
+end;
+
+function TJSString.replace(aRegexp: TJSRegexp; NewString: String): String;
+begin
+  Result := '';
+end;
+
+function TJSString.replace(Regexp: TJSRegexp;
+  aCallback: TReplaceCallBack2): String;
+begin
+  Result := '';
+end;
+
+function TJSString.replace(Regexp: String;
+  aCallback: TReplaceCallBack2): String;
+begin
+  Result := '';
+end;
+
+function TJSString.replace(Regexp: TJSRegexp;
+  aCallback: TReplaceCallBack1): String;
+begin
+  Result := '';
+end;
+
+function TJSString.replace(Regexp: String;
+  aCallback: TReplaceCallBack1): String;
+begin
+  Result := '';
+end;
+
+function TJSString.replace(Regexp: TJSRegexp;
+  aCallback: TReplaceCallBack0): String;
+begin
+  Result := '';
+end;
+
+function TJSString.search(Regexp: JSValue): NativeInt;
+begin
+  Result := 0;
+end;
+
+function TJSString.search(Regexp: TJSRegexp): NativeInt;
+begin
+  Result := 0;
+end;
+
+function TJSString.slice(aBeginIndex: NativeInt): String;
+begin
+  Result := '';
+end;
+
+function TJSString.slice(aBeginIndex, aEndIndex: NativeInt): String;
+begin
+  Result := '';
+end;
+
+function TJSString.split(aSeparator: string): TStringDynArray;
+begin
+  Result := nil;
+end;
+
+function TJSString.split(aSeparator: string;
+  aLimit: NativeInt): TStringDynArray;
+begin
+  Result := nil;
+end;
+
+function TJSString.split: TStringDynArray;
+begin
+  Result := nil;
+end;
+
+function TJSString.split(aRegexp: TJSRegexp): TStringDynArray;
+begin
+  Result := nil;
+end;
+
+function TJSString.split(aSeparator: array of string;
+  aLimit: NativeInt): TStringDynArray;
+begin
+  Result := nil;
+end;
+
+function TJSString.split(aSeparator: array of string): TStringDynArray;
+begin
+  Result := nil;
+end;
+
+function TJSString.startsWith(aSearchString: String;
+  aPosition: NativeInt): Boolean;
+begin
+  Result := false;
+end;
+
+function TJSString.startsWith(aSearchString: String): Boolean;
+begin
+  Result := false;
+end;
+
+function TJSString.substr(aStartIndex: NativeInt): String;
+begin
+  Result := '';
+end;
+
+function TJSString.substr(aStartIndex, aLength: NativeInt): String;
+begin
+  Result := '';
+end;
+
+function TJSString.substring(aStartIndex: NativeInt): String;
+begin
+  Result := '';
+end;
+
+function TJSString.substring(aStartIndex, aEndIndex: NativeInt): String;
+begin
+  Result := '';
+end;
+
+function TJSString.toLocaleLowerCase: String;
+begin
+  Result := '';
+end;
+
+function TJSString.toLocaleUpperCase: String;
+begin
+  Result := '';
+end;
+
+function TJSString.toLowerCase: String;
+begin
+  Result := '';
+end;
+
+function TJSString.toString: string;
+begin
+  Result := '';
+end;
+
+function TJSString.toUpperCase: String;
+begin
+  Result := '';
+end;
+
+function TJSString.trim: string;
+begin
+  Result := '';
+end;
+
+function TJSString.valueOf: string;
+begin
+  Result := '';
+end;
+
+function TJSString._repeat(aCount: NativeInt): Integer;
+begin
+  Result := 0;
+end;
+
+{ TJSArray }
+
+function TJSArray.concat(el: JSValue): TJSArray;
+begin
+  Result := nil;
+end;
+
+function TJSArray.copyWithin(aTarget, aStart, aEnd: NativeInt): TJSarray;
+begin
+  Result := nil;
+end;
+
+function TJSArray.copyWithin(aTarget: NativeInt): TJSarray;
+begin
+  Result := nil;
+end;
+
+function TJSArray.copyWithin(aTarget, aStart: NativeInt): TJSarray;
+begin
+  Result := nil;
+end;
+
+function TJSArray.entries: TJSIterator;
+begin
+  Result := nil;
+end;
+
+function TJSArray.every(const aCallback: TJSArrayEvent;
+  aThis: TObject): boolean;
+begin
+  Result := False;
+end;
+
+function TJSArray.every(const aCallback: TJSArrayCallBack): boolean;
+begin
+  Result := False;
+end;
+
+function TJSArray.fill(aValue: JSValue; aStartIndex,
+  aEndIndex: NativeInt): TJSArray;
+begin
+  Result := nil;
+end;
+
+function TJSArray.fill(aValue: JSValue; aStartIndex: NativeInt): TJSArray;
+begin
+  Result := nil;
+end;
+
+function TJSArray.fill(aValue: JSValue): TJSArray;
+begin
+  Result := nil;
+end;
+
+function TJSArray.filter(const aCallBack: TJSArrayCallBack): TJSArray;
+begin
+  Result := nil;
+end;
+
+function TJSArray.filter(const aCallBack: TJSArrayEvent;
+  aThis: TObject): TJSArray;
+begin
+  Result := nil;
+end;
+
+function TJSArray.find(const aCallBack: TJSArrayCallBack): JSValue;
+begin
+  Result := nil;
+end;
+
+function TJSArray.find(const aCallBack: TJSArrayEvent; aThis: TObject): JSValue;
+begin
+  Result := nil;
+end;
+
+function TJSArray.findIndex(const aCallBack: TJSArrayEvent;
+  aThis: TObject): NativeInt;
+begin
+  Result := 0;
+end;
+
+function TJSArray.findIndex(const aCallBack: TJSArrayCallBack): NativeInt;
+begin
+  Result := 0;
+end;
+
+procedure TJSArray.forEach(const aCallBack: TJSArrayEventProc);
+begin
+
+end;
+
+procedure TJSArray.forEach(const aCallBack: TJSArrayEvent);
+begin
+
+end;
+
+procedure TJSArray.forEach(const aCallBack: TJSArrayEvent; aThis: TObject);
+begin
+
+end;
+
+function TJSArray.GetElements(Index: NativeInt): JSValue;
+begin
+  Result := nil;
+end;
+
+function TJSArray.includes(aElement: JSValue): Boolean;
+begin
+  Result := false;
+end;
+
+function TJSArray.includes(aElement: JSValue; FromIndex: NativeInt): Boolean;
+begin
+  Result := false;
+end;
+
+function TJSArray.indexOf(aElement: JSValue): NativeInt;
+begin
+  Result := 0;
+end;
+
+function TJSArray.indexOf(aElement: JSValue; FromIndex: NativeInt): NativeInt;
+begin
+  Result := 0;
+end;
+
+class function TJSArray.isArray(a: JSValue): Boolean;
+begin
+  Result := false;
+end;
+
+function TJSArray.join: String;
+begin
+  Result := '';
+end;
+
+function TJSArray.join(aSeparator: string): String;
+begin
+  Result := '';
+end;
+
+function TJSArray.keys: TJSIterator;
+begin
+  Result := nil;
+end;
+
+function TJSArray.lastIndexOf(aElement: JSValue): NativeInt;
+begin
+  Result := 0;
+end;
+
+function TJSArray.lastIndexOf(aElement: JSValue;
+  FromIndex: NativeInt): NativeInt;
+begin
+  Result := 0;
+end;
+
+function TJSArray.map(const aCallBack: TJSArrayMapEvent;
+  aThis: TObject): TJSArray;
+begin
+  Result := nil;
+end;
+
+function TJSArray.map(const aCallBack: TJSArrayMapCallBack): TJSArray;
+begin
+  Result := nil;
+end;
+
+constructor TJSArray.new(aLength: NativeInt);
+begin
+
+end;
+
+constructor TJSArray.new;
+begin
+
+end;
+
+constructor TJSArray.new(aElement1: JSValue);
+begin
+
+end;
+
+function TJSArray.pop: JSValue;
+begin
+  Result := nil;
+end;
+
+function TJSArray.push(aElement: JSValue): NativeInt;
+begin
+  Result := 0;
+end;
+
+function TJSArray.reduce(const aCallBack: TJSArrayReduceCallBack): JSValue;
+begin
+  Result := nil;
+end;
+
+function TJSArray.reduce(const aCallBack: TJSArrayReduceCallBack;
+  initialValue: JSValue): JSValue;
+begin
+  Result := nil;
+end;
+
+function TJSArray.reduceRight(const aCallBack: TJSArrayReduceCallBack;
+  initialValue: JSValue): JSValue;
+begin
+  Result := nil;
+end;
+
+function TJSArray.reduceRight(const aCallBack: TJSArrayReduceCallBack): JSValue;
+begin
+  Result := nil;
+end;
+
+function TJSArray.reverse: TJSArray;
+begin
+  Result := nil;
+end;
+
+procedure TJSArray.SetElements(Index: NativeInt; const AValue: JSValue);
+begin
+
+end;
+
+function TJSArray.shift: JSValue;
+begin
+  Result := nil;
+end;
+
+function TJSArray.slice(aBegin: NativeInt): TJSArray;
+begin
+  Result := nil;
+end;
+
+function TJSArray.slice: TJSArray;
+begin
+  Result := nil;
+end;
+
+function TJSArray.slice(aBegin, aEnd: NativeInt): TJSArray;
+begin
+  Result := nil;
+end;
+
+function TJSArray.some(const aCallback: TJSArrayEvent; aThis: TObject): boolean;
+begin
+  Result := false;
+end;
+
+function TJSArray.some(const aCallback: TJSArrayCallBack): boolean;
+begin
+  Result := false;
+end;
+
+function TJSArray.sort(const aCallback: TJSArrayCompareCallBack): TJSArray;
+begin
+  Result := nil;
+end;
+
+function TJSArray.sort: TJSArray;
+begin
+  Result := nil;
+end;
+
+function TJSArray.splice(aStart, aDeleteCount: NativeInt): TJSArray;
+begin
+  Result := nil;
+end;
+
+function TJSArray.splice(aStart: NativeInt): TJSArray;
+begin
+  Result := nil;
+end;
+
+function TJSArray.toLocaleString(locales: string): String;
+begin
+  Result := '';
+end;
+
+function TJSArray.toLocaleString(locales: string;
+  const Options: TLocaleCompareOptions): String;
+begin
+  Result := '';
+end;
+
+function TJSArray.toLocaleString: String;
+begin
+  Result := '';
+end;
+
+function TJSArray.toString: String;
+begin
+  Result := '';
+end;
+
+function TJSArray.unshift: NativeInt;
+begin
+  Result := 0;
+end;
+
+function TJSArray.values: TJSIterator;
+begin
+  Result := nil;
+end;
+
+class function TJSArray._of: TJSArray;
+begin
+  Result := nil;
+end;
+
+{ TJSArrayBuffer }
+
+class function TJSArrayBuffer.isView(aValue: JSValue): Boolean;
+begin
+  Result := false;
+end;
+
+constructor TJSArrayBuffer.new(aByteLength: NativeInt);
+begin
+
+end;
+
+function TJSArrayBuffer.slice(aBegin, aEnd: NativeInt): TJSArrayBuffer;
+begin
+  Result := nil;
+end;
+
+function TJSArrayBuffer.slice(aBegin: NativeInt): TJSArrayBuffer;
+begin
+  Result := nil;
+end;
+
+{ TJSTypedArray }
+
+function TJSTypedArray.copyWithin(aTarget, aStart,
+  aEnd: NativeInt): TJSTypedArray;
+begin
+  Result := nil;
+end;
+
+function TJSTypedArray.copyWithin(aTarget: NativeInt): TJSTypedArray;
+begin
+  Result := nil;
+end;
+
+function TJSTypedArray.copyWithin(aTarget, aStart: NativeInt): TJSTypedArray;
+begin
+  Result := nil;
+end;
+
+function TJSTypedArray.every(const aCallback: TJSTypedArrayEvent;
+  aThis: TObject): boolean;
+begin
+  Result := false;
+end;
+
+function TJSTypedArray.every(const aCallback: TJSTypedArrayCallBack): boolean;
+begin
+  Result := false;
+end;
+
+function TJSTypedArray.fill(aValue: JSValue;
+  aStartIndex: NativeInt): TJSTypedArray;
+begin
+  Result := nil;
+end;
+
+function TJSTypedArray.fill(aValue: JSValue; aStartIndex,
+  aEndIndex: NativeInt): TJSTypedArray;
+begin
+  Result := nil;
+end;
+
+function TJSTypedArray.fill(aValue: JSValue): TJSTypedArray;
+begin
+  Result := nil;
+end;
+
+function TJSTypedArray.filter(
+  const aCallBack: TJSTypedArrayCallBack): TJSTypedArray;
+begin
+  Result := nil;
+end;
+
+function TJSTypedArray.filter(const aCallBack: TJSTypedArrayEvent;
+  aThis: TObject): TJSTypedArray;
+begin
+  Result := nil;
+end;
+
+function TJSTypedArray.find(const aCallBack: TJSTypedArrayCallBack): JSValue;
+begin
+  Result := nil;
+end;
+
+function TJSTypedArray.find(const aCallBack: TJSTypedArrayEvent;
+  aThis: TObject): JSValue;
+begin
+  Result := nil;
+end;
+
+function TJSTypedArray.findIndex(const aCallBack: TJSTypedArrayEvent;
+  aThis: TObject): NativeInt;
+begin
+  Result := 0;
+end;
+
+function TJSTypedArray.findIndex(
+  const aCallBack: TJSTypedArrayCallBack): NativeInt;
+begin
+  Result := 0;
+end;
+
+procedure TJSTypedArray.forEach(const aCallBack: TJSTypedArrayCallBack);
+begin
+
+end;
+
+procedure TJSTypedArray.forEach(const aCallBack: TJSTypedArrayEvent;
+  aThis: TObject);
+begin
+
+end;
+
+function TJSTypedArray.getValue(Index: NativeInt): JSValue;
+begin
+  Result := nil;
+end;
+
+function TJSTypedArray.includes(aElement: JSValue): Boolean;
+begin
+  Result := False;
+end;
+
+function TJSTypedArray.includes(aElement: JSValue;
+  FromIndex: NativeInt): Boolean;
+begin
+  Result := False;
+end;
+
+function TJSTypedArray.indexOf(aElement: JSValue): NativeInt;
+begin
+  Result := 0;
+end;
+
+function TJSTypedArray.indexOf(aElement: JSValue;
+  FromIndex: NativeInt): NativeInt;
+begin
+  Result := 0;
+end;
+
+function TJSTypedArray.join: String;
+begin
+  Result := '';
+end;
+
+function TJSTypedArray.join(aSeparator: string): String;
+begin
+  Result := '';
+end;
+
+function TJSTypedArray.lastIndexOf(aElement: JSValue;
+  FromIndex: NativeInt): NativeInt;
+begin
+  Result := 0;
+end;
+
+function TJSTypedArray.lastIndexOf(aElement: JSValue): NativeInt;
+begin
+  Result := 0;
+end;
+
+function TJSTypedArray.map(const aCallBack: TJSTypedArrayEvent;
+  aThis: TObject): TJSTypedArray;
+begin
+  Result := nil;
+end;
+
+function TJSTypedArray.map(
+  const aCallBack: TJSTypedArrayCallBack): TJSTypedArray;
+begin
+  Result := nil;
+end;
+
+function TJSTypedArray.reduce(const aCallBack: TJSTypedArrayReduceCallBack;
+  initialValue: JSValue): JSValue;
+begin
+  Result := nil;
+end;
+
+function TJSTypedArray.reduce(
+  const aCallBack: TJSTypedArrayReduceCallBack): JSValue;
+begin
+  Result := nil;
+end;
+
+function TJSTypedArray.reduceRight(
+  const aCallBack: TJSTypedArrayReduceCallBack): JSValue;
+begin
+  Result := nil;
+end;
+
+function TJSTypedArray.reduceRight(const aCallBack: TJSTypedArrayReduceCallBack;
+  initialValue: JSValue): JSValue;
+begin
+  Result := nil;
+end;
+
+function TJSTypedArray.reverse: TJSTypedArray;
+begin
+  Result := nil;
+end;
+
+procedure TJSTypedArray.setValue(Index: NativeInt; AValue: JSValue);
+begin
+
+end;
+
+function TJSTypedArray.slice(aBegin, aEnd: NativeInt): TJSTypedArray;
+begin
+  Result := nil;
+end;
+
+function TJSTypedArray.slice(aBegin: NativeInt): TJSTypedArray;
+begin
+  Result := nil;
+end;
+
+function TJSTypedArray.slice: TJSTypedArray;
+begin
+  Result := nil;
+end;
+
+function TJSTypedArray.some(const aCallback: TJSTypedArrayEvent;
+  aThis: TObject): boolean;
+begin
+  Result := false;
+end;
+
+function TJSTypedArray.some(const aCallback: TJSTypedArrayCallBack): boolean;
+begin
+   Result := false;
+end;
+
+function TJSTypedArray.sort: TJSTypedArray;
+begin
+  Result := nil;
+end;
+
+function TJSTypedArray.sort(
+  const aCallback: TJSTypedArrayCompareCallBack): TJSTypedArray;
+begin
+  Result := nil;
+end;
+
+function TJSTypedArray.splice(aStart, aDeleteCount: NativeInt): TJSTypedArray;
+begin
+  Result := nil;
+end;
+
+function TJSTypedArray.splice(aStart: NativeInt): TJSTypedArray;
+begin
+  Result := nil;
+end;
+
+function TJSTypedArray.toLocaleString: String;
+begin
+  Result := '';
+end;
+
+function TJSTypedArray.toLocaleString(locales: string): String;
+begin
+  Result := '';
+end;
+
+function TJSTypedArray.toLocaleString(locales: string;
+  const Options: TLocaleCompareOptions): String;
+begin
+  Result := '';
+end;
+
+function TJSTypedArray.toString: String;
+begin
+  Result := '';
+end;
+
+function TJSTypedArray.unshift: NativeInt;
+begin
+  Result := 0;
+end;
+
+class function TJSTypedArray._of(aValue: jsValue): TJSTypedArray;
+begin
+  Result := nil;
+end;
+
+procedure TJSTypedArray._set(anArray: TJSTypedArray);
+begin
+
+end;
+
+procedure TJSTypedArray._set(anArray: TJSArray; anOffset: NativeInt);
+begin
+
+end;
+
+procedure TJSTypedArray._set(anArray: TJSArray);
+begin
+
+end;
+
+procedure TJSTypedArray._set(anArray: TJSTypedArray; anOffset: NativeInt);
+begin
+
+end;
+
+{ TJSInt8Array }
+
+class function TJSInt8Array.from(aValue: jsValue): TJSInt8Array;
+begin
+  Result := nil;
+end;
+
+class function TJSInt8Array.from(aValue: jsValue;
+  Map: TJSTypedArrayMapCallBack): TJSInt8Array;
+begin
+  Result := nil;
+end;
+
+class function TJSInt8Array.from(aValue: jsValue;
+  aMap: TJSTypedArrayMapEvent): TJSInt8Array;
+begin
+  Result := nil;
+end;
+
+function TJSInt8Array.getTypedValue(Index: NativeInt): Shortint;
+begin
+  Result := 0;
+end;
+
+constructor TJSInt8Array.new(aObject: TJSObject);
+begin
+
+end;
+
+constructor TJSInt8Array.new(atypedArray: TJSTypedArray);
+begin
+
+end;
+
+constructor TJSInt8Array.new(length: NativeInt);
+begin
+
+end;
+
+constructor TJSInt8Array.new(buffer: TJSArrayBuffer);
+begin
+
+end;
+
+constructor TJSInt8Array.new(buffer: TJSArrayBuffer; aByteOffset,
+  aLength: NativeInt);
+begin
+
+end;
+
+constructor TJSInt8Array.new(buffer: TJSArrayBuffer; aByteOffset: NativeInt);
+begin
+
+end;
+
+procedure TJSInt8Array.setTypedValue(Index: NativeInt; AValue: Shortint);
+begin
+
+end;
+
+function TJSInt8Array.subarray(aBegin, aEnd: Integer): TJSInt8Array;
+begin
+  Result := nil;
+end;
+
+function TJSInt8Array.subarray(aBegin: Integer): TJSInt8Array;
+begin
+  Result := nil;
+end;
+
+class function TJSInt8Array._of(aValue: TJSValueDynArray): TJSInt8Array;
+begin
+  Result := nil;
+end;
+
+class function TJSInt8Array._of(aValue: jsValue): TJSInt8Array;
+begin
+  Result := nil;
+end;
+
+procedure TJSInt8Array._set(anArray: array of ShortInt);
+begin
+
+end;
+
+procedure TJSInt8Array._set(anArray: array of ShortInt; anOffset: NativeInt);
+begin
+
+end;
+
+{ TJSUint8Array }
+
+class function TJSUint8Array.from(aValue: jsValue): TJSUInt8Array;
+begin
+  Result := nil;
+end;
+
+class function TJSUint8Array.from(aValue: jsValue;
+  Map: TJSTypedArrayMapCallBack): TJSUInt8Array;
+begin
+  Result := nil;
+end;
+
+class function TJSUint8Array.from(aValue: jsValue;
+  aMap: TJSTypedArrayMapEvent): TJSUInt8Array;
+begin
+  Result := nil;
+end;
+
+function TJSUint8Array.getTypedValue(Index: NativeInt): Byte;
+begin
+  Result := 0;
+end;
+
+constructor TJSUint8Array.new(aObject: TJSObject);
+begin
+
+end;
+
+constructor TJSUint8Array.new(atypedArray: TJSTypedArray);
+begin
+
+end;
+
+constructor TJSUint8Array.new(length: NativeInt);
+begin
+
+end;
+
+constructor TJSUint8Array.new(buffer: TJSArrayBuffer; aByteOffset,
+  aLength: NativeInt);
+begin
+
+end;
+
+constructor TJSUint8Array.new(buffer: TJSArrayBuffer; aByteOffset: NativeInt);
+begin
+
+end;
+
+constructor TJSUint8Array.new(buffer: TJSArrayBuffer);
+begin
+
+end;
+
+procedure TJSUint8Array.setTypedValue(Index: NativeInt; AValue: Byte);
+begin
+
+end;
+
+function TJSUint8Array.subarray(aBegin, aEnd: Integer): TJSUInt8Array;
+begin
+  Result := nil;
+end;
+
+function TJSUint8Array.subarray(aBegin: Integer): TJSUInt8Array;
+begin
+  Result := nil;
+end;
+
+class function TJSUint8Array._of(aValue: jsValue): TJSUInt8Array;
+begin
+  Result := nil;
+end;
+
+procedure TJSUint8Array._set(anArray: array of Byte);
+begin
+
+end;
+
+procedure TJSUint8Array._set(anArray: array of Byte; anOffset: NativeInt);
+begin
+
+end;
+
+{ TJSUint8ClampedArray }
+
+class function TJSUint8ClampedArray.from(aValue: jsValue): TJSUInt8ClampedArray;
+begin
+  Result := nil;
+end;
+
+class function TJSUint8ClampedArray.from(aValue: jsValue;
+  Map: TJSTypedArrayMapCallBack): TJSUInt8ClampedArray;
+begin
+  Result := nil;
+end;
+
+class function TJSUint8ClampedArray.from(aValue: jsValue;
+  aMap: TJSTypedArrayMapEvent): TJSUInt8ClampedArray;
+begin
+  Result := nil;
+end;
+
+function TJSUint8ClampedArray.getTypedValue(Index: NativeInt): Byte;
+begin
+  Result := 0;
+end;
+
+constructor TJSUint8ClampedArray.new(aObject: TJSObject);
+begin
+
+end;
+
+constructor TJSUint8ClampedArray.new(atypedArray: TJSTypedArray);
+begin
+
+end;
+
+constructor TJSUint8ClampedArray.new(length: NativeInt);
+begin
+
+end;
+
+constructor TJSUint8ClampedArray.new(buffer: TJSArrayBuffer; aByteOffset,
+  aLength: NativeInt);
+begin
+
+end;
+
+constructor TJSUint8ClampedArray.new(buffer: TJSArrayBuffer;
+  aByteOffset: NativeInt);
+begin
+
+end;
+
+constructor TJSUint8ClampedArray.new(buffer: TJSArrayBuffer);
+begin
+
+end;
+
+procedure TJSUint8ClampedArray.setTypedValue(Index: NativeInt; AValue: Byte);
+begin
+
+end;
+
+function TJSUint8ClampedArray.subarray(aBegin,
+  aEnd: Integer): TJSUInt8ClampedArray;
+begin
+  Result := nil;
+end;
+
+function TJSUint8ClampedArray.subarray(aBegin: Integer): TJSUInt8ClampedArray;
+begin
+  Result := nil;
+end;
+
+class function TJSUint8ClampedArray._of(aValue: jsValue): TJSUInt8ClampedArray;
+begin
+  Result := nil;
+end;
+
+procedure TJSUint8ClampedArray._set(anArray: array of Byte);
+begin
+
+end;
+
+procedure TJSUint8ClampedArray._set(anArray: array of Byte;
+  anOffset: NativeInt);
+begin
+
+end;
+
+{ TJSInt16Array }
+
+class function TJSInt16Array.from(aValue: jsValue): TJSInt16Array;
+begin
+  Result := nil;
+end;
+
+class function TJSInt16Array.from(aValue: jsValue;
+  Map: TJSTypedArrayMapCallBack): TJSInt16Array;
+begin
+  Result := nil;
+end;
+
+class function TJSInt16Array.from(aValue: jsValue;
+  aMap: TJSTypedArrayMapEvent): TJSInt16Array;
+begin
+  Result := nil;
+end;
+
+function TJSInt16Array.getTypedValue(Index: NativeInt): smallint;
+begin
+  Result := 0;
+end;
+
+constructor TJSInt16Array.new(aObject: TJSObject);
+begin
+
+end;
+
+constructor TJSInt16Array.new(atypedArray: TJSTypedArray);
+begin
+
+end;
+
+constructor TJSInt16Array.new(length: NativeInt);
+begin
+
+end;
+
+constructor TJSInt16Array.new(buffer: TJSArrayBuffer; aByteOffset,
+  aLength: NativeInt);
+begin
+
+end;
+
+constructor TJSInt16Array.new(buffer: TJSArrayBuffer; aByteOffset: NativeInt);
+begin
+
+end;
+
+constructor TJSInt16Array.new(buffer: TJSArrayBuffer);
+begin
+
+end;
+
+procedure TJSInt16Array.setTypedValue(Index: NativeInt; AValue: Smallint);
+begin
+
+end;
+
+function TJSInt16Array.subarray(aBegin, aEnd: Integer): TJSInt16Array;
+begin
+  Result := nil;
+end;
+
+function TJSInt16Array.subarray(aBegin: Integer): TJSInt16Array;
+begin
+  Result := nil;
+end;
+
+class function TJSInt16Array._of(aValue: jsValue): TJSInt16Array;
+begin
+  Result := nil;
+end;
+
+procedure TJSInt16Array._set(anArray: array of SmallInt);
+begin
+
+end;
+
+procedure TJSInt16Array._set(anArray: array of SmallInt; anOffset: NativeInt);
+begin
+
+end;
+
+{ TJSUint16Array }
+
+class function TJSUint16Array.from(aValue: jsValue): TJSUInt16Array;
+begin
+  Result := nil;
+end;
+
+class function TJSUint16Array.from(aValue: jsValue;
+  Map: TJSTypedArrayMapCallBack): TJSUInt16Array;
+begin
+  Result := nil;
+end;
+
+class function TJSUint16Array.from(aValue: jsValue;
+  aMap: TJSTypedArrayMapEvent): TJSUInt16Array;
+begin
+  Result := nil;
+end;
+
+function TJSUint16Array.getTypedValue(Index: NativeInt): Word;
+begin
+  Result := 0;
+end;
+
+constructor TJSUint16Array.new(aObject: TJSObject);
+begin
+
+end;
+
+constructor TJSUint16Array.new(atypedArray: TJSTypedArray);
+begin
+
+end;
+
+constructor TJSUint16Array.new(length: NativeInt);
+begin
+
+end;
+
+constructor TJSUint16Array.new(buffer: TJSArrayBuffer; aByteOffset,
+  aLength: NativeInt);
+begin
+
+end;
+
+constructor TJSUint16Array.new(buffer: TJSArrayBuffer; aByteOffset: NativeInt);
+begin
+
+end;
+
+constructor TJSUint16Array.new(buffer: TJSArrayBuffer);
+begin
+
+end;
+
+procedure TJSUint16Array.setTypedValue(Index: NativeInt; AValue: Word);
+begin
+
+end;
+
+function TJSUint16Array.subarray(aBegin, aEnd: Integer): TJSUInt16Array;
+begin
+  Result := nil;
+end;
+
+function TJSUint16Array.subarray(aBegin: Integer): TJSUInt16Array;
+begin
+  Result := nil;
+end;
+
+class function TJSUint16Array._of(aValue: jsValue): TJSUInt16Array;
+begin
+  Result := nil;
+end;
+
+procedure TJSUint16Array._set(anArray: array of Word);
+begin
+
+end;
+
+procedure TJSUint16Array._set(anArray: array of Word; anOffset: NativeInt);
+begin
+
+end;
+
+{ TJSInt32Array }
+
+class function TJSInt32Array.from(aValue: jsValue): TJSInt32Array;
+begin
+  Result := nil;
+end;
+
+class function TJSInt32Array.from(aValue: jsValue;
+  Map: TJSTypedArrayMapCallBack): TJSInt32Array;
+begin
+  Result := nil;
+end;
+
+class function TJSInt32Array.from(aValue: jsValue;
+  aMap: TJSTypedArrayMapEvent): TJSInt32Array;
+begin
+  Result := nil;
+end;
+
+function TJSInt32Array.getTypedValue(Index: NativeInt): longint;
+begin
+  Result := 0;
+end;
+
+constructor TJSInt32Array.new(aObject: TJSObject);
+begin
+
+end;
+
+constructor TJSInt32Array.new(atypedArray: TJSTypedArray);
+begin
+
+end;
+
+constructor TJSInt32Array.new(length: NativeInt);
+begin
+
+end;
+
+constructor TJSInt32Array.new(buffer: TJSArrayBuffer; aByteOffset,
+  aLength: NativeInt);
+begin
+
+end;
+
+constructor TJSInt32Array.new(buffer: TJSArrayBuffer; aByteOffset: NativeInt);
+begin
+
+end;
+
+constructor TJSInt32Array.new(buffer: TJSArrayBuffer);
+begin
+
+end;
+
+procedure TJSInt32Array.setTypedValue(Index: NativeInt; AValue: longint);
+begin
+
+end;
+
+function TJSInt32Array.subarray(aBegin, aEnd: Integer): TJSInt32Array;
+begin
+  Result := nil;
+end;
+
+function TJSInt32Array.subarray(aBegin: Integer): TJSInt32Array;
+begin
+  Result := nil;
+end;
+
+class function TJSInt32Array._of(aValue: jsValue): TJSInt32Array;
+begin
+  Result := nil;
+end;
+
+procedure TJSInt32Array._set(anArray: array of LongInt);
+begin
+
+end;
+
+procedure TJSInt32Array._set(anArray: array of LongInt; anOffset: NativeInt);
+begin
+
+end;
+
+{ TJSUint32Array }
+
+class function TJSUint32Array.from(aValue: jsValue): TJSUInt32Array;
+begin
+  Result := nil;
+end;
+
+class function TJSUint32Array.from(aValue: jsValue;
+  Map: TJSTypedArrayMapCallBack): TJSUInt32Array;
+begin
+  Result := nil;
+end;
+
+class function TJSUint32Array.from(aValue: jsValue;
+  aMap: TJSTypedArrayMapEvent): TJSUInt32Array;
+begin
+  Result := nil;
+end;
+
+function TJSUint32Array.getTypedValue(Index: NativeInt): LongWord;
+begin
+  Result := 0;
+end;
+
+constructor TJSUint32Array.new(aObject: TJSObject);
+begin
+
+end;
+
+constructor TJSUint32Array.new(atypedArray: TJSTypedArray);
+begin
+
+end;
+
+constructor TJSUint32Array.new(length: NativeInt);
+begin
+
+end;
+
+constructor TJSUint32Array.new(buffer: TJSArrayBuffer; aByteOffset,
+  aLength: NativeInt);
+begin
+
+end;
+
+constructor TJSUint32Array.new(buffer: TJSArrayBuffer; aByteOffset: NativeInt);
+begin
+
+end;
+
+constructor TJSUint32Array.new(buffer: TJSArrayBuffer);
+begin
+
+end;
+
+procedure TJSUint32Array.setTypedValue(Index: NativeInt; AValue: LongWord);
+begin
+
+end;
+
+function TJSUint32Array.subarray(aBegin, aEnd: Integer): TJSUInt32Array;
+begin
+  Result := nil;
+end;
+
+function TJSUint32Array.subarray(aBegin: Integer): TJSUInt32Array;
+begin
+  Result := nil;
+end;
+
+class function TJSUint32Array._of(aValue: jsValue): TJSUInt32Array;
+begin
+  Result := nil;
+end;
+
+procedure TJSUint32Array._set(anArray: array of Cardinal);
+begin
+
+end;
+
+procedure TJSUint32Array._set(anArray: array of Cardinal; anOffset: NativeInt);
+begin
+
+end;
+
+{ TJSFloat32Array }
+
+class function TJSFloat32Array.from(aValue: jsValue): TJSFloat32Array;
+begin
+  Result := nil;
+end;
+
+class function TJSFloat32Array.from(aValue: jsValue;
+  Map: TJSTypedArrayMapCallBack): TJSFloat32Array;
+begin
+  Result := nil;
+end;
+
+class function TJSFloat32Array.from(aValue: jsValue;
+  aMap: TJSTypedArrayMapEvent): TJSFloat32Array;
+begin
+  Result := nil;
+end;
+
+function TJSFloat32Array.getTypedValue(Index: NativeInt): Float32;
+begin
+  Result := 0;
+end;
+
+constructor TJSFloat32Array.new(aObject: TJSObject);
+begin
+
+end;
+
+constructor TJSFloat32Array.new(atypedArray: TJSTypedArray);
+begin
+
+end;
+
+constructor TJSFloat32Array.new(length: NativeInt);
+begin
+
+end;
+
+constructor TJSFloat32Array.new(buffer: TJSArrayBuffer; aByteOffset,
+  aLength: NativeInt);
+begin
+
+end;
+
+constructor TJSFloat32Array.new(buffer: TJSArrayBuffer; aByteOffset: NativeInt);
+begin
+
+end;
+
+constructor TJSFloat32Array.new(buffer: TJSArrayBuffer);
+begin
+
+end;
+
+procedure TJSFloat32Array.setTypedValue(Index: NativeInt; AValue: Float32);
+begin
+
+end;
+
+function TJSFloat32Array.subarray(aBegin, aEnd: Integer): TJSFloat32Array;
+begin
+  Result := nil;
+end;
+
+function TJSFloat32Array.subarray(aBegin: Integer): TJSFloat32Array;
+begin
+  Result := nil;
+end;
+
+class function TJSFloat32Array._of(aValue: jsValue): TJSFloat32Array;
+begin
+  Result := nil;
+end;
+
+procedure TJSFloat32Array._set(anArray: array of Double);
+begin
+
+end;
+
+procedure TJSFloat32Array._set(anArray: array of Double; anOffset: NativeInt);
+begin
+
+end;
+
+{ TJSFloat64Array }
+
+class function TJSFloat64Array.from(aValue: jsValue): TJSFloat64Array;
+begin
+  Result := nil;
+end;
+
+class function TJSFloat64Array.from(aValue: jsValue;
+  Map: TJSTypedArrayMapCallBack): TJSFloat64Array;
+begin
+  Result := nil;
+end;
+
+class function TJSFloat64Array.from(aValue: jsValue;
+  aMap: TJSTypedArrayMapEvent): TJSFloat64Array;
+begin
+  Result := nil;
+end;
+
+function TJSFloat64Array.getTypedValue(Index: NativeInt): Float64;
+begin
+  Result := 0;
+end;
+
+constructor TJSFloat64Array.new(aObject: TJSObject);
+begin
+
+end;
+
+constructor TJSFloat64Array.new(atypedArray: TJSTypedArray);
+begin
+
+end;
+
+constructor TJSFloat64Array.new(length: NativeInt);
+begin
+
+end;
+
+constructor TJSFloat64Array.new(buffer: TJSArrayBuffer; aByteOffset,
+  aLength: NativeInt);
+begin
+
+end;
+
+constructor TJSFloat64Array.new(buffer: TJSArrayBuffer; aByteOffset: NativeInt);
+begin
+
+end;
+
+constructor TJSFloat64Array.new(buffer: TJSArrayBuffer);
+begin
+
+end;
+
+procedure TJSFloat64Array.setTypedValue(Index: NativeInt; AValue: Float64);
+begin
+
+end;
+
+function TJSFloat64Array.subarray(aBegin, aEnd: Integer): TJSFloat64Array;
+begin
+  Result := nil;
+end;
+
+function TJSFloat64Array.subarray(aBegin: Integer): TJSFloat64Array;
+begin
+  Result := nil;
+end;
+
+class function TJSFloat64Array._of(aValue: jsValue): TJSFloat64Array;
+begin
+  Result := nil;
+end;
+
+procedure TJSFloat64Array._set(anArray: array of Double);
+begin
+
+end;
+
+procedure TJSFloat64Array._set(anArray: array of Double; anOffset: NativeInt);
+begin
+
+end;
+
+{ TJSDataView }
+
+function TJSDataView.getFloat32(aByteOffset: NativeInt): double;
+begin
+  Result := 0;
+end;
+
+function TJSDataView.getFloat32(aByteOffset: NativeInt;
+  aLittleEndian: Boolean): double;
+begin
+  Result := 0;
+end;
+
+function TJSDataView.getFloat64(aByteOffset: NativeInt): double;
+begin
+  Result := 0;
+end;
+
+function TJSDataView.getFloat64(aByteOffset: NativeInt;
+  aLittleEndian: Boolean): double;
+begin
+  Result := 0;
+end;
+
+function TJSDataView.getInt16(aByteOffset: NativeInt): SmallInt;
+begin
+  Result := 0;
+end;
+
+function TJSDataView.getInt16(aByteOffset: NativeInt;
+  aLittleEndian: Boolean): SmallInt;
+begin
+  Result := 0;
+end;
+
+function TJSDataView.getInt32(aByteOffset: NativeInt): Longint;
+begin
+  Result := 0;
+end;
+
+function TJSDataView.getInt32(aByteOffset: NativeInt;
+  aLittleEndian: Boolean): Longint;
+begin
+  Result := 0;
+end;
+
+function TJSDataView.getInt8(aByteOffset: NativeInt): ShortInt;
+begin
+  Result := 0;
+end;
+
+function TJSDataView.getUint16(aByteOffset: NativeInt): Word;
+begin
+  Result := 0;
+end;
+
+function TJSDataView.getUint16(aByteOffset: NativeInt;
+  aLittleEndian: Boolean): Word;
+begin
+  Result := 0;
+end;
+
+function TJSDataView.getUint32(aByteOffset: NativeInt;
+  aLittleEndian: Boolean): LongWord;
+begin
+  Result := 0;
+end;
+
+function TJSDataView.getUint32(aByteOffset: NativeInt): LongWord;
+begin
+  Result := 0;
+end;
+
+function TJSDataView.getUint8(aByteOffset: NativeInt): Byte;
+begin
+  Result := 0;
+end;
+
+constructor TJSDataView.new(aBuffer: TJSArrayBuffer);
+begin
+
+end;
+
+constructor TJSDataView.new(aBuffer: TJSArrayBuffer; aOffset: NativeInt);
+begin
+
+end;
+
+constructor TJSDataView.new(aBuffer: TJSArrayBuffer; aOffset,
+  aByteLength: NativeInt);
+begin
+
+end;
+
+procedure TJSDataView.setFloat32(aByteOffset: NativeInt; aValue: double;
+  aLittleEndian: Boolean);
+begin
+
+end;
+
+procedure TJSDataView.setFloat32(aByteOffset: NativeInt; aValue: double);
+begin
+
+end;
+
+procedure TJSDataView.setFloat64(aByteOffset: NativeInt; aValue: double);
+begin
+
+end;
+
+procedure TJSDataView.setFloat64(aByteOffset: NativeInt; aValue: double;
+  aLittleEndian: Boolean);
+begin
+
+end;
+
+procedure TJSDataView.setInt16(aByteOffset: NativeInt; aValue: SmallInt;
+  aLittleEndian: Boolean);
+begin
+
+end;
+
+procedure TJSDataView.setInt16(aByteOffset: NativeInt; aValue: SmallInt);
+begin
+
+end;
+
+procedure TJSDataView.setInt32(aByteOffset: NativeInt; aValue: Longint);
+begin
+
+end;
+
+procedure TJSDataView.setInt32(aByteOffset: NativeInt; aValue: Longint;
+  aLittleEndian: Boolean);
+begin
+
+end;
+
+procedure TJSDataView.setInt8(aByteOffset: NativeInt; aValue: ShortInt);
+begin
+
+end;
+
+procedure TJSDataView.setUint16(aByteOffset: NativeInt; aValue: Word);
+begin
+
+end;
+
+procedure TJSDataView.setUint16(aByteOffset: NativeInt; aValue: Word;
+  aLittleEndian: Boolean);
+begin
+
+end;
+
+procedure TJSDataView.setUint32(aByteOffset: NativeInt; aValue: LongWord;
+  aLittleEndian: Boolean);
+begin
+
+end;
+
+procedure TJSDataView.setUint32(aByteOffset: NativeInt; aValue: LongWord);
+begin
+
+end;
+
+procedure TJSDataView.setUint8(aByteOffset: NativeInt; aValue: Byte);
+begin
+
+end;
+
+{ TJSJSON }
+
+class function TJSJSON.parse(aJSON: String): JSValue;
+begin
+  Result := nil;
+end;
+
+class function TJSJSON.parseObject(aJSON: String): TJSObject;
+begin
+  Result := nil;
+end;
+
+class function TJSJSON.stringify(aValue: JSValue): string;
+begin
+  Result := '';
+end;
+
+class function TJSJSON.stringify(aValue, aReplacer: JSValue): string;
+begin
+  Result := '';
+end;
+
+class function TJSJSON.stringify(aValue, aReplacer: JSValue;
+  space: NativeInt): string;
+begin
+  Result := '';
+end;
+
+class function TJSJSON.stringify(aValue, aReplacer: JSValue;
+  space: String): string;
+begin
+  Result := '';
+end;
+
+{ TJSError }
+
+constructor TJSError.new;
+begin
+
+end;
+
+constructor TJSError.new(const aMessage: string);
+begin
+
+end;
+
+constructor TJSError.new(const aMessage, aFileName: string);
+begin
+
+end;
+
+constructor TJSError.new(const aMessage, aFileName: string;
+  aLineNumber: NativeInt);
+begin
+
+end;
+
+{ TJSPromise }
+
+class function TJSPromise.all(arg: TJSPromiseArray): TJSPromise;
+begin
+  Result := nil;
+end;
+
+class function TJSPromise.all(arg: JSValue): TJSPromise;
+begin
+  Result := nil;
+end;
+
+class function TJSPromise.all(arg: array of JSValue): TJSPromise;
+begin
+  Result := nil;
+end;
+
+function TJSPromise.catch(onRejected: TJSPromiseResolver): TJSPromise;
+begin
+  Result := nil;
+end;
+
+constructor TJSPromise.new(Executor: TJSPromiseExecutor);
+begin
+
+end;
+
+class function TJSPromise.race(arg: array of JSValue): TJSPromise;
+begin
+  Result := nil;
+end;
+
+class function TJSPromise.race(arg: TJSPromiseArray): TJSPromise;
+begin
+  Result := nil;
+end;
+
+class function TJSPromise.race(arg: JSValue): TJSPromise;
+begin
+  Result := nil;
+end;
+
+class function TJSPromise.reject(reason: JSValue): TJSPromise;
+begin
+  Result := nil;
+end;
+
+class function TJSPromise.resolve: TJSPromise;
+begin
+  Result := nil;
+end;
+
+class function TJSPromise.resolve(value: JSValue): TJSPromise;
+begin
+  Result := nil;
+end;
+
+function TJSPromise._finally(value: TJSPromiseFinallyHandler): TJSPromise;
+begin
+  Result := nil;
+end;
+
+function TJSPromise._then(onAccepted,
+  OnRejected: TJSPromiseResolver): TJSPromise;
+begin
+  Result := nil;
+end;
+
+function TJSPromise._then(onAccepted: TJSPromiseResolver): TJSPromise;
+begin
+  Result := nil;
+end;
+
+{ TJSFunctionArguments }
+
+function TJSFunctionArguments.GetElements(Index: NativeInt): JSValue;
+begin
+  Result := nil;
+end;
+
+procedure TJSFunctionArguments.SetElements(Index: NativeInt;
+  const AValue: JSValue);
+begin
+
+end;
+
+{ TJSAsyncIterator }
+
+function TJSAsyncIterator.next: TJSIteratorResult;
+begin
+  Result := nil;
+end;
+{$ENDIF}
 
 end.
 
