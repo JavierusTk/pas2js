@@ -75,7 +75,7 @@ begin
 
       StartUp.hStdError := StartUp.hStdOutput;
 
-      if not CreateProcess(nil, PChar(BuildCommandLine(Project)), @Security, @Security, True, NORMAL_PRIORITY_CLASS, nil, PChar(ExtractFilePath(FRegistry.CompilerPath)), StartUp,
+      if not CreateProcess(nil, PChar(BuildCommandLine(Project)), @Security, @Security, True, NORMAL_PRIORITY_CLASS, nil, PChar(ExtractFilePath(Project.FileName)), StartUp,
         ProcessInformation) then
         RaiseLastOSError;
 
