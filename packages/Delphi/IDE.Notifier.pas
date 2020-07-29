@@ -25,7 +25,7 @@ type
 
 implementation
 
-uses System.SysUtils, System.IOUtils, Winapi.Windows, Vcl.Dialogs, System.Classes, DCCStrs;
+uses System.SysUtils, System.IOUtils, Winapi.Windows, Vcl.Dialogs, System.Classes, CommonOptionStrs, DCCStrs;
 
 const
   COMPILING_PAS2JS = 'Compiling Pas2Js';
@@ -75,7 +75,8 @@ begin
 
       StartUp.hStdError := StartUp.hStdOutput;
 
-      if not CreateProcess(nil, PChar(BuildCommandLine(Project)), @Security, @Security, True, NORMAL_PRIORITY_CLASS, nil, nil, StartUp, ProcessInformation) then
+      if not CreateProcess(nil, PChar(BuildCommandLine(Project)), @Security, @Security, True, NORMAL_PRIORITY_CLASS, nil, PChar(ExtractFilePath(FRegistry.CompilerPath)), StartUp,
+        ProcessInformation) then
         RaiseLastOSError;
 
       repeat
@@ -118,7 +119,14 @@ end;
 
 function TIDENotifier.BuildCommandLine(const Project: IOTAProject): String;
 begin
-  Result := Format('"%s" -MDelphi -Fi%s %s', [FRegistry.CompilerPath, Project.ProjectOptions.Values[sIncludePath], ChangeFileExt(Project.FileName, '.dpr')]);
+  var Options := Project.ProjectOptions as IOTAProjectOptionsConfigurations;
+  Result := Format('"%s" -MDelphi -JRjs %s', [FRegistry.CompilerPath, ChangeFileExt(Project.FileName, '.dpr')]);
+
+{$IFDEF DEBUG}
+  Result := Result + ' -vd';
+{$ENDIF}
+
+  Result := Result + Format(' -Fu..\..\packages\rtl;"%s"', [Options.ActiveConfiguration[sUnitSearchPath]]);
 end;
 
 constructor TIDENotifier.Create;
