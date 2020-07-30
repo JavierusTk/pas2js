@@ -311,6 +311,7 @@ var
 
 implementation
 
+{$IFDEF DCC}
 { TNJSOS }
 
 function TNJSOS.arch: string;
@@ -1253,6 +1254,7 @@ function TNJSTimeout.unref: TNJSTimeout;
 begin
 
 end;
+{$ENDIF}
 
 initialization
   {$IFDEF PAS2JS}

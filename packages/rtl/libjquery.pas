@@ -454,6 +454,7 @@ Var
 
 Implementation
 
+{$IFDEF DCC}
 { TCallbacks }
 
 function TCallbacks.add(aCallBack: TCallBackEvent): TCallbacks;
@@ -1921,6 +1922,6 @@ function TJQuery._not(const aSelector: array of TJSElement): TJQuery;
 begin
 
 end;
-
+{$ENDIF}
 end.
 
