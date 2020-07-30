@@ -172,13 +172,13 @@ type
     function Equals(Obj: TObject): boolean; virtual;
     function ToString: String; virtual;
   end;
-
+{$ENDIF}
   { TCustomAttribute - base class of all user defined attributes. }
 
   TCustomAttribute = class
   end;
   TCustomAttributeArray = array of TCustomAttribute;
-
+{$IFDEF PAS2JS}
 const
   { IInterface }
   S_OK          = 0;
