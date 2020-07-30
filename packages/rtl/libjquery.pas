@@ -1,10 +1,12 @@
 unit libjquery;
 
+{$IFDEF PAS2JS}
 {$modeswitch externalclass}
+{$ENDIF}
 
 interface
 
-uses js, web;
+uses js, web{$IFDEF DCC}, types{$ENDIF};
 
 Type
   TJQueryTopLeft = record
@@ -16,7 +18,7 @@ Type
   TCallback = Procedure (args : JSValue);
   TCallbackEvent = Procedure (args : JSValue) of object;
 
-  TCallbacks = class external name 'Callbacks'
+  TCallbacks = class {$IFDEF PAS2JS}external name 'Callbacks'{$ENDIF}
   Public
     function add(aCallBack : TCallBack) : TCallbacks; overload;
     function add(aCallBack : Array of TCallBack) : TCallbacks; overload;
@@ -25,7 +27,7 @@ Type
     function disable : TCallBacks; overload;
     function disabled : Boolean; overload;
     function empty : TCallBacks;
-    function fire(arguments : JSValue) : TCallbacks; varargs;
+    function fire(arguments : JSValue) : TCallbacks; {$IFDEF PAS2JS}varargs;{$ENDIF}
     function fired : Boolean;
     function fireWith(context : JSValue; arguments : JSValue) : TCallbacks;
     function has(aCallBack : TCallBack) : Boolean; overload;
@@ -59,11 +61,11 @@ Type
   TJQueryDeQueueFunction = Reference to Procedure;
   TJQueryAddQueueHandler = Reference to Procedure (aFunc : TJQueryDeQueueFunction);
 
-  TAjaxEvent = class external name 'AjaxEvent' (TJSEvent);
+  TAjaxEvent = class {$IFDEF PAS2JS}external name 'AjaxEvent' {$ENDIF} (TJSEvent);
 
   TDeferredDoneHandler = reference to function : Boolean;
 
-  TJQueryDeferred = class external name 'Deferred' (TJSObject)
+  TJQueryDeferred = class {$IFDEF PAS2JS}external name 'Deferred'{$ENDIF} (TJSObject)
   Public
     Function done(aHandler :TDeferredDoneHandler) : TJQueryDeferred; overload;
     Function done(aHandlers : Array of TDeferredDoneHandler) : TJQueryDeferred; overload;
@@ -75,15 +77,15 @@ Type
   TJQXHRFailHandler = reference to function(aJQXHR : TJQXHR; textStatus : String; AErrorThrown : jsValue) : boolean;
   TJQXHRAlwaysHandler = reference to function(arg1 : TJSObject; textStatus : String; arg2 : TJSObject) : boolean;
 
-  TJQXHR = class external name 'jqXHR' (TJQueryDeferred)
+  TJQXHR = class {$IFDEF PAS2JS}external name 'jqXHR'{$ENDIF} (TJQueryDeferred)
   private
-    FReadyState: NativeInt; external name 'readyState';
+    FReadyState: NativeInt; {$IFDEF PAS2JS}external name 'readyState';{$ENDIF}
     //FResponse: JSValue; external name 'response';
-    FResponseText: string; external name 'responseText';
-    FresponseXML: TJSDocument; external name 'responseXML';
+    FResponseText: string; {$IFDEF PAS2JS}external name 'responseText';{$ENDIF}
+    FresponseXML: TJSDocument; {$IFDEF PAS2JS}external name 'responseXML';{$ENDIF}
     //FUpload: TJSXMLHttpRequestUpload; external name 'upload';
-    FStatus : NativeInt; external name 'status';
-    FStatusText : String; external name 'statustext';
+    FStatus : NativeInt; {$IFDEF PAS2JS}external name 'status';{$ENDIF}
+    FStatusText : String; {$IFDEF PAS2JS}external name 'statustext';{$ENDIF}
   public
     function getResponseHeader(aName : string) : String;
     function getAllResponseHeaders : String;
@@ -111,7 +113,7 @@ Type
   TJQueryAjaxSettingsSuccessHandler = Reference to Function (data : JSValue; aStatus : String; aHXR : TJQXHR) : Boolean;
   TJQueryAjaxSettsingsXHRHandler = reference to function : JSValue;
 
-  TJSAjaxSettings = class external name 'Object' (TJSObject)
+  TJSAjaxSettings = class {$IFDEF PAS2JS}external name 'Object'{$ENDIF} (TJSObject)
     accepts : TJSObject;
     async : boolean;
     beforeSend : TJQueryAjaxSettingsHandler;
@@ -165,12 +167,12 @@ Type
   TJQueryAjaxHandler = Reference to procedure;
   TPrependCallback = reference to Function(elementOfArray : NativeInt; Html : String) : JSValue;
 
-  TJQuery = class external name 'jQuery' (TJSObject)
+  TJQuery = class {$IFDEF PAS2JS}external name 'jQuery'{$ENDIF} (TJSObject)
   private
-    FCSSHooks: TJSObject; external name 'cssHooks';
-    FCSSNumber: TJSObject; external name 'cssNumber';
-    FReady: TJSPromise; external name 'ready';
-    function getEl(aIndex : Integer) : TJSElement; external name 'get';
+    FCSSHooks: TJSObject; {$IFDEF PAS2JS}external name 'cssHooks';{$ENDIF}
+    FCSSNumber: TJSObject; {$IFDEF PAS2JS}external name 'cssNumber';{$ENDIF}
+    FReady: TJSPromise; {$IFDEF PAS2JS}external name 'ready';{$ENDIF}
+    function getEl(aIndex : Integer) : TJSElement; {$IFDEF PAS2JS}external name 'get';{$ENDIF}
   Public
     function add(Const aSelector : String) : TJQuery;overload;
     function add(Const aSelector : String; AContext : TJSElement) : TJQuery;overload;
@@ -227,7 +229,7 @@ Type
     function dequeue(const aQueueName : String) : TJQuery;overload;
     class function dequeue(aElement : TJSElement) : TJQuery;overload;
     class function dequeue(aElement : TJSElement; const aQueueName : String) : TJQuery;overload;
-    function _end : TJQuery; external name 'end';
+    function _end : TJQuery; {$IFDEF PAS2JS}external name 'end';{$ENDIF}
     function eq(AIndex : Integer) : TJQuery;
     function each(aHandler : TJQueryEachHandler) : TJQuery;
     class function escapeSelector(const S : String) : String;
@@ -282,11 +284,11 @@ Type
     function innerWidth(aValue: Integer) : TJQuery; overload;
     function innerWidth(aValue: String) : TJQuery; overload;
     function innerWidth(aHandler: TJQueryWidthHandler) : TJQuery; overload;
-    function _is(Const aSelector : String) : TJQuery; external name 'is'; overload;
-    function _is(Const aQuery : TJQuery) : TJQuery; external name 'is'; overload;
-    function _is(aHandler : TJQueryFilterHandler) : TJQuery; external name 'is'; overload;
-    function _is(Const aElement : TJSElement) : TJQuery; external name 'is'; overload;
-    function _is(Const aElements : Array of TJSElement) : TJQuery; external name 'is'; overload;
+    function _is(Const aSelector : String) : TJQuery; {$IFDEF PAS2JS}external name 'is';{$ENDIF} overload;
+    function _is(Const aQuery : TJQuery) : TJQuery; {$IFDEF PAS2JS}external name 'is';{$ENDIF} overload;
+    function _is(aHandler : TJQueryFilterHandler) : TJQuery; {$IFDEF PAS2JS}external name 'is';{$ENDIF} overload;
+    function _is(Const aElement : TJSElement) : TJQuery; {$IFDEF PAS2JS}external name 'is';{$ENDIF} overload;
+    function _is(Const aElements : Array of TJSElement) : TJQuery; {$IFDEF PAS2JS}external name 'is';{$ENDIF} overload;
     function last : TJQuery;
     class function load(url : String) : TJQXHR;overload;
     class function load(url,Data : String) : TJQXHR;overload;
@@ -305,21 +307,21 @@ Type
     function nextUntil(const aElement : TJSElement; aFilter : String) : TJQuery;overload;
     function nextUntil(const aQuery : TJQuery) : TJQuery;overload;
     function nextUntil(const aQuery : TJQuery; aFilter : String) : TJQuery;overload;
-    function _not(const aSelector : String) : TJQuery; external name 'not';overload;
-    function _not(const aSelector : TJSElement) : TJQuery; external name 'not';overload;
-    function _not(const aSelector : Array of TJSElement) : TJQuery; external name 'not';overload;
-    function _not(const aSelector : TJQuery) : TJQuery; external name 'not';overload;
-    function _not(const aSelector : TJQueryFilterHandler) : TJQuery;external name 'not';overload;
+    function _not(const aSelector : String) : TJQuery; {$IFDEF PAS2JS}external name 'not';{$ENDIF} overload;
+    function _not(const aSelector : TJSElement) : TJQuery; {$IFDEF PAS2JS}external name 'not';{$ENDIF} overload;
+    function _not(const aSelector : Array of TJSElement) : TJQuery; {$IFDEF PAS2JS}external name 'not';{$ENDIF} overload;
+    function _not(const aSelector : TJQuery) : TJQuery; {$IFDEF PAS2JS}external name 'not';{$ENDIF} overload;
+    function _not(const aSelector : TJQueryFilterHandler) : TJQuery; {$IFDEF PAS2JS}external name 'not';{$ENDIF} overload;
     function noConflict : TJSObject;overload;
     function noConflict(removeAll: Boolean) : TJSObject;overload;
     function offSet: Integer;overload;
     function offSet(const aOffset : TJQueryTopLeft): TJQuery;overload;
     function offSet(aHandler : TJQueryOffsetHandler): TJQuery;overload;
     Function offsetParent : TJQuery;
-    Function On_(events : String; aHandler : TJSEventHandler) : TJQuery; external name 'on'; overload;
-    Function On_(events : String; selector : String; aHandler : TJSEventHandler) : TJQuery; external name 'on'; overload;
-    Function On_(events : String; selector : String; data : JSValue; aHandler : TJSEventHandler) : TJQuery; external name 'on'; overload;
-    Function On_(events : TJSObject; selector : String; data : JSValue) : TJQuery; external name 'on'; overload;
+    Function On_(events : String; aHandler : TJSEventHandler) : TJQuery; {$IFDEF PAS2JS}external name 'on';{$ENDIF} overload;
+    Function On_(events : String; selector : String; aHandler : TJSEventHandler) : TJQuery; {$IFDEF PAS2JS}external name 'on';{$ENDIF} overload;
+    Function On_(events : String; selector : String; data : JSValue; aHandler : TJSEventHandler) : TJQuery; {$IFDEF PAS2JS}external name 'on';{$ENDIF} overload;
+    Function On_(events : TJSObject; selector : String; data : JSValue) : TJQuery; {$IFDEF PAS2JS}external name 'on';{$ENDIF} overload;
     Function On_(events : TJSObject; data : JSValue) : TJQuery; overload;
     Function On_(events : TJSObject) : TJQuery; overload;
     function outerHeight(IncludeMargin : Boolean): Integer;overload;
@@ -437,19 +439,1488 @@ Type
     Property Elements[AIndex : Integer] : TJSElement read getEl; default;
   end;
 
-
-Function JQuery(Const aSelector :  String) : TJQuery; external name 'jQuery'; overload;
-Function JQuery(Const aSelector :  String; Context : TJSElement) : TJQuery; external name 'jQuery'; overload;
-Function JQuery(Const aElement : TJSElement) : TJQuery; external name 'jQuery'; overload;
-Function JQuery(Const aElement : Array of TJSElement) : TJQuery; external name 'jQuery'; overload;
-Function JQuery(Const aElement : TJSObject) : TJQuery; external name 'jQuery'; overload;
-Function JQuery(Const aQuery : TJQuery) : TJQuery; external name 'jQuery'; overload;
-Function JQuery() : TJQuery; external name 'jQuery'; overload;
+{$IFDEF PAS2JS}
+Function JQuery(Const aSelector :  String) : TJQuery; {$IFDEF PAS2JS}external name 'jQuery';{$ENDIF} overload;
+Function JQuery(Const aSelector :  String; Context : TJSElement) : TJQuery; {$IFDEF PAS2JS}external name 'jQuery';{$ENDIF} overload;
+Function JQuery(Const aElement : TJSElement) : TJQuery; {$IFDEF PAS2JS}external name 'jQuery';{$ENDIF} overload;
+Function JQuery(Const aElement : Array of TJSElement) : TJQuery; {$IFDEF PAS2JS}external name 'jQuery';{$ENDIF} overload;
+Function JQuery(Const aElement : TJSObject) : TJQuery; {$IFDEF PAS2JS}external name 'jQuery';{$ENDIF} overload;
+Function JQuery(Const aQuery : TJQuery) : TJQuery; {$IFDEF PAS2JS}external name 'jQuery';{$ENDIF} overload;
+Function JQuery() : TJQuery; {$IFDEF PAS2JS}external name 'jQuery';{$ENDIF} overload;
+{$ENDIF}
 
 Var
-  gJQuery : TJQuery; external name 'jQuery';
+  gJQuery : TJQuery; {$IFDEF PAS2JS}external name 'jQuery';{$ENDIF}
 
 Implementation
+
+{ TCallbacks }
+
+function TCallbacks.add(aCallBack: TCallBackEvent): TCallbacks;
+begin
+
+end;
+
+function TCallbacks.add(aCallBack: array of TCallBack): TCallbacks;
+begin
+
+end;
+
+function TCallbacks.add(aCallBack: TCallBack): TCallbacks;
+begin
+
+end;
+
+function TCallbacks.add(aCallBack: array of TCallBackEvent): TCallbacks;
+begin
+
+end;
+
+function TCallbacks.disable: TCallBacks;
+begin
+
+end;
+
+function TCallbacks.disabled: Boolean;
+begin
+
+end;
+
+function TCallbacks.empty: TCallBacks;
+begin
+
+end;
+
+function TCallbacks.fire(arguments: JSValue): TCallbacks;
+begin
+
+end;
+
+function TCallbacks.fired: Boolean;
+begin
+
+end;
+
+function TCallbacks.fireWith(context, arguments: JSValue): TCallbacks;
+begin
+
+end;
+
+function TCallbacks.has(aCallBack: TCallBack): Boolean;
+begin
+
+end;
+
+function TCallbacks.has(aCallBack: TCallBackEvent): Boolean;
+begin
+
+end;
+
+function TCallbacks.lock: TCallBacks;
+begin
+
+end;
+
+function TCallbacks.locked: boolean;
+begin
+
+end;
+
+function TCallbacks.remove(aCallBack: TCallBack): TCallbacks;
+begin
+
+end;
+
+function TCallbacks.remove(aCallBack: array of TCallBackEvent): TCallbacks;
+begin
+
+end;
+
+function TCallbacks.remove(aCallBack: TCallBackEvent): TCallbacks;
+begin
+
+end;
+
+function TCallbacks.remove(aCallBack: array of TCallBack): TCallbacks;
+begin
+
+end;
+
+{ TJQueryDeferred }
+
+function TJQueryDeferred.done(
+  aHandlers: array of TDeferredDoneHandler): TJQueryDeferred;
+begin
+
+end;
+
+function TJQueryDeferred.done(aHandler: TDeferredDoneHandler): TJQueryDeferred;
+begin
+
+end;
+
+{ TJQXHR }
+
+procedure TJQXHR.abort;
+begin
+
+end;
+
+procedure TJQXHR.abort(AStatusText: String);
+begin
+
+end;
+
+procedure TJQXHR.always(aHandler: TJQXHRAlwaysHandler);
+begin
+
+end;
+
+procedure TJQXHR.done(aHandler: TJQXHRDoneHandler);
+begin
+
+end;
+
+procedure TJQXHR.fail(aHandler: TJQXHRFailHandler);
+begin
+
+end;
+
+function TJQXHR.getAllResponseHeaders: String;
+begin
+
+end;
+
+function TJQXHR.getResponseHeader(aName: string): String;
+begin
+
+end;
+
+procedure TJQXHR.overrideMimeType(aType: String);
+begin
+
+end;
+
+procedure TJQXHR.setRequestHeader(aName, AValue: string);
+begin
+
+end;
+
+procedure TJQXHR._then(aSuccess: TJQXHRDoneHandler; aFail: TJQXHRFailHandler);
+begin
+
+end;
+
+{ TJQuery }
+
+function TJQuery.add(const aElement: TJSElement): TJQuery;
+begin
+
+end;
+
+function TJQuery.add(const aElement: array of TJSElement): TJQuery;
+begin
+
+end;
+
+function TJQuery.add(const aQuery: TJQuery): TJQuery;
+begin
+
+end;
+
+function TJQuery.add(const aSelector: String; AContext: TJSElement): TJQuery;
+begin
+
+end;
+
+function TJQuery.add(const aSelector: String): TJQuery;
+begin
+
+end;
+
+function TJQuery.addBack: TJQuery;
+begin
+
+end;
+
+function TJQuery.addBack(const aSelector: String): TJQuery;
+begin
+
+end;
+
+function TJQuery.addClass(const aClass: String): TJQuery;
+begin
+
+end;
+
+function TJQuery.addClass(
+  const aClassFunction: TJQueryAddClassHandler): TJQuery;
+begin
+
+end;
+
+class function TJQuery.ajax(aSettings: TJSAjaxSettings): tJQXHR;
+begin
+
+end;
+
+class function TJQuery.ajax(aSettings: TJSObject): tJQXHR;
+begin
+
+end;
+
+class function TJQuery.ajax(aURL: String; aSettings: TJSObject): tJQXHR;
+begin
+
+end;
+
+function TJQuery.ajaxComplete(aHandler: TJQueryAjaxEventHandler): TJQuery;
+begin
+
+end;
+
+function TJQuery.ajaxError(aHandler: TJQueryAjaxEventHandler): TJQuery;
+begin
+
+end;
+
+class procedure TJQuery.ajaxPrefilter(dataTypes: string;
+  aHandler: TJQueryAjaxPrefilterHandler);
+begin
+
+end;
+
+function TJQuery.ajaxSend(aHandler: TJQueryAjaxEventHandler): TJQuery;
+begin
+
+end;
+
+class procedure TJQuery.ajaxSetup(aSettings: TJSObject);
+begin
+
+end;
+
+class procedure TJQuery.ajaxSetup(aSettings: TJSAjaxSettings);
+begin
+
+end;
+
+function TJQuery.ajaxStart(aHandler: TJQueryAjaxHandler): TJQuery;
+begin
+
+end;
+
+function TJQuery.ajaxStop(aHandler: TJQueryAjaxHandler): TJQuery;
+begin
+
+end;
+
+function TJQuery.ajaxSuccess(aHandler: TJQueryAjaxEventHandler): TJQuery;
+begin
+
+end;
+
+class procedure TJQuery.ajaxTransport(aDataType: string;
+  AHandler: TJQueryAjaxTransportHandler);
+begin
+
+end;
+
+function TJQuery.attr(const attributes: TJSObject): TJQuery;
+begin
+
+end;
+
+function TJQuery.attr(const attributeName, Value: String): TJQuery;
+begin
+
+end;
+
+function TJQuery.attr(const attributeName: string): string;
+begin
+
+end;
+
+function TJQuery.attr(const attributeName: string;
+  aHandler: TJQueryAttrHandler): TJQuery;
+begin
+
+end;
+
+class function TJQuery.Callbacks: TCallbacks;
+begin
+
+end;
+
+class function TJQuery.Callbacks(const aFlags: string): TCallbacks;
+begin
+
+end;
+
+function TJQuery.children: TJQuery;
+begin
+
+end;
+
+function TJQuery.children(const aSelector: String): TJQuery;
+begin
+
+end;
+
+function TJQuery.clearQueue(const aQueueName: String): TJQuery;
+begin
+
+end;
+
+function TJQuery.clearQueue: TJQuery;
+begin
+
+end;
+
+function TJQuery.closest(const aSelector: String): TJQuery;
+begin
+
+end;
+
+function TJQuery.closest(const aSelector: String;
+  AContext: TJSElement): TJQuery;
+begin
+
+end;
+
+function TJQuery.closest(const aQuery: TJQuery): TJQuery;
+begin
+
+end;
+
+function TJQuery.closest(const aElement: TJSElement): TJQuery;
+begin
+
+end;
+
+function TJQuery.contents: TJQuery;
+begin
+
+end;
+
+function TJQuery.css(const aPropertyName: String; Avalue: Integer): TJQuery;
+begin
+
+end;
+
+function TJQuery.css(const aPropertyName: String;
+  AHandler: TJQueryCSSHandler): TJQuery;
+begin
+
+end;
+
+function TJQuery.css(const aPropertyName, Avalue: String): TJQuery;
+begin
+
+end;
+
+function TJQuery.css(const aPropertyName: TJSObject): string;
+begin
+
+end;
+
+function TJQuery.css(const aPropertyName: String): string;
+begin
+
+end;
+
+function TJQuery.css(const aPropertyNames: array of String): string;
+begin
+
+end;
+
+class function TJQuery.data(aElement: TJSElement;
+  const aKey: String): TJSObject;
+begin
+
+end;
+
+class function TJQuery.data(aElement: TJSElement): TJSObject;
+begin
+
+end;
+
+function TJQuery.data(aKey: String; aValue: JSValue): TJQuery;
+begin
+
+end;
+
+function TJQuery.data(aObj: TJSObject): TJQuery;
+begin
+
+end;
+
+class function TJQuery.data(aElement: TJSElement; const aKey: String;
+  aValue: jsValue): TJSObject;
+begin
+
+end;
+
+function TJQuery.data: TJSObject;
+begin
+
+end;
+
+function TJQuery.data(aKey: String): TJSObject;
+begin
+
+end;
+
+function TJQuery.dequeue: TJQuery;
+begin
+
+end;
+
+function TJQuery.dequeue(const aQueueName: String): TJQuery;
+begin
+
+end;
+
+class function TJQuery.dequeue(aElement: TJSElement;
+  const aQueueName: String): TJQuery;
+begin
+
+end;
+
+class function TJQuery.dequeue(aElement: TJSElement): TJQuery;
+begin
+
+end;
+
+function TJQuery.each(aHandler: TJQueryEachHandler): TJQuery;
+begin
+
+end;
+
+function TJQuery.eq(AIndex: Integer): TJQuery;
+begin
+
+end;
+
+class function TJQuery.escapeSelector(const S: String): String;
+begin
+
+end;
+
+function TJQuery.filter(const aElements: array of TJSElement): TJQuery;
+begin
+
+end;
+
+function TJQuery.filter(const aElement: TJSElement): TJQuery;
+begin
+
+end;
+
+function TJQuery.filter(const aQuery: TJQuery): TJQuery;
+begin
+
+end;
+
+function TJQuery.filter(const aSelector: String): TJQuery;
+begin
+
+end;
+
+function TJQuery.filter(aHandler: TJQueryFilterHandler): TJQuery;
+begin
+
+end;
+
+function TJQuery.find(const aQuery: TJQuery): TJQuery;
+begin
+
+end;
+
+function TJQuery.find(const aSelector: String): TJQuery;
+begin
+
+end;
+
+function TJQuery.find(const aElement: TJSElement): TJQuery;
+begin
+
+end;
+
+function TJQuery.first: TJQuery;
+begin
+
+end;
+
+function TJQuery.get(aIndex: Integer): TJSElement;
+begin
+
+end;
+
+class function TJQuery.get: TJQXHR;
+begin
+
+end;
+
+class function TJQuery.get(url: String): TJQXHR;
+begin
+
+end;
+
+class function TJQuery.get(url: String; Data: TJSObject): TJQXHR;
+begin
+
+end;
+
+class function TJQuery.get(url: String; Data: TJSObject;
+  success: TJQueryAjaxSuccessHandler): TJQXHR;
+begin
+
+end;
+
+class function TJQuery.get(url, Data: String;
+  success: TJQueryAjaxSuccessHandler): TJQXHR;
+begin
+
+end;
+
+class function TJQuery.get(url, Data: String): TJQXHR;
+begin
+
+end;
+
+class function TJQuery.get(url: String; Data: TJSObject;
+  success: TJQueryAjaxSuccessHandler; aDataType: string): TJQXHR;
+begin
+
+end;
+
+class function TJQuery.get(aSettings: TJSAjaxSettings): TJQXHR;
+begin
+
+end;
+
+class function TJQuery.get(url, Data: String;
+  success: TJQueryAjaxSuccessHandler; aDataType: string): TJQXHR;
+begin
+
+end;
+
+class function TJQuery.get(aSettings: TJSObject): TJQXHR;
+begin
+
+end;
+
+function TJQuery.getEl(aIndex: Integer): TJSElement;
+begin
+
+end;
+
+class function TJQuery.getJSON(url, Data: String;
+  success: TJQueryAjaxSuccessHandler): TJQXHR;
+begin
+
+end;
+
+class function TJQuery.getJSON(url: String; Data: TJSObject;
+  success: TJQueryAjaxSuccessHandler; aDataType: string): TJQXHR;
+begin
+
+end;
+
+class function TJQuery.getJSON(url, Data: String;
+  success: TJQueryAjaxSuccessHandler; aDataType: string): TJQXHR;
+begin
+
+end;
+
+class function TJQuery.getJSON(url: String): TJQXHR;
+begin
+
+end;
+
+class function TJQuery.getJSON(url: String; Data: TJSObject): TJQXHR;
+begin
+
+end;
+
+class function TJQuery.getJSON(url: String; Data: TJSObject;
+  success: TJQueryAjaxSuccessHandler): TJQXHR;
+begin
+
+end;
+
+class function TJQuery.getJSON(url, Data: String): TJQXHR;
+begin
+
+end;
+
+class function TJQuery.getScript(url: String): TJQXHR;
+begin
+
+end;
+
+class function TJQuery.getScript(url: String;
+  aSuccess: TJQueryAjaxScriptHandler): TJQXHR;
+begin
+
+end;
+
+function TJQuery.has(const aQuery: TJQuery): TJQuery;
+begin
+
+end;
+
+function TJQuery.has(const aSelector: String): TJQuery;
+begin
+
+end;
+
+function TJQuery.hasClass(const aClassName: String): Boolean;
+begin
+
+end;
+
+class function TJQuery.hasData(aElement: TJSElement): Boolean;
+begin
+
+end;
+
+function TJQuery.height(aHandler: TJQueryHeightHandler): TJQuery;
+begin
+
+end;
+
+function TJQuery.height(aValue: Integer): TJQuery;
+begin
+
+end;
+
+function TJQuery.height: Integer;
+begin
+
+end;
+
+function TJQuery.height(aValue: String): TJQuery;
+begin
+
+end;
+
+function TJQuery.html(const aHandler: TJQueryHTMLHandler): TJQuery;
+begin
+
+end;
+
+function TJQuery.html: String;
+begin
+
+end;
+
+function TJQuery.html(const aHTML: String): TJQuery;
+begin
+
+end;
+
+function TJQuery.innerHeight(aHandler: TJQueryHeightHandler): TJQuery;
+begin
+
+end;
+
+function TJQuery.innerHeight: Integer;
+begin
+
+end;
+
+function TJQuery.innerHeight(aValue: Integer): TJQuery;
+begin
+
+end;
+
+function TJQuery.innerHeight(aValue: String): TJQuery;
+begin
+
+end;
+
+function TJQuery.innerWidth: Integer;
+begin
+
+end;
+
+function TJQuery.innerWidth(aValue: String): TJQuery;
+begin
+
+end;
+
+function TJQuery.innerWidth(aHandler: TJQueryWidthHandler): TJQuery;
+begin
+
+end;
+
+function TJQuery.innerWidth(aValue: Integer): TJQuery;
+begin
+
+end;
+
+function TJQuery.last: TJQuery;
+begin
+
+end;
+
+class function TJQuery.load(url: String): TJQXHR;
+begin
+
+end;
+
+class function TJQuery.load(url, Data: String): TJQXHR;
+begin
+
+end;
+
+class function TJQuery.load(url: String; Data: TJSObject): TJQXHR;
+begin
+
+end;
+
+class function TJQuery.load(url: String; Data: TJSObject;
+  success: TJQueryAjaxLoadHandler): TJQXHR;
+begin
+
+end;
+
+class function TJQuery.load(url, Data: String;
+  success: TJQueryAjaxLoadHandler): TJQXHR;
+begin
+
+end;
+
+function TJQuery.map(aHandler: TJQueryMapHandler): TJQuery;
+begin
+
+end;
+
+function TJQuery.next(const aSelector: String): TJQuery;
+begin
+
+end;
+
+function TJQuery.next: TJQuery;
+begin
+
+end;
+
+function TJQuery.nextAll(const aSelector: String): TJQuery;
+begin
+
+end;
+
+function TJQuery.nextAll: TJQuery;
+begin
+
+end;
+
+function TJQuery.nextUntil(const aElement: TJSElement;
+  aFilter: String): TJQuery;
+begin
+
+end;
+
+function TJQuery.nextUntil(const aQuery: TJQuery): TJQuery;
+begin
+
+end;
+
+function TJQuery.nextUntil(const aQuery: TJQuery; aFilter: String): TJQuery;
+begin
+
+end;
+
+function TJQuery.nextUntil(const aElement: TJSElement): TJQuery;
+begin
+
+end;
+
+function TJQuery.nextUntil: TJQuery;
+begin
+
+end;
+
+function TJQuery.nextUntil(const aSelector: String): TJQuery;
+begin
+
+end;
+
+function TJQuery.nextUntil(const aSelector, aFilter: String): TJQuery;
+begin
+
+end;
+
+function TJQuery.noConflict: TJSObject;
+begin
+
+end;
+
+function TJQuery.noConflict(removeAll: Boolean): TJSObject;
+begin
+
+end;
+
+function TJQuery.offSet(const aOffset: TJQueryTopLeft): TJQuery;
+begin
+
+end;
+
+function TJQuery.offSet(aHandler: TJQueryOffsetHandler): TJQuery;
+begin
+
+end;
+
+function TJQuery.offSet: Integer;
+begin
+
+end;
+
+function TJQuery.offsetParent: TJQuery;
+begin
+
+end;
+
+function TJQuery.On_(events, selector: String; data: JSValue;
+  aHandler: TJSEventHandler): TJQuery;
+begin
+
+end;
+
+function TJQuery.On_(events, selector: String;
+  aHandler: TJSEventHandler): TJQuery;
+begin
+
+end;
+
+function TJQuery.On_(events: String; aHandler: TJSEventHandler): TJQuery;
+begin
+
+end;
+
+function TJQuery.On_(events: TJSObject): TJQuery;
+begin
+
+end;
+
+function TJQuery.On_(events: TJSObject; data: JSValue): TJQuery;
+begin
+
+end;
+
+function TJQuery.On_(events: TJSObject; selector: String;
+  data: JSValue): TJQuery;
+begin
+
+end;
+
+function TJQuery.outerHeight(aValue: String): TJQuery;
+begin
+
+end;
+
+function TJQuery.outerHeight(aValue: Integer): TJQuery;
+begin
+
+end;
+
+function TJQuery.outerHeight(aHandler: TJQueryHeightHandler): TJQuery;
+begin
+
+end;
+
+function TJQuery.outerHeight(IncludeMargin: Boolean): Integer;
+begin
+
+end;
+
+function TJQuery.outerHeight: Integer;
+begin
+
+end;
+
+function TJQuery.outerWidth(aValue: Integer): TJQuery;
+begin
+
+end;
+
+function TJQuery.outerWidth(aValue: String): TJQuery;
+begin
+
+end;
+
+function TJQuery.outerWidth(aHandler: TJQueryWidthHandler): TJQuery;
+begin
+
+end;
+
+function TJQuery.outerWidth(IncludeMargin: Boolean): Integer;
+begin
+
+end;
+
+function TJQuery.outerWidth: Integer;
+begin
+
+end;
+
+class function TJQuery.param(aObject: String; traditional: Boolean): String;
+begin
+
+end;
+
+class function TJQuery.param(aObject: TJSObject; traditional: Boolean): String;
+begin
+
+end;
+
+class function TJQuery.param(aObject: TJQuery; traditional: Boolean): String;
+begin
+
+end;
+
+class function TJQuery.param(aObject: TJQuery): String;
+begin
+
+end;
+
+class function TJQuery.param(aObject: String): String;
+begin
+
+end;
+
+class function TJQuery.param(aObject: TJSObject): String;
+begin
+
+end;
+
+function TJQuery.parent(const ASelector: String): TJQuery;
+begin
+
+end;
+
+function TJQuery.parent: TJQuery;
+begin
+
+end;
+
+function TJQuery.parents(const ASelector: String): TJQuery;
+begin
+
+end;
+
+function TJQuery.parents: TJQuery;
+begin
+
+end;
+
+function TJQuery.parentsUntil(const aElement: TJSElement;
+  aFilter: String): TJQuery;
+begin
+
+end;
+
+function TJQuery.parentsUntil(const aQuery: TJQuery): TJQuery;
+begin
+
+end;
+
+function TJQuery.parentsUntil(const aQuery: TJQuery; aFilter: String): TJQuery;
+begin
+
+end;
+
+function TJQuery.parentsUntil: TJQuery;
+begin
+
+end;
+
+function TJQuery.parentsUntil(const aSelector: String): TJQuery;
+begin
+
+end;
+
+function TJQuery.parentsUntil(const aElement: TJSElement): TJQuery;
+begin
+
+end;
+
+function TJQuery.parentsUntil(const aSelector, aFilter: String): TJQuery;
+begin
+
+end;
+
+function TJQuery.position: TJQueryTopLeft;
+begin
+
+end;
+
+class function TJQuery.post(url, Data: String): TJQXHR;
+begin
+
+end;
+
+class function TJQuery.post(url: String; Data: TJSObject): TJQXHR;
+begin
+
+end;
+
+class function TJQuery.post(url: String; Data: TJSObject;
+  success: TJQueryAjaxSuccessHandler; aDataType: string): TJQXHR;
+begin
+
+end;
+
+class function TJQuery.post(url, Data: String;
+  success: TJQueryAjaxSuccessHandler; aDataType: string): TJQXHR;
+begin
+
+end;
+
+class function TJQuery.post(aSettings: TJSAjaxSettings): TJQXHR;
+begin
+
+end;
+
+class function TJQuery.post(url, Data: String;
+  success: TJQueryAjaxSuccessHandler): TJQXHR;
+begin
+
+end;
+
+class function TJQuery.post(url: String; Data: TJSObject;
+  success: TJQueryAjaxSuccessHandler): TJQXHR;
+begin
+
+end;
+
+class function TJQuery.post(url: String): TJQXHR;
+begin
+
+end;
+
+class function TJQuery.post(aSettings: TJSObject): TJQXHR;
+begin
+
+end;
+
+function TJQuery.prepend(content: String): TJQuery;
+begin
+
+end;
+
+function TJQuery.prepend(Content1, Content2: String): TJQuery;
+begin
+
+end;
+
+function TJQuery.prepend(aHandler: TPrependCallback): TJQuery;
+begin
+
+end;
+
+function TJQuery.prev: TJQuery;
+begin
+
+end;
+
+function TJQuery.prev(const aSelector: String): TJQuery;
+begin
+
+end;
+
+function TJQuery.prevAll: TJQuery;
+begin
+
+end;
+
+function TJQuery.prevAll(const aSelector: String): TJQuery;
+begin
+
+end;
+
+function TJQuery.prevUntil(const aSelector, aFilter: String): TJQuery;
+begin
+
+end;
+
+function TJQuery.prevUntil(const aSelector: String): TJQuery;
+begin
+
+end;
+
+function TJQuery.prevUntil: TJQuery;
+begin
+
+end;
+
+function TJQuery.prevUntil(const aElement: TJSElement): TJQuery;
+begin
+
+end;
+
+function TJQuery.prevUntil(const aQuery: TJQuery; aFilter: String): TJQuery;
+begin
+
+end;
+
+function TJQuery.prevUntil(const aQuery: TJQuery): TJQuery;
+begin
+
+end;
+
+function TJQuery.prevUntil(const aElement: TJSElement;
+  aFilter: String): TJQuery;
+begin
+
+end;
+
+function TJQuery.prop(const aPropertyName: String;
+  aHandler: TJQueryPropHandler): TJQuery;
+begin
+
+end;
+
+function TJQuery.prop(const TJSObject): TJQuery;
+begin
+
+end;
+
+function TJQuery.prop(const aPropertyName: String; AValue: JSValue): TJQuery;
+begin
+
+end;
+
+function TJQuery.prop(const aPropertyName: String): JSValue;
+begin
+
+end;
+
+class function TJQuery.queue(element: TJSElement): TJSarray;
+begin
+
+end;
+
+class function TJQuery.queue(element: TJSElement;
+  const aQueueName: String): TJSarray;
+begin
+
+end;
+
+function TJQuery.queue(anArray: TJSArray): TJQuery;
+begin
+
+end;
+
+function TJQuery.queue(aQueueName: string; anArray: TJSarray): TJQuery;
+begin
+
+end;
+
+function TJQuery.queue(aQueueName: string;
+  aHandler: TJQueryAddQueueHandler): TJQuery;
+begin
+
+end;
+
+function TJQuery.queue(aQueueName: string): TJSarray;
+begin
+
+end;
+
+class function TJQuery.queue(element: TJSElement; const aQueueName: string;
+  anewQueue: TJSarray): TJQuery;
+begin
+
+end;
+
+class function TJQuery.queue(element: TJSElement; const aQueueName: String;
+  aHandler: TJQueryQueueHandler): TJQuery;
+begin
+
+end;
+
+function TJQuery.queue: TJSarray;
+begin
+
+end;
+
+function TJQuery.remove(const Selector: string): TJQuery;
+begin
+
+end;
+
+function TJQuery.remove: TJQuery;
+begin
+
+end;
+
+function TJQuery.removeAttr(const attributeName: string): TJQuery;
+begin
+
+end;
+
+function TJQuery.removeClass(
+  const aClassFunction: TJQueryAddClassHandler): TJQuery;
+begin
+
+end;
+
+function TJQuery.removeClass(const aClass: String): TJQuery;
+begin
+
+end;
+
+class function TJQuery.removeData(aElement: TJSElement): TJQuery;
+begin
+
+end;
+
+class function TJQuery.removeData(aElement: TJSElement;
+  const aName: String): TJQuery;
+begin
+
+end;
+
+function TJQuery.removeData: TJQuery;
+begin
+
+end;
+
+function TJQuery.removeData(const aNames: array of string): TJQuery;
+begin
+
+end;
+
+function TJQuery.removeData(const aName: string): TJQuery;
+begin
+
+end;
+
+function TJQuery.removeProp(const aPropertyName: string): TJQuery;
+begin
+
+end;
+
+function TJQuery.scrollLeft(aValue: Integer): TJQuery;
+begin
+
+end;
+
+function TJQuery.scrollLeft: Integer;
+begin
+
+end;
+
+function TJQuery.scrollTop: Integer;
+begin
+
+end;
+
+function TJQuery.scrollTop(aValue: Integer): TJQuery;
+begin
+
+end;
+
+function TJQuery.serialize: string;
+begin
+
+end;
+
+function TJQuery.serializeArray: TJSObjectDynArrayArray;
+begin
+
+end;
+
+function TJQuery.siblings: TJQuery;
+begin
+
+end;
+
+function TJQuery.siblings(const aSelector: String): TJQuery;
+begin
+
+end;
+
+function TJQuery.slice(aStart, aEnd: integer): TJQuery;
+begin
+
+end;
+
+function TJQuery.slice(aStart: integer): TJQuery;
+begin
+
+end;
+
+function TJQuery.sub: TJQuery;
+begin
+
+end;
+
+function TJQuery.text(const aText: string): TJQuery;
+begin
+
+end;
+
+function TJQuery.text: String;
+begin
+
+end;
+
+function TJQuery.text(aHandler: TJQueryTextHandler): TJQuery;
+begin
+
+end;
+
+function TJQuery.text(const aText: Boolean): TJQuery;
+begin
+
+end;
+
+function TJQuery.text(const aText: Double): TJQuery;
+begin
+
+end;
+
+function TJQuery.text(const aText: Integer): TJQuery;
+begin
+
+end;
+
+function TJQuery.toggleClass(const aHandler: TJQueryToggleClassHandler;
+  AState: Boolean): TJQuery;
+begin
+
+end;
+
+function TJQuery.toggleClass(
+  const aHandler: TJQueryToggleClassHandler): TJQuery;
+begin
+
+end;
+
+function TJQuery.toggleClass(const aClass: String): TJQuery;
+begin
+
+end;
+
+function TJQuery.toggleClass(const aClass: String; aState: Boolean): TJQuery;
+begin
+
+end;
+
+function TJQuery.val(const aValue: String): TJQuery;
+begin
+
+end;
+
+function TJQuery.val: JSValue;
+begin
+
+end;
+
+function TJQuery.val(const aValue: Integer): TJQuery;
+begin
+
+end;
+
+function TJQuery.val(const aValue: array of String): TJQuery;
+begin
+
+end;
+
+function TJQuery.val(aHandler: TJQueryValHandler): TJQuery;
+begin
+
+end;
+
+function TJQuery.when(APromise: TJSPromise): TJSPromise;
+begin
+
+end;
+
+function TJQuery.when: TJSPromise;
+begin
+
+end;
+
+function TJQuery.Width: Integer;
+begin
+
+end;
+
+function TJQuery.Width(aHandler: TJQueryWidthHandler): TJQuery;
+begin
+
+end;
+
+function TJQuery.Width(aValue: Integer): TJQuery;
+begin
+
+end;
+
+function TJQuery.Width(aValue: String): TJQuery;
+begin
+
+end;
+
+function TJQuery._end: TJQuery;
+begin
+
+end;
+
+function TJQuery._is(aHandler: TJQueryFilterHandler): TJQuery;
+begin
+
+end;
+
+function TJQuery._is(const aElement: TJSElement): TJQuery;
+begin
+
+end;
+
+function TJQuery._is(const aQuery: TJQuery): TJQuery;
+begin
+
+end;
+
+function TJQuery._is(const aElements: array of TJSElement): TJQuery;
+begin
+
+end;
+
+function TJQuery._is(const aSelector: String): TJQuery;
+begin
+
+end;
+
+function TJQuery._not(const aSelector: String): TJQuery;
+begin
+
+end;
+
+function TJQuery._not(const aSelector: TJSElement): TJQuery;
+begin
+
+end;
+
+function TJQuery._not(const aSelector: TJQueryFilterHandler): TJQuery;
+begin
+
+end;
+
+function TJQuery._not(const aSelector: TJQuery): TJQuery;
+begin
+
+end;
+
+function TJQuery._not(const aSelector: array of TJSElement): TJQuery;
+begin
+
+end;
 
 end.
 

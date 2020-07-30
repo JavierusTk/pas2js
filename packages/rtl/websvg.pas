@@ -1,7 +1,9 @@
 unit websvg;
 
 {$H+}
+{$IFDEF PAS2JS}
 {$MODESWITCH externalclass}
+{$ENDIF}
 
 interface
 
@@ -109,11 +111,10 @@ type
   TJSSVGViewElement = class;
   TJSSVGZoomAndPan = class;
 
-type
-  DOMStringMap = class external name 'DOMStringMap'
+  DOMStringMap = class {$IFDEF PAS2JS}external name 'DOMStringMap'{$ENDIF}
   private
-    function GetItem(name: String): String; external name '[]';
-    procedure SetItem(name: String; value: String); external name '[]';
+    function GetItem(name: String): String; {$IFDEF PAS2JS}external name '[]';{$ENDIF}
+    procedure SetItem(name: String; value: String); {$IFDEF PAS2JS}external name '[]';{$ENDIF}
   public
     //procedure (name: String);
     property Items[name: String]: String read GetItem write SetItem; default;
@@ -122,13 +123,13 @@ type
   { --------------------------------------------------------------------
     TJSSVGElement
     --------------------------------------------------------------------}
-  TJSSVGElement = class external name 'SVGElement'(TJSElement)
+  TJSSVGElement = class {$IFDEF PAS2JS}external name 'SVGElement'{$ENDIF} (TJSElement)
   private
-    FclassName: TJSSVGAnimatedString; external name 'className';
-    Fdataset: DOMStringMap; external name 'dataset';
-    Fstyle: TJSCSSStyleDeclaration; external name 'style';
-    FownerSVGElement: TJSSVGSVGElement; external name 'ownerSVGElement';
-    FviewportElement: TJSSVGElement; external name 'viewportElement';
+    FclassName: TJSSVGAnimatedString; {$IFDEF PAS2JS}external name 'className';{$ENDIF}
+    Fdataset: DOMStringMap; {$IFDEF PAS2JS}external name 'dataset';{$ENDIF}
+    Fstyle: TJSCSSStyleDeclaration; {$IFDEF PAS2JS}external name 'style';{$ENDIF}
+    FownerSVGElement: TJSSVGSVGElement; {$IFDEF PAS2JS}external name 'ownerSVGElement';{$ENDIF}
+    FviewportElement: TJSSVGElement; {$IFDEF PAS2JS}external name 'viewportElement';{$ENDIF}
   public
     tabIndex: Integer;
     procedure focus;
@@ -143,12 +144,11 @@ type
   { --------------------------------------------------------------------
     TJSSVGGraphicsElement
     --------------------------------------------------------------------}
-  TJSSVGGraphicsElement = class external name 'SVGGraphicsElement' (TJSSVGElement)
+  TJSSVGGraphicsElement = class {$IFDEF PAS2JS}external name 'SVGGraphicsElement'{$ENDIF} (TJSSVGElement)
   private
-    Ftransform: TJSSVGAnimatedTransformList; external name 'transform';
-    FnearestViewportElement: TJSSVGElement; external name 'nearestViewportElement';
-    FfarthestViewportElement: TJSSVGElement; external name
-      'farthestViewportElement';
+    Ftransform: TJSSVGAnimatedTransformList; {$IFDEF PAS2JS}external name 'transform';{$ENDIF}
+    FnearestViewportElement: TJSSVGElement; {$IFDEF PAS2JS}external name 'nearestViewportElement';{$ENDIF}
+    FfarthestViewportElement: TJSSVGElement; {$IFDEF PAS2JS}external name 'farthestViewportElement';{$ENDIF}
   public
     function getBBox: TJSSVGRect;
     function getCTM: TJSSVGMatrix;
@@ -161,13 +161,13 @@ type
   { --------------------------------------------------------------------
     TJSSVGSVGElement
     --------------------------------------------------------------------}
-  TJSSVGSVGElement = class external name 'SVGSVGElement' (TJSSVGGraphicsElement)
+  TJSSVGSVGElement = class {$IFDEF PAS2JS}external name 'SVGSVGElement'{$ENDIF} (TJSSVGGraphicsElement)
   private
-    Fx: TJSSVGAnimatedLength; external name 'x';
-    Fy: TJSSVGAnimatedLength; external name 'y';
-    Fwidth: TJSSVGAnimatedLength; external name 'width';
-    Fheight: TJSSVGAnimatedLength; external name 'height';
-    FcurrentTranslate: TJSSVGPoint; external name 'currentTranslate';
+    Fx: TJSSVGAnimatedLength; {$IFDEF PAS2JS}external name 'x';{$ENDIF}
+    Fy: TJSSVGAnimatedLength; {$IFDEF PAS2JS}external name 'y';{$ENDIF}
+    Fwidth: TJSSVGAnimatedLength; {$IFDEF PAS2JS}external name 'width';{$ENDIF}
+    Fheight: TJSSVGAnimatedLength; {$IFDEF PAS2JS}external name 'height';{$ENDIF}
+    FcurrentTranslate: TJSSVGPoint; {$IFDEF PAS2JS}external name 'currentTranslate';{$ENDIF}
   public
     currentScale: Double;
     function getIntersectionList(rect: TJSSVGRect; referenceElement: TJSSVGElement):
@@ -205,9 +205,9 @@ type
   { --------------------------------------------------------------------
     TJSSVGAElement
     --------------------------------------------------------------------}
-  TJSSVGAElement = class external name 'SVGAElement' (TJSSVGGraphicsElement)
+  TJSSVGAElement = class {$IFDEF PAS2JS}external name 'SVGAElement'{$ENDIF} (TJSSVGGraphicsElement)
   private
-    Ftarget: TJSSVGAnimatedString; external name 'target';
+    Ftarget: TJSSVGAnimatedString; {$IFDEF PAS2JS}external name 'target';{$ENDIF}
   public
     property target: TJSSVGAnimatedString read Ftarget;
   end;
@@ -215,9 +215,9 @@ type
   { --------------------------------------------------------------------
   TJSSVGAngle
   --------------------------------------------------------------------}
-  TJSSVGAngle = class external name 'SVGAngle'
+  TJSSVGAngle = class {$IFDEF PAS2JS}external name 'SVGAngle'{$ENDIF}
   private
-    FunitType: Cardinal; external name 'unitType';
+    FunitType: Cardinal; {$IFDEF PAS2JS}external name 'unitType';{$ENDIF}
   public
   const
     SVG_ANGLETYPE_UNKNOWN = 0;
@@ -237,10 +237,10 @@ type
   { --------------------------------------------------------------------
     TJSSVGAnimatedAngle
     --------------------------------------------------------------------}
-  TJSSVGAnimatedAngle = class external name 'SVGAnimatedAngle'
+  TJSSVGAnimatedAngle = class {$IFDEF PAS2JS}external name 'SVGAnimatedAngle'{$ENDIF}
   private
-    FbaseVal: TJSSVGAngle; external name 'baseVal';
-    FanimVal: TJSSVGAngle; external name 'animVal';
+    FbaseVal: TJSSVGAngle; {$IFDEF PAS2JS}external name 'baseVal';{$ENDIF}
+    FanimVal: TJSSVGAngle; {$IFDEF PAS2JS}external name 'animVal';{$ENDIF}
   public
     property baseVal: TJSSVGAngle read FbaseVal;
     property animVal: TJSSVGAngle read FanimVal;
@@ -249,9 +249,9 @@ type
   { --------------------------------------------------------------------
     TJSSVGAnimatedBoolean
     --------------------------------------------------------------------}
-  TJSSVGAnimatedBoolean = class external name 'SVGAnimatedBoolean'
+  TJSSVGAnimatedBoolean = class {$IFDEF PAS2JS}external name 'SVGAnimatedBoolean'{$ENDIF}
   private
-    FanimVal: boolean; external name 'animVal';
+    FanimVal: boolean; {$IFDEF PAS2JS}external name 'animVal';{$ENDIF}
   public
     baseVal: boolean;
     property animVal: boolean read FanimVal;
@@ -260,9 +260,9 @@ type
   { --------------------------------------------------------------------
     TJSSVGAnimatedEnumeration
     --------------------------------------------------------------------}
-  TJSSVGAnimatedEnumeration = class external name 'SVGAnimatedEnumeration'
+  TJSSVGAnimatedEnumeration = class {$IFDEF PAS2JS}external name 'SVGAnimatedEnumeration'{$ENDIF}
   private
-    FanimVal: Cardinal; external name 'animVal';
+    FanimVal: Cardinal; {$IFDEF PAS2JS}external name 'animVal';{$ENDIF}
   public
     baseVal: Cardinal;
     property animVal: Cardinal read FanimVal;
@@ -271,9 +271,9 @@ type
   { --------------------------------------------------------------------
     TJSSVGAnimatedInteger
     --------------------------------------------------------------------}
-  TJSSVGAnimatedInteger = class external name 'SVGAnimatedInteger'
+  TJSSVGAnimatedInteger = class {$IFDEF PAS2JS}external name 'SVGAnimatedInteger'{$ENDIF}
   private
-    FanimVal: Integer; external name 'animVal';
+    FanimVal: Integer; {$IFDEF PAS2JS}external name 'animVal';{$ENDIF}
   public
     baseVal: Integer;
     property animVal: Integer read FanimVal;
@@ -282,10 +282,10 @@ type
   { --------------------------------------------------------------------
     TJSSVGAnimatedLength
     --------------------------------------------------------------------}
-  TJSSVGAnimatedLength = class external name 'SVGAnimatedLength'
+  TJSSVGAnimatedLength = class {$IFDEF PAS2JS}external name 'SVGAnimatedLength'{$ENDIF}
   private
-    FbaseVal: TJSSVGLength; external name 'baseVal';
-    FanimVal: TJSSVGLength; external name 'animVal';
+    FbaseVal: TJSSVGLength; {$IFDEF PAS2JS}external name 'baseVal';{$ENDIF}
+    FanimVal: TJSSVGLength; {$IFDEF PAS2JS}external name 'animVal';{$ENDIF}
   public
     property baseVal: TJSSVGLength read FbaseVal;
     property animVal: TJSSVGLength read FanimVal;
@@ -294,7 +294,7 @@ type
 { --------------------------------------------------------------------
   TJSSVGLengthList
   --------------------------------------------------------------------}
-  TJSSVGLengthList = class external name 'SVGLengthList'
+  TJSSVGLengthList = class {$IFDEF PAS2JS}external name 'SVGLengthList'{$ENDIF}
   public
     numberOfItems: Integer;
     procedure clear;
@@ -309,10 +309,10 @@ type
   { --------------------------------------------------------------------
     TJSSVGAnimatedLengthList
     --------------------------------------------------------------------}
-  TJSSVGAnimatedLengthList = class external name 'SVGAnimatedLengthList'
+  TJSSVGAnimatedLengthList = class {$IFDEF PAS2JS}external name 'SVGAnimatedLengthList'{$ENDIF}
   private
-    FbaseVal: TJSSVGLengthList; external name 'baseVal';
-    FanimVal: TJSSVGLengthList; external name 'animVal';
+    FbaseVal: TJSSVGLengthList; {$IFDEF PAS2JS}external name 'baseVal';{$ENDIF}
+    FanimVal: TJSSVGLengthList; {$IFDEF PAS2JS}external name 'animVal';{$ENDIF}
   public
     property baseVal: TJSSVGLengthList read FbaseVal;
     property animVal: TJSSVGLengthList read FanimVal;
@@ -321,9 +321,9 @@ type
   { --------------------------------------------------------------------
     TJSSVGAnimatedNumber
     --------------------------------------------------------------------}
-  TJSSVGAnimatedNumber = class external name 'SVGAnimatedNumber'
+  TJSSVGAnimatedNumber = class {$IFDEF PAS2JS}external name 'SVGAnimatedNumber'{$ENDIF}
   private
-    FanimVal: Double; external name 'animVal';
+    FanimVal: Double; {$IFDEF PAS2JS}external name 'animVal';{$ENDIF}
   public
     baseVal: Double;
     property animVal: Double read FanimVal;
@@ -332,7 +332,7 @@ type
   { --------------------------------------------------------------------
     TJSSVGNumberList
   --------------------------------------------------------------------}
-  TJSSVGNumberList = class external name 'SVGNumberList'
+  TJSSVGNumberList = class {$IFDEF PAS2JS}external name 'SVGNumberList'{$ENDIF}
   public
     numberOfItems: Integer;
     procedure clear;
@@ -347,10 +347,10 @@ type
   { --------------------------------------------------------------------
     TJSSVGAnimatedNumberList
     --------------------------------------------------------------------}
-  TJSSVGAnimatedNumberList = class external name 'SVGAnimatedNumberList'
+  TJSSVGAnimatedNumberList = class {$IFDEF PAS2JS}external name 'SVGAnimatedNumberList'{$ENDIF}
   private
-    FbaseVal: TJSSVGNumberList; external name 'baseVal';
-    FanimVal: TJSSVGNumberList; external name 'animVal';
+    FbaseVal: TJSSVGNumberList; {$IFDEF PAS2JS}external name 'baseVal';{$ENDIF}
+    FanimVal: TJSSVGNumberList; {$IFDEF PAS2JS}external name 'animVal';{$ENDIF}
   public
     property baseVal: TJSSVGNumberList read FbaseVal;
     property animVal: TJSSVGNumberList read FanimVal;
@@ -359,11 +359,10 @@ type
   { --------------------------------------------------------------------
     TJSSVGAnimatedPreserveAspectRatio
     --------------------------------------------------------------------}
-  TJSSVGAnimatedPreserveAspectRatio = class external name
-    'SVGAnimatedPreserveAspectRatio'
+  TJSSVGAnimatedPreserveAspectRatio = class {$IFDEF PAS2JS}external name 'SVGAnimatedPreserveAspectRatio'{$ENDIF}
     private
-    FbaseVal: TJSSVGPreserveAspectRatio; external name 'baseVal';
-    FanimVal: TJSSVGPreserveAspectRatio; external name 'animVal';
+    FbaseVal: TJSSVGPreserveAspectRatio; {$IFDEF PAS2JS}external name 'baseVal';{$ENDIF}
+    FanimVal: TJSSVGPreserveAspectRatio; {$IFDEF PAS2JS}external name 'animVal';{$ENDIF}
   public
     property baseVal: TJSSVGPreserveAspectRatio read FbaseVal;
     property animVal: TJSSVGPreserveAspectRatio read FanimVal;
@@ -372,10 +371,10 @@ type
   { --------------------------------------------------------------------
     TJSSVGAnimatedRect
     --------------------------------------------------------------------}
-  TJSSVGAnimatedRect = class external name 'SVGAnimatedRect'
+  TJSSVGAnimatedRect = class {$IFDEF PAS2JS}external name 'SVGAnimatedRect'{$ENDIF}
   private
-    FbaseVal: TJSSVGRect; external name 'baseVal';
-    FanimVal: TJSSVGRect; external name 'animVal';
+    FbaseVal: TJSSVGRect; {$IFDEF PAS2JS}external name 'baseVal';{$ENDIF}
+    FanimVal: TJSSVGRect; {$IFDEF PAS2JS}external name 'animVal';{$ENDIF}
   public
     property baseVal: TJSSVGRect read FbaseVal;
     property animVal: TJSSVGRect read FanimVal;
@@ -384,9 +383,9 @@ type
   { --------------------------------------------------------------------
     TJSSVGAnimatedString
     --------------------------------------------------------------------}
-  TJSSVGAnimatedString = class external name 'SVGAnimatedString'
+  TJSSVGAnimatedString = class {$IFDEF PAS2JS}external name 'SVGAnimatedString'{$ENDIF}
   private
-    FanimVal: string; external name 'animVal';
+    FanimVal: string; {$IFDEF PAS2JS}external name 'animVal';{$ENDIF}
   public
     baseVal: string;
     property animVal: string read FanimVal;
@@ -395,7 +394,7 @@ type
  { --------------------------------------------------------------------
   TJSSVGTransformList
   --------------------------------------------------------------------}
-  TJSSVGTransformList = class external name 'SVGTransformList'
+  TJSSVGTransformList = class {$IFDEF PAS2JS}external name 'SVGTransformList'{$ENDIF}
   public
     numberOfItems: Integer;
     procedure clear;
@@ -412,10 +411,10 @@ type
   { --------------------------------------------------------------------
     TJSSVGAnimatedTransformList
     --------------------------------------------------------------------}
-  TJSSVGAnimatedTransformList = class external name 'SVGAnimatedTransformList'
+  TJSSVGAnimatedTransformList = class {$IFDEF PAS2JS}external name 'SVGAnimatedTransformList'{$ENDIF}
   private
-    FbaseVal: TJSSVGTransformList; external name 'baseVal';
-    FanimVal: TJSSVGTransformList; external name 'animVal';
+    FbaseVal: TJSSVGTransformList; {$IFDEF PAS2JS}external name 'baseVal';{$ENDIF}
+    FanimVal: TJSSVGTransformList; {$IFDEF PAS2JS}external name 'animVal';{$ENDIF}
   public
     property baseVal: TJSSVGTransformList read FbaseVal;
     property animVal: TJSSVGTransformList read FanimVal;
@@ -424,9 +423,9 @@ type
   { --------------------------------------------------------------------
     TJSSVGAnimationElement
     --------------------------------------------------------------------}
-  TJSSVGAnimationElement = class external name 'SVGAnimationElement' (TJSSVGElement)
+  TJSSVGAnimationElement = class {$IFDEF PAS2JS}external name 'SVGAnimationElement'{$ENDIF} (TJSSVGElement)
   private
-    FtargetElement: TJSSVGElement; external name 'targetElement';
+    FtargetElement: TJSSVGElement; {$IFDEF PAS2JS}external name 'targetElement';{$ENDIF}
   public
     onbegin: TJSEventHandler;
     onend: TJSEventHandler;
@@ -444,24 +443,23 @@ type
   { --------------------------------------------------------------------
     TJSSVGAnimateElement
     --------------------------------------------------------------------}
-  TJSSVGAnimateElement = class external name 'SVGAnimateElement' (TJSSVGAnimationElement)
-    private
+  TJSSVGAnimateElement = class {$IFDEF PAS2JS}external name 'SVGAnimateElement'{$ENDIF} (TJSSVGAnimationElement)
+  private
   public
   end;
 
   { --------------------------------------------------------------------
     TJSSVGAnimateMotionElement
     --------------------------------------------------------------------}
-  TJSSVGAnimateMotionElement = class external name 'SVGAnimateMotionElement' (TJSSVGAnimationElement)
-    private
+  TJSSVGAnimateMotionElement = class {$IFDEF PAS2JS}external name 'SVGAnimateMotionElement'{$ENDIF} (TJSSVGAnimationElement)
+  private
   public
   end;
 
   { --------------------------------------------------------------------
     TJSSVGAnimateTransformElement
     --------------------------------------------------------------------}
-  TJSSVGAnimateTransformElement = class external name
-    'SVGAnimateTransformElement' (TJSSVGAnimationElement)
+  TJSSVGAnimateTransformElement = class {$IFDEF PAS2JS}external name 'SVGAnimateTransformElement'{$ENDIF} (TJSSVGAnimationElement)
     private
   public
   end;
@@ -469,9 +467,9 @@ type
   { --------------------------------------------------------------------
     TJSSVGGeometryElement
     --------------------------------------------------------------------}
-  TJSSVGGeometryElement = class external name 'SVGGeometryElement' (TJSSVGGraphicsElement)
-    private
-    FpathLength: TJSSVGAnimatedNumber; external name 'pathLength';
+  TJSSVGGeometryElement = class {$IFDEF PAS2JS}external name 'SVGGeometryElement'{$ENDIF} (TJSSVGGraphicsElement)
+  private
+    FpathLength: TJSSVGAnimatedNumber; {$IFDEF PAS2JS}external name 'pathLength';{$ENDIF}
   public
     function isPointInFill(point: TJSSVGPoint): boolean;
     function isPointInStroke(point: TJSSVGPoint): boolean;
@@ -483,11 +481,11 @@ type
   { --------------------------------------------------------------------
     TJSSVGCircleElement
     --------------------------------------------------------------------}
-  TJSSVGCircleElement = class external name 'SVGCircleElement' (TJSSVGGeometryElement)
-    private
-    Fcx: TJSSVGAnimatedLength; external name 'cx';
-    Fcy: TJSSVGAnimatedLength; external name 'cy';
-    Fr: TJSSVGAnimatedLength; external name 'r';
+  TJSSVGCircleElement = class {$IFDEF PAS2JS}external name 'SVGCircleElement'{$ENDIF} (TJSSVGGeometryElement)
+  private
+    Fcx: TJSSVGAnimatedLength; {$IFDEF PAS2JS}external name 'cx';{$ENDIF}
+    Fcy: TJSSVGAnimatedLength; {$IFDEF PAS2JS}external name 'cy';{$ENDIF}
+    Fr: TJSSVGAnimatedLength; {$IFDEF PAS2JS}external name 'r';{$ENDIF}
   public
     property cx: TJSSVGAnimatedLength read Fcx;
     property cy: TJSSVGAnimatedLength read Fcy;
@@ -497,10 +495,9 @@ type
   { --------------------------------------------------------------------
     TJSSVGClipPathElement
     --------------------------------------------------------------------}
-  TJSSVGClipPathElement = class external name
-    'SVGClipPathElement' (TJSSVGGraphicsElement)
-    private
-    FclipPathUnits: TJSSVGAnimatedEnumeration; external name 'clipPathUnits';
+  TJSSVGClipPathElement = class {$IFDEF PAS2JS}external name 'SVGClipPathElement'{$ENDIF} (TJSSVGGraphicsElement)
+  private
+    FclipPathUnits: TJSSVGAnimatedEnumeration; {$IFDEF PAS2JS}external name 'clipPathUnits';{$ENDIF}
   public
     property clipPathUnits: TJSSVGAnimatedEnumeration read FclipPathUnits;
   end;
@@ -508,16 +505,15 @@ type
   { --------------------------------------------------------------------
     TJSSVGComponentTransferFunctionElement
     --------------------------------------------------------------------}
-  TJSSVGComponentTransferFunctionElement = class external name
-    'SVGComponentTransferFunctionElement' (TJSSVGElement)
-    private
-    Ftype_: TJSSVGAnimatedEnumeration; external name 'type';
-    FtableValues: TJSSVGAnimatedNumberList; external name 'tableValues';
-    Fslope: TJSSVGAnimatedNumber; external name 'slope';
-    Fintercept: TJSSVGAnimatedNumber; external name 'intercept';
-    Famplitude: TJSSVGAnimatedNumber; external name 'amplitude';
-    Fexponent: TJSSVGAnimatedNumber; external name 'exponent';
-    Foffset: TJSSVGAnimatedNumber; external name 'offset';
+  TJSSVGComponentTransferFunctionElement = class {$IFDEF PAS2JS}external name 'SVGComponentTransferFunctionElement'{$ENDIF} (TJSSVGElement)
+  private
+    Ftype_: TJSSVGAnimatedEnumeration; {$IFDEF PAS2JS}external name 'type';{$ENDIF}
+    FtableValues: TJSSVGAnimatedNumberList; {$IFDEF PAS2JS}external name 'tableValues';{$ENDIF}
+    Fslope: TJSSVGAnimatedNumber; {$IFDEF PAS2JS}external name 'slope';{$ENDIF}
+    Fintercept: TJSSVGAnimatedNumber; {$IFDEF PAS2JS}external name 'intercept';{$ENDIF}
+    Famplitude: TJSSVGAnimatedNumber; {$IFDEF PAS2JS}external name 'amplitude';{$ENDIF}
+    Fexponent: TJSSVGAnimatedNumber; {$IFDEF PAS2JS}external name 'exponent';{$ENDIF}
+    Foffset: TJSSVGAnimatedNumber; {$IFDEF PAS2JS}external name 'offset';{$ENDIF}
   public
   const
     SVG_FECOMPONENTTRANSFER_TYPE_UNKNOWN = 0;
@@ -539,7 +535,7 @@ type
   { --------------------------------------------------------------------
     TJSSVGDefsElement
     --------------------------------------------------------------------}
-  TJSSVGDefsElement = class external name 'SVGDefsElement' (TJSSVGGraphicsElement)
+  TJSSVGDefsElement = class {$IFDEF PAS2JS}external name 'SVGDefsElement'{$ENDIF} (TJSSVGGraphicsElement)
   private
   public
   end;
@@ -547,7 +543,7 @@ type
   { --------------------------------------------------------------------
     TJSSVGDescElement
     --------------------------------------------------------------------}
-  TJSSVGDescElement = class external name 'SVGDescElement' (TJSSVGElement)
+  TJSSVGDescElement = class {$IFDEF PAS2JS}external name 'SVGDescElement'{$ENDIF} (TJSSVGElement)
   private
   public
   end;
@@ -555,19 +551,19 @@ type
   { --------------------------------------------------------------------
     TJSSVGDocument
     --------------------------------------------------------------------}
-  TJSSVGDocument = class external name 'SVGDocument' (TJSDocument)
+  TJSSVGDocument = class {$IFDEF PAS2JS}external name 'SVGDocument'{$ENDIF} (TJSDocument)
   public
-    Ftitle: String; external name 'tile';
-    Freferrer: String; external name 'referrer';
-    Fdomain: String; external name 'domain';
-    fURL: String; external name 'URL';
+    Ftitle: String; {$IFDEF PAS2JS}external name 'tile';{$ENDIF}
+    Freferrer: String; {$IFDEF PAS2JS}external name 'referrer';{$ENDIF}
+    Fdomain: String; {$IFDEF PAS2JS}external name 'domain';{$ENDIF}
+    fURL: String; {$IFDEF PAS2JS}external name 'URL';{$ENDIF}
     rootElement: TJSSVGSVGElement;
   end;
 
   { --------------------------------------------------------------------
     TJSSVGDiscardElement
     --------------------------------------------------------------------}
-  TJSSVGDiscardElement = class external name 'SVGDiscardElement' (TJSSVGElement)
+  TJSSVGDiscardElement = class {$IFDEF PAS2JS}external name 'SVGDiscardElement'{$ENDIF} (TJSSVGElement)
   private
   public
   end;
@@ -575,9 +571,9 @@ type
   { --------------------------------------------------------------------
     TJSDocument
     --------------------------------------------------------------------}
-  TJSDocument = class external name 'Document'
+  TJSDocument = class {$IFDEF PAS2JS}external name 'Document'{$ENDIF}
   private
-    FrootElement: TJSSVGSVGElement; external name 'rootElement';
+    FrootElement: TJSSVGSVGElement; {$IFDEF PAS2JS}external name 'rootElement';{$ENDIF}
   public
     property rootElement: TJSSVGSVGElement read FrootElement;
   end;
@@ -585,13 +581,12 @@ type
   { --------------------------------------------------------------------
     TJSSVGEllipseElement
     --------------------------------------------------------------------}
-  TJSSVGEllipseElement = class external name
-    'SVGEllipseElement' (TJSSVGGeometryElement)
-    private
-    Fcx: TJSSVGAnimatedLength; external name 'cx';
-    Fcy: TJSSVGAnimatedLength; external name 'cy';
-    Frx: TJSSVGAnimatedLength; external name 'rx';
-    Fry: TJSSVGAnimatedLength; external name 'ry';
+  TJSSVGEllipseElement = class {$IFDEF PAS2JS}external name 'SVGEllipseElement'{$ENDIF} (TJSSVGGeometryElement)
+  private
+    Fcx: TJSSVGAnimatedLength; {$IFDEF PAS2JS}external name 'cx';{$ENDIF}
+    Fcy: TJSSVGAnimatedLength; {$IFDEF PAS2JS}external name 'cy';{$ENDIF}
+    Frx: TJSSVGAnimatedLength; {$IFDEF PAS2JS}external name 'rx';{$ENDIF}
+    Fry: TJSSVGAnimatedLength; {$IFDEF PAS2JS}external name 'ry';{$ENDIF}
   public
     property cx: TJSSVGAnimatedLength read Fcx;
     property cy: TJSSVGAnimatedLength read Fcy;
@@ -602,11 +597,11 @@ type
   { --------------------------------------------------------------------
     TJSSVGFEBlendElement
     --------------------------------------------------------------------}
-  TJSSVGFEBlendElement = class external name 'SVGFEBlendElement' (TJSSVGElement)
+  TJSSVGFEBlendElement = class {$IFDEF PAS2JS}external name 'SVGFEBlendElement'{$ENDIF} (TJSSVGElement)
   private
-    Fin1: TJSSVGAnimatedString; external name 'in1';
-    Fin2: TJSSVGAnimatedString; external name 'in2';
-    Fmode: TJSSVGAnimatedEnumeration; external name 'mode';
+    Fin1: TJSSVGAnimatedString; {$IFDEF PAS2JS}external name 'in1';{$ENDIF}
+    Fin2: TJSSVGAnimatedString; {$IFDEF PAS2JS}external name 'in2';{$ENDIF}
+    Fmode: TJSSVGAnimatedEnumeration; {$IFDEF PAS2JS}external name 'mode';{$ENDIF}
   public
   const
     SVG_FEBLEND_MODE_UNKNOWN = 0;
@@ -624,12 +619,11 @@ type
   { --------------------------------------------------------------------
     TJSSVGFEColorMatrixElement
     --------------------------------------------------------------------}
-  TJSSVGFEColorMatrixElement = class external name
-    'SVGFEColorMatrixElement' (TJSSVGElement)
-    private
-    Fin1: TJSSVGAnimatedString; external name 'in1';
-    Ftype_: TJSSVGAnimatedEnumeration; external name 'type';
-    Fvalues: TJSSVGAnimatedNumberList; external name 'values';
+  TJSSVGFEColorMatrixElement = class {$IFDEF PAS2JS}external name 'SVGFEColorMatrixElement'{$ENDIF} (TJSSVGElement)
+  private
+    Fin1: TJSSVGAnimatedString; {$IFDEF PAS2JS}external name 'in1';{$ENDIF}
+    Ftype_: TJSSVGAnimatedEnumeration; {$IFDEF PAS2JS}external name 'type';{$ENDIF}
+    Fvalues: TJSSVGAnimatedNumberList; {$IFDEF PAS2JS}external name 'values';{$ENDIF}
   public
   const
     SVG_FECOLORMATRIX_TYPE_UNKNOWN = 0;
@@ -646,10 +640,9 @@ type
   { --------------------------------------------------------------------
     TJSSVGFEComponentTransferElement
     --------------------------------------------------------------------}
-  TJSSVGFEComponentTransferElement = class external name
-    'SVGFEComponentTransferElement' (TJSSVGElement)
+  TJSSVGFEComponentTransferElement = class {$IFDEF PAS2JS}external name 'SVGFEComponentTransferElement'{$ENDIF} (TJSSVGElement)
     private
-    Fin1: TJSSVGAnimatedString; external name 'in1';
+    Fin1: TJSSVGAnimatedString; {$IFDEF PAS2JS}external name 'in1';{$ENDIF}
   public
     property in1: TJSSVGAnimatedString read Fin1;
   end;
@@ -657,16 +650,15 @@ type
   { --------------------------------------------------------------------
     TJSSVGFECompositeElement
     --------------------------------------------------------------------}
-  TJSSVGFECompositeElement = class external name
-    'SVGFECompositeElement' (TJSSVGElement)
-    private
-    Fin2: TJSSVGAnimatedString; external name 'in2';
-    Fin1: TJSSVGAnimatedString; external name 'in1';
-    Foperator_: TJSSVGAnimatedEnumeration; external name 'operator';
-    Fk1: TJSSVGAnimatedNumber; external name 'k1';
-    Fk2: TJSSVGAnimatedNumber; external name 'k2';
-    Fk3: TJSSVGAnimatedNumber; external name 'k3';
-    Fk4: TJSSVGAnimatedNumber; external name 'k4';
+  TJSSVGFECompositeElement = class {$IFDEF PAS2JS}external name 'SVGFECompositeElement'{$ENDIF} (TJSSVGElement)
+  private
+    Fin2: TJSSVGAnimatedString; {$IFDEF PAS2JS}external name 'in2';{$ENDIF}
+    Fin1: TJSSVGAnimatedString; {$IFDEF PAS2JS}external name 'in1';{$ENDIF}
+    Foperator_: TJSSVGAnimatedEnumeration; {$IFDEF PAS2JS}external name 'operator';{$ENDIF}
+    Fk1: TJSSVGAnimatedNumber; {$IFDEF PAS2JS}external name 'k1';{$ENDIF}
+    Fk2: TJSSVGAnimatedNumber; {$IFDEF PAS2JS}external name 'k2';{$ENDIF}
+    Fk3: TJSSVGAnimatedNumber; {$IFDEF PAS2JS}external name 'k3';{$ENDIF}
+    Fk4: TJSSVGAnimatedNumber; {$IFDEF PAS2JS}external name 'k4';{$ENDIF}
   public
   const
     SVG_FECOMPOSITE_OPERATOR_UNKNOWN = 0;
@@ -689,21 +681,20 @@ type
   { --------------------------------------------------------------------
     TJSSVGFEConvolveMatrixElement
     --------------------------------------------------------------------}
-  TJSSVGFEConvolveMatrixElement = class external name
-    'SVGFEConvolveMatrixElement' (TJSSVGElement)
-    private
-    Fin1: TJSSVGAnimatedString; external name 'in1';
-    ForderX: TJSSVGAnimatedInteger; external name 'orderX';
-    ForderY: TJSSVGAnimatedInteger; external name 'orderY';
-    FkernelMatrix: TJSSVGAnimatedNumberList; external name 'kernelMatrix';
-    Fdivisor: TJSSVGAnimatedNumber; external name 'divisor';
-    Fbias: TJSSVGAnimatedNumber; external name 'bias';
-    FtargetX: TJSSVGAnimatedInteger; external name 'targetX';
-    FtargetY: TJSSVGAnimatedInteger; external name 'targetY';
-    FedgeMode: TJSSVGAnimatedEnumeration; external name 'edgeMode';
-    FkernelUnitLengthX: TJSSVGAnimatedNumber; external name 'kernelUnitLengthX';
-    FkernelUnitLengthY: TJSSVGAnimatedNumber; external name 'kernelUnitLengthY';
-    FpreserveAlpha: TJSSVGAnimatedBoolean; external name 'preserveAlpha';
+  TJSSVGFEConvolveMatrixElement = class {$IFDEF PAS2JS}external name 'SVGFEConvolveMatrixElement'{$ENDIF} (TJSSVGElement)
+  private
+    Fin1: TJSSVGAnimatedString; {$IFDEF PAS2JS}external name 'in1';{$ENDIF}
+    ForderX: TJSSVGAnimatedInteger; {$IFDEF PAS2JS}external name 'orderX';{$ENDIF}
+    ForderY: TJSSVGAnimatedInteger; {$IFDEF PAS2JS}external name 'orderY';{$ENDIF}
+    FkernelMatrix: TJSSVGAnimatedNumberList; {$IFDEF PAS2JS}external name 'kernelMatrix';{$ENDIF}
+    Fdivisor: TJSSVGAnimatedNumber; {$IFDEF PAS2JS}external name 'divisor';{$ENDIF}
+    Fbias: TJSSVGAnimatedNumber; {$IFDEF PAS2JS}external name 'bias';{$ENDIF}
+    FtargetX: TJSSVGAnimatedInteger; {$IFDEF PAS2JS}external name 'targetX';{$ENDIF}
+    FtargetY: TJSSVGAnimatedInteger; {$IFDEF PAS2JS}external name 'targetY';{$ENDIF}
+    FedgeMode: TJSSVGAnimatedEnumeration; {$IFDEF PAS2JS}external name 'edgeMode';{$ENDIF}
+    FkernelUnitLengthX: TJSSVGAnimatedNumber; {$IFDEF PAS2JS}external name 'kernelUnitLengthX';{$ENDIF}
+    FkernelUnitLengthY: TJSSVGAnimatedNumber; {$IFDEF PAS2JS}external name 'kernelUnitLengthY';{$ENDIF}
+    FpreserveAlpha: TJSSVGAnimatedBoolean; {$IFDEF PAS2JS}external name 'preserveAlpha';{$ENDIF}
   public
   const
     SVG_EDGEMODE_UNKNOWN = 0;
@@ -728,14 +719,13 @@ type
   { --------------------------------------------------------------------
     TJSSVGFEDiffuseLightingElement
     --------------------------------------------------------------------}
-  TJSSVGFEDiffuseLightingElement = class external name
-    'SVGFEDiffuseLightingElement' (TJSSVGElement)
-    private
-    Fin1: TJSSVGAnimatedString; external name 'in1';
-    FsurfaceScale: TJSSVGAnimatedNumber; external name 'surfaceScale';
-    FdiffuseConstant: TJSSVGAnimatedNumber; external name 'diffuseConstant';
-    FkernelUnitLengthX: TJSSVGAnimatedNumber; external name 'kernelUnitLengthX';
-    FkernelUnitLengthY: TJSSVGAnimatedNumber; external name 'kernelUnitLengthY';
+  TJSSVGFEDiffuseLightingElement = class {$IFDEF PAS2JS}external name 'SVGFEDiffuseLightingElement'{$ENDIF} (TJSSVGElement)
+  private
+    Fin1: TJSSVGAnimatedString; {$IFDEF PAS2JS}external name 'in1';{$ENDIF}
+    FsurfaceScale: TJSSVGAnimatedNumber; {$IFDEF PAS2JS}external name 'surfaceScale';{$ENDIF}
+    FdiffuseConstant: TJSSVGAnimatedNumber; {$IFDEF PAS2JS}external name 'diffuseConstant';{$ENDIF}
+    FkernelUnitLengthX: TJSSVGAnimatedNumber; {$IFDEF PAS2JS}external name 'kernelUnitLengthX';{$ENDIF}
+    FkernelUnitLengthY: TJSSVGAnimatedNumber; {$IFDEF PAS2JS}external name 'kernelUnitLengthY';{$ENDIF}
   public
     property in1: TJSSVGAnimatedString read Fin1;
     property surfaceScale: TJSSVGAnimatedNumber read FsurfaceScale;
@@ -747,14 +737,13 @@ type
   { --------------------------------------------------------------------
     TJSSVGFEDisplacementMapElement
     --------------------------------------------------------------------}
-  TJSSVGFEDisplacementMapElement = class external name
-    'SVGFEDisplacementMapElement' (TJSSVGElement)
-    private
-    Fin1: TJSSVGAnimatedString; external name 'in1';
-    Fin2: TJSSVGAnimatedString; external name 'in2';
-    Fscale: TJSSVGAnimatedNumber; external name 'scale';
-    FxChannelSelector: TJSSVGAnimatedEnumeration; external name 'xChannelSelector';
-    FyChannelSelector: TJSSVGAnimatedEnumeration; external name 'yChannelSelector';
+  TJSSVGFEDisplacementMapElement = class {$IFDEF PAS2JS}external name 'SVGFEDisplacementMapElement'{$ENDIF} (TJSSVGElement)
+  private
+    Fin1: TJSSVGAnimatedString; {$IFDEF PAS2JS}external name 'in1';{$ENDIF}
+    Fin2: TJSSVGAnimatedString; {$IFDEF PAS2JS}external name 'in2';{$ENDIF}
+    Fscale: TJSSVGAnimatedNumber; {$IFDEF PAS2JS}external name 'scale';{$ENDIF}
+    FxChannelSelector: TJSSVGAnimatedEnumeration; {$IFDEF PAS2JS}external name 'xChannelSelector';{$ENDIF}
+    FyChannelSelector: TJSSVGAnimatedEnumeration; {$IFDEF PAS2JS}external name 'yChannelSelector';{$ENDIF}
   public
   const
     SVG_CHANNEL_UNKNOWN = 0;
@@ -773,11 +762,10 @@ type
   { --------------------------------------------------------------------
     TJSSVGFEDistantLightElement
     --------------------------------------------------------------------}
-  TJSSVGFEDistantLightElement = class external name
-    'SVGFEDistantLightElement' (TJSSVGElement)
-    private
-    Fazimuth: TJSSVGAnimatedNumber; external name 'azimuth';
-    Felevation: TJSSVGAnimatedNumber; external name 'elevation';
+  TJSSVGFEDistantLightElement = class {$IFDEF PAS2JS}external name 'SVGFEDistantLightElement'{$ENDIF} (TJSSVGElement)
+  private
+    Fazimuth: TJSSVGAnimatedNumber; {$IFDEF PAS2JS}external name 'azimuth';{$ENDIF}
+    Felevation: TJSSVGAnimatedNumber; {$IFDEF PAS2JS}external name 'elevation';{$ENDIF}
   public
     property azimuth: TJSSVGAnimatedNumber read Fazimuth;
     property elevation: TJSSVGAnimatedNumber read Felevation;
@@ -786,14 +774,13 @@ type
   { --------------------------------------------------------------------
     TJSSVGFEDropShadowElement
     --------------------------------------------------------------------}
-  TJSSVGFEDropShadowElement = class external name
-    'SVGFEDropShadowElement' (TJSSVGElement)
-    private
-    Fin1: TJSSVGAnimatedString; external name 'in1';
-    Fdx: TJSSVGAnimatedNumber; external name 'dx';
-    Fdy: TJSSVGAnimatedNumber; external name 'dy';
-    FstdDeviationX: TJSSVGAnimatedNumber; external name 'stdDeviationX';
-    FstdDeviationY: TJSSVGAnimatedNumber; external name 'stdDeviationY';
+  TJSSVGFEDropShadowElement = class {$IFDEF PAS2JS}external name 'SVGFEDropShadowElement'{$ENDIF} (TJSSVGElement)
+  private
+    Fin1: TJSSVGAnimatedString; {$IFDEF PAS2JS}external name 'in1';{$ENDIF}
+    Fdx: TJSSVGAnimatedNumber; {$IFDEF PAS2JS}external name 'dx';{$ENDIF}
+    Fdy: TJSSVGAnimatedNumber; {$IFDEF PAS2JS}external name 'dy';{$ENDIF}
+    FstdDeviationX: TJSSVGAnimatedNumber; {$IFDEF PAS2JS}external name 'stdDeviationX';{$ENDIF}
+    FstdDeviationY: TJSSVGAnimatedNumber; {$IFDEF PAS2JS}external name 'stdDeviationY';{$ENDIF}
   public
     procedure setStdDeviation(stdDeviationX: Double; stdDeviationY: Double);
     property in1: TJSSVGAnimatedString read Fin1;
@@ -806,7 +793,7 @@ type
   { --------------------------------------------------------------------
     TJSSVGFEFloodElement
     --------------------------------------------------------------------}
-  TJSSVGFEFloodElement = class external name 'SVGFEFloodElement' (TJSSVGElement)
+  TJSSVGFEFloodElement = class {$IFDEF PAS2JS}external name 'SVGFEFloodElement'{$ENDIF} (TJSSVGElement)
   private
   public
   end;
@@ -814,48 +801,43 @@ type
   { --------------------------------------------------------------------
     TJSSVGFEFuncAElement
     --------------------------------------------------------------------}
-  TJSSVGFEFuncAElement = class external name
-    'SVGFEFuncAElement' (TJSSVGComponentTransferFunctionElement)
-    private
+  TJSSVGFEFuncAElement = class {$IFDEF PAS2JS}external name 'SVGFEFuncAElement'{$ENDIF} (TJSSVGComponentTransferFunctionElement)
+  private
   public
   end;
 
   { --------------------------------------------------------------------
     TJSSVGFEFuncBElement
     --------------------------------------------------------------------}
-  TJSSVGFEFuncBElement = class external name
-    'SVGFEFuncBElement' (TJSSVGComponentTransferFunctionElement)
-    private
+  TJSSVGFEFuncBElement = class {$IFDEF PAS2JS}external name 'SVGFEFuncBElement'{$ENDIF} (TJSSVGComponentTransferFunctionElement)
+  private
   public
   end;
 
   { --------------------------------------------------------------------
     TJSSVGFEFuncGElement
     --------------------------------------------------------------------}
-  TJSSVGFEFuncGElement = class external name
-    'SVGFEFuncGElement' (TJSSVGComponentTransferFunctionElement)
-    private
+  TJSSVGFEFuncGElement = class {$IFDEF PAS2JS}external name 'SVGFEFuncGElement'{$ENDIF} (TJSSVGComponentTransferFunctionElement)
+  private
   public
   end;
 
   { --------------------------------------------------------------------
     TJSSVGFEFuncRElement
     --------------------------------------------------------------------}
-  TJSSVGFEFuncRElement = class external name
-    'SVGFEFuncRElement' (TJSSVGComponentTransferFunctionElement)
-    private
+  TJSSVGFEFuncRElement = class {$IFDEF PAS2JS}external name 'SVGFEFuncRElement'{$ENDIF} (TJSSVGComponentTransferFunctionElement)
+  private
   public
   end;
 
   { --------------------------------------------------------------------
     TJSSVGFEGaussianBlurElement
     --------------------------------------------------------------------}
-  TJSSVGFEGaussianBlurElement = class external name
-    'SVGFEGaussianBlurElement' (TJSSVGElement)
-    private
-    Fin1: TJSSVGAnimatedString; external name 'in1';
-    FstdDeviationX: TJSSVGAnimatedNumber; external name 'stdDeviationX';
-    FstdDeviationY: TJSSVGAnimatedNumber; external name 'stdDeviationY';
+  TJSSVGFEGaussianBlurElement = class {$IFDEF PAS2JS}external name 'SVGFEGaussianBlurElement'{$ENDIF} (TJSSVGElement)
+  private
+    Fin1: TJSSVGAnimatedString; {$IFDEF PAS2JS}external name 'in1';{$ENDIF}
+    FstdDeviationX: TJSSVGAnimatedNumber; {$IFDEF PAS2JS}external name 'stdDeviationX';{$ENDIF}
+    FstdDeviationY: TJSSVGAnimatedNumber; {$IFDEF PAS2JS}external name 'stdDeviationY';{$ENDIF}
   public
     procedure setStdDeviation(stdDeviationX: Double; stdDeviationY: Double);
     property in1: TJSSVGAnimatedString read Fin1;
@@ -866,10 +848,9 @@ type
   { --------------------------------------------------------------------
     TJSSVGFEImageElement
     --------------------------------------------------------------------}
-  TJSSVGFEImageElement = class external name 'SVGFEImageElement' (TJSSVGElement)
+  TJSSVGFEImageElement = class {$IFDEF PAS2JS}external name 'SVGFEImageElement'{$ENDIF} (TJSSVGElement)
   private
-    FpreserveAspectRatio: TJSSVGAnimatedPreserveAspectRatio; external name
-      'preserveAspectRatio';
+    FpreserveAspectRatio: TJSSVGAnimatedPreserveAspectRatio; {$IFDEF PAS2JS}external name 'preserveAspectRatio';{$ENDIF}
   public
     property preserveAspectRatio: TJSSVGAnimatedPreserveAspectRatio read
       FpreserveAspectRatio;
@@ -878,7 +859,7 @@ type
   { --------------------------------------------------------------------
     TJSSVGFEMergeElement
     --------------------------------------------------------------------}
-  TJSSVGFEMergeElement = class external name 'SVGFEMergeElement' (TJSSVGElement)
+  TJSSVGFEMergeElement = class {$IFDEF PAS2JS}external name 'SVGFEMergeElement'{$ENDIF} (TJSSVGElement)
   private
   public
   end;
@@ -886,10 +867,9 @@ type
   { --------------------------------------------------------------------
     TJSSVGFEMergeNodeElement
     --------------------------------------------------------------------}
-  TJSSVGFEMergeNodeElement = class external name
-    'SVGFEMergeNodeElement' (TJSSVGElement)
-    private
-    Fin1: TJSSVGAnimatedString; external name 'in1';
+  TJSSVGFEMergeNodeElement = class {$IFDEF PAS2JS}external name 'SVGFEMergeNodeElement'{$ENDIF} (TJSSVGElement)
+  private
+    Fin1: TJSSVGAnimatedString; {$IFDEF PAS2JS}external name 'in1';{$ENDIF}
   public
     property in1: TJSSVGAnimatedString read Fin1;
   end;
@@ -897,13 +877,12 @@ type
   { --------------------------------------------------------------------
     TJSSVGFEMorphologyElement
     --------------------------------------------------------------------}
-  TJSSVGFEMorphologyElement = class external name
-    'SVGFEMorphologyElement' (TJSSVGElement)
-    private
-    Fin1: TJSSVGAnimatedString; external name 'in1';
-    Foperator_: TJSSVGAnimatedEnumeration; external name 'operator';
-    FradiusX: TJSSVGAnimatedNumber; external name 'radiusX';
-    FradiusY: TJSSVGAnimatedNumber; external name 'radiusY';
+  TJSSVGFEMorphologyElement = class {$IFDEF PAS2JS}external name 'SVGFEMorphologyElement'{$ENDIF} (TJSSVGElement)
+  private
+    Fin1: TJSSVGAnimatedString; {$IFDEF PAS2JS}external name 'in1';{$ENDIF}
+    Foperator_: TJSSVGAnimatedEnumeration; {$IFDEF PAS2JS}external name 'operator';{$ENDIF}
+    FradiusX: TJSSVGAnimatedNumber; {$IFDEF PAS2JS}external name 'radiusX';{$ENDIF}
+    FradiusY: TJSSVGAnimatedNumber; {$IFDEF PAS2JS}external name 'radiusY';{$ENDIF}
   public
   const
     SVG_MORPHOLOGY_OPERATOR_UNKNOWN = 0;
@@ -919,11 +898,11 @@ type
   { --------------------------------------------------------------------
     TJSSVGFEOffsetElement
     --------------------------------------------------------------------}
-  TJSSVGFEOffsetElement = class external name 'SVGFEOffsetElement' (TJSSVGElement)
+  TJSSVGFEOffsetElement = class {$IFDEF PAS2JS}external name 'SVGFEOffsetElement'{$ENDIF} (TJSSVGElement)
   private
-    Fin1: TJSSVGAnimatedString; external name 'in1';
-    Fdx: TJSSVGAnimatedNumber; external name 'dx';
-    Fdy: TJSSVGAnimatedNumber; external name 'dy';
+    Fin1: TJSSVGAnimatedString; {$IFDEF PAS2JS}external name 'in1';{$ENDIF}
+    Fdx: TJSSVGAnimatedNumber; {$IFDEF PAS2JS}external name 'dx';{$ENDIF}
+    Fdy: TJSSVGAnimatedNumber; {$IFDEF PAS2JS}external name 'dy';{$ENDIF}
   public
     property in1: TJSSVGAnimatedString read Fin1;
     property dx: TJSSVGAnimatedNumber read Fdx;
@@ -933,12 +912,11 @@ type
   { --------------------------------------------------------------------
     TJSSVGFEPointLightElement
     --------------------------------------------------------------------}
-  TJSSVGFEPointLightElement = class external name
-    'SVGFEPointLightElement' (TJSSVGElement)
+  TJSSVGFEPointLightElement = class {$IFDEF PAS2JS}external name 'SVGFEPointLightElement'{$ENDIF} (TJSSVGElement)
     private
-    Fx: TJSSVGAnimatedNumber; external name 'x';
-    Fy: TJSSVGAnimatedNumber; external name 'y';
-    Fz: TJSSVGAnimatedNumber; external name 'z';
+    Fx: TJSSVGAnimatedNumber; {$IFDEF PAS2JS}external name 'x';{$ENDIF}
+    Fy: TJSSVGAnimatedNumber; {$IFDEF PAS2JS}external name 'y';{$ENDIF}
+    Fz: TJSSVGAnimatedNumber; {$IFDEF PAS2JS}external name 'z';{$ENDIF}
   public
     property x: TJSSVGAnimatedNumber read Fx;
     property y: TJSSVGAnimatedNumber read Fy;
@@ -948,15 +926,14 @@ type
   { --------------------------------------------------------------------
     TJSSVGFESpecularLightingElement
     --------------------------------------------------------------------}
-  TJSSVGFESpecularLightingElement = class external name
-    'SVGFESpecularLightingElement' (TJSSVGElement)
+  TJSSVGFESpecularLightingElement = class {$IFDEF PAS2JS}external name 'SVGFESpecularLightingElement'{$ENDIF} (TJSSVGElement)
     private
-    Fin1: TJSSVGAnimatedString; external name 'in1';
-    FsurfaceScale: TJSSVGAnimatedNumber; external name 'surfaceScale';
-    FspecularConstant: TJSSVGAnimatedNumber; external name 'specularConstant';
-    FspecularExponent: TJSSVGAnimatedNumber; external name 'specularExponent';
-    FkernelUnitLengthX: TJSSVGAnimatedNumber; external name 'kernelUnitLengthX';
-    FkernelUnitLengthY: TJSSVGAnimatedNumber; external name 'kernelUnitLengthY';
+    Fin1: TJSSVGAnimatedString; {$IFDEF PAS2JS}external name 'in1';{$ENDIF}
+    FsurfaceScale: TJSSVGAnimatedNumber; {$IFDEF PAS2JS}external name 'surfaceScale';{$ENDIF}
+    FspecularConstant: TJSSVGAnimatedNumber; {$IFDEF PAS2JS}external name 'specularConstant';{$ENDIF}
+    FspecularExponent: TJSSVGAnimatedNumber; {$IFDEF PAS2JS}external name 'specularExponent';{$ENDIF}
+    FkernelUnitLengthX: TJSSVGAnimatedNumber; {$IFDEF PAS2JS}external name 'kernelUnitLengthX';{$ENDIF}
+    FkernelUnitLengthY: TJSSVGAnimatedNumber; {$IFDEF PAS2JS}external name 'kernelUnitLengthY';{$ENDIF}
   public
     property in1: TJSSVGAnimatedString read Fin1;
     property surfaceScale: TJSSVGAnimatedNumber read FsurfaceScale;
@@ -969,17 +946,16 @@ type
   { --------------------------------------------------------------------
     TJSSVGFESpotLightElement
     --------------------------------------------------------------------}
-  TJSSVGFESpotLightElement = class external name
-    'SVGFESpotLightElement' (TJSSVGElement)
+  TJSSVGFESpotLightElement = class {$IFDEF PAS2JS}external name 'SVGFESpotLightElement'{$ENDIF} (TJSSVGElement)
     private
-    Fx: TJSSVGAnimatedNumber; external name 'x';
-    Fy: TJSSVGAnimatedNumber; external name 'y';
-    Fz: TJSSVGAnimatedNumber; external name 'z';
-    FpointsAtX: TJSSVGAnimatedNumber; external name 'pointsAtX';
-    FpointsAtY: TJSSVGAnimatedNumber; external name 'pointsAtY';
-    FpointsAtZ: TJSSVGAnimatedNumber; external name 'pointsAtZ';
-    FspecularExponent: TJSSVGAnimatedNumber; external name 'specularExponent';
-    FlimitingConeAngle: TJSSVGAnimatedNumber; external name 'limitingConeAngle';
+    Fx: TJSSVGAnimatedNumber; {$IFDEF PAS2JS}external name 'x';{$ENDIF}
+    Fy: TJSSVGAnimatedNumber; {$IFDEF PAS2JS}external name 'y';{$ENDIF}
+    Fz: TJSSVGAnimatedNumber; {$IFDEF PAS2JS}external name 'z';{$ENDIF}
+    FpointsAtX: TJSSVGAnimatedNumber; {$IFDEF PAS2JS}external name 'pointsAtX';{$ENDIF}
+    FpointsAtY: TJSSVGAnimatedNumber; {$IFDEF PAS2JS}external name 'pointsAtY';{$ENDIF}
+    FpointsAtZ: TJSSVGAnimatedNumber; {$IFDEF PAS2JS}external name 'pointsAtZ';{$ENDIF}
+    FspecularExponent: TJSSVGAnimatedNumber; {$IFDEF PAS2JS}external name 'specularExponent';{$ENDIF}
+    FlimitingConeAngle: TJSSVGAnimatedNumber; {$IFDEF PAS2JS}external name 'limitingConeAngle';{$ENDIF}
   public
     property x: TJSSVGAnimatedNumber read Fx;
     property y: TJSSVGAnimatedNumber read Fy;
@@ -994,9 +970,9 @@ type
   { --------------------------------------------------------------------
     TJSSVGFETileElement
     --------------------------------------------------------------------}
-  TJSSVGFETileElement = class external name 'SVGFETileElement' (TJSSVGElement)
+  TJSSVGFETileElement = class {$IFDEF PAS2JS}external name 'SVGFETileElement'{$ENDIF} (TJSSVGElement)
   private
-    Fin1: TJSSVGAnimatedString; external name 'in1';
+    Fin1: TJSSVGAnimatedString; {$IFDEF PAS2JS}external name 'in1';{$ENDIF}
   public
     property in1: TJSSVGAnimatedString read Fin1;
   end;
@@ -1004,15 +980,14 @@ type
   { --------------------------------------------------------------------
     TJSSVGFETurbulenceElement
     --------------------------------------------------------------------}
-  TJSSVGFETurbulenceElement = class external name
-    'SVGFETurbulenceElement' (TJSSVGElement)
+  TJSSVGFETurbulenceElement = class {$IFDEF PAS2JS}external name 'SVGFETurbulenceElement'{$ENDIF} (TJSSVGElement)
     private
-    FbaseFrequencyX: TJSSVGAnimatedNumber; external name 'baseFrequencyX';
-    FbaseFrequencyY: TJSSVGAnimatedNumber; external name 'baseFrequencyY';
-    FnumOctaves: TJSSVGAnimatedInteger; external name 'numOctaves';
-    Fseed: TJSSVGAnimatedNumber; external name 'seed';
-    FstitchTiles: TJSSVGAnimatedEnumeration; external name 'stitchTiles';
-    Ftype_: TJSSVGAnimatedEnumeration; external name 'type';
+    FbaseFrequencyX: TJSSVGAnimatedNumber; {$IFDEF PAS2JS}external name 'baseFrequencyX';{$ENDIF}
+    FbaseFrequencyY: TJSSVGAnimatedNumber; {$IFDEF PAS2JS}external name 'baseFrequencyY';{$ENDIF}
+    FnumOctaves: TJSSVGAnimatedInteger; {$IFDEF PAS2JS}external name 'numOctaves';{$ENDIF}
+    Fseed: TJSSVGAnimatedNumber; {$IFDEF PAS2JS}external name 'seed';{$ENDIF}
+    FstitchTiles: TJSSVGAnimatedEnumeration; {$IFDEF PAS2JS}external name 'stitchTiles';{$ENDIF}
+    Ftype_: TJSSVGAnimatedEnumeration; {$IFDEF PAS2JS}external name 'type';{$ENDIF}
   public
   const
     SVG_TURBULENCE_TYPE_UNKNOWN = 0;
@@ -1033,14 +1008,14 @@ type
   { --------------------------------------------------------------------
     TJSSVGFilterElement
     --------------------------------------------------------------------}
-  TJSSVGFilterElement = class external name 'SVGFilterElement' (TJSSVGElement)
+  TJSSVGFilterElement = class {$IFDEF PAS2JS}external name 'SVGFilterElement'{$ENDIF} (TJSSVGElement)
   private
-    FfilterUnits: TJSSVGAnimatedEnumeration; external name 'filterUnits';
-    FprimitiveUnits: TJSSVGAnimatedEnumeration; external name 'primitiveUnits';
-    Fx: TJSSVGAnimatedLength; external name 'x';
-    Fy: TJSSVGAnimatedLength; external name 'y';
-    Fwidth: TJSSVGAnimatedLength; external name 'width';
-    Fheight: TJSSVGAnimatedLength; external name 'height';
+    FfilterUnits: TJSSVGAnimatedEnumeration; {$IFDEF PAS2JS}external name 'filterUnits';{$ENDIF}
+    FprimitiveUnits: TJSSVGAnimatedEnumeration; {$IFDEF PAS2JS}external name 'primitiveUnits';{$ENDIF}
+    Fx: TJSSVGAnimatedLength; {$IFDEF PAS2JS}external name 'x';{$ENDIF}
+    Fy: TJSSVGAnimatedLength; {$IFDEF PAS2JS}external name 'y';{$ENDIF}
+    Fwidth: TJSSVGAnimatedLength; {$IFDEF PAS2JS}external name 'width';{$ENDIF}
+    Fheight: TJSSVGAnimatedLength; {$IFDEF PAS2JS}external name 'height';{$ENDIF}
   public
     property filterUnits: TJSSVGAnimatedEnumeration read FfilterUnits;
     property primitiveUnits: TJSSVGAnimatedEnumeration read FprimitiveUnits;
@@ -1053,14 +1028,13 @@ type
   { --------------------------------------------------------------------
     TJSSVGFilterPrimitiveStandardAttributes
     --------------------------------------------------------------------}
-  TJSSVGFilterPrimitiveStandardAttributes = class external name
-    'SVGFilterPrimitiveStandardAttributes'
+  TJSSVGFilterPrimitiveStandardAttributes = class {$IFDEF PAS2JS}external name 'SVGFilterPrimitiveStandardAttributes'{$ENDIF}
     private
-    Fx: TJSSVGAnimatedLength; external name 'x';
-    Fy: TJSSVGAnimatedLength; external name 'y';
-    Fwidth: TJSSVGAnimatedLength; external name 'width';
-    Fheight: TJSSVGAnimatedLength; external name 'height';
-    Fresult: TJSSVGAnimatedString; external name 'result';
+    Fx: TJSSVGAnimatedLength; {$IFDEF PAS2JS}external name 'x';{$ENDIF}
+    Fy: TJSSVGAnimatedLength; {$IFDEF PAS2JS}external name 'y';{$ENDIF}
+    Fwidth: TJSSVGAnimatedLength; {$IFDEF PAS2JS}external name 'width';{$ENDIF}
+    Fheight: TJSSVGAnimatedLength; {$IFDEF PAS2JS}external name 'height';{$ENDIF}
+    Fresult: TJSSVGAnimatedString; {$IFDEF PAS2JS}external name 'result';{$ENDIF}
   public
     property x: TJSSVGAnimatedLength read Fx;
     property y: TJSSVGAnimatedLength read Fy;
@@ -1072,11 +1046,10 @@ type
   { --------------------------------------------------------------------
     TJSSVGFitToViewBox
     --------------------------------------------------------------------}
-  TJSSVGFitToViewBox = class external name 'SVGFitToViewBox'
+  TJSSVGFitToViewBox = class {$IFDEF PAS2JS}external name 'SVGFitToViewBox'{$ENDIF}
   private
-    FviewBox: TJSSVGAnimatedRect; external name 'viewBox';
-    FpreserveAspectRatio: TJSSVGAnimatedPreserveAspectRatio; external name
-      'preserveAspectRatio';
+    FviewBox: TJSSVGAnimatedRect; {$IFDEF PAS2JS}external name 'viewBox';{$ENDIF}
+    FpreserveAspectRatio: TJSSVGAnimatedPreserveAspectRatio; {$IFDEF PAS2JS}external name 'preserveAspectRatio';{$ENDIF}
   public
     property viewBox: TJSSVGAnimatedRect read FviewBox;
     property preserveAspectRatio: TJSSVGAnimatedPreserveAspectRatio read
@@ -1086,13 +1059,12 @@ type
   { --------------------------------------------------------------------
     TJSSVGForeignObjectElement
     --------------------------------------------------------------------}
-  TJSSVGForeignObjectElement = class external name
-    'SVGForeignObjectElement' (TJSSVGGraphicsElement)
+  TJSSVGForeignObjectElement = class {$IFDEF PAS2JS}external name 'SVGForeignObjectElement' (TJSSVGGraphicsElement){$ENDIF}
     private
-    Fx: TJSSVGAnimatedLength; external name 'x';
-    Fy: TJSSVGAnimatedLength; external name 'y';
-    Fwidth: TJSSVGAnimatedLength; external name 'width';
-    Fheight: TJSSVGAnimatedLength; external name 'height';
+    Fx: TJSSVGAnimatedLength; {$IFDEF PAS2JS}external name 'x';{$ENDIF}
+    Fy: TJSSVGAnimatedLength; {$IFDEF PAS2JS}external name 'y';{$ENDIF}
+    Fwidth: TJSSVGAnimatedLength; {$IFDEF PAS2JS}external name 'width';{$ENDIF}
+    Fheight: TJSSVGAnimatedLength; {$IFDEF PAS2JS}external name 'height';{$ENDIF}
   public
     property x: TJSSVGAnimatedLength read Fx;
     property y: TJSSVGAnimatedLength read Fy;
@@ -1103,7 +1075,7 @@ type
   { --------------------------------------------------------------------
     TJSSVGGElement
     --------------------------------------------------------------------}
-  TJSSVGGElement = class external name 'SVGGElement' (TJSSVGGraphicsElement)
+  TJSSVGGElement = class {$IFDEF PAS2JS}external name 'SVGGElement'{$ENDIF} (TJSSVGGraphicsElement)
   private
   public
   end;
@@ -1111,12 +1083,11 @@ type
   { --------------------------------------------------------------------
     TJSSVGGradientElement
     --------------------------------------------------------------------}
-  TJSSVGGradientElement = class external name 'SVGGradientElement' (TJSSVGElement)
+  TJSSVGGradientElement = class {$IFDEF PAS2JS}external name 'SVGGradientElement'{$ENDIF} (TJSSVGElement)
   private
-    FgradientUnits: TJSSVGAnimatedEnumeration; external name 'gradientUnits';
-    FgradientTransform: TJSSVGAnimatedTransformList; external name
-      'gradientTransform';
-    FspreadMethod: TJSSVGAnimatedEnumeration; external name 'spreadMethod';
+    FgradientUnits: TJSSVGAnimatedEnumeration; {$IFDEF PAS2JS}external name 'gradientUnits';{$ENDIF}
+    FgradientTransform: TJSSVGAnimatedTransformList; {$IFDEF PAS2JS}external name 'gradientTransform';{$ENDIF}
+    FspreadMethod: TJSSVGAnimatedEnumeration; {$IFDEF PAS2JS}external name 'spreadMethod';{$ENDIF}
   public
   const
     SVG_SPREADMETHOD_UNKNOWN = 0;
@@ -1132,14 +1103,13 @@ type
   { --------------------------------------------------------------------
     TJSSVGImageElement
     --------------------------------------------------------------------}
-  TJSSVGImageElement = class external name 'SVGImageElement' (TJSSVGGraphicsElement)
+  TJSSVGImageElement = class {$IFDEF PAS2JS}external name 'SVGImageElement'{$ENDIF} (TJSSVGGraphicsElement)
   private
-    Fx: TJSSVGAnimatedLength; external name 'x';
-    Fy: TJSSVGAnimatedLength; external name 'y';
-    Fwidth: TJSSVGAnimatedLength; external name 'width';
-    Fheight: TJSSVGAnimatedLength; external name 'height';
-    FpreserveAspectRatio: TJSSVGAnimatedPreserveAspectRatio; external name
-      'preserveAspectRatio';
+    Fx: TJSSVGAnimatedLength; {$IFDEF PAS2JS}external name 'x';{$ENDIF}
+    Fy: TJSSVGAnimatedLength; {$IFDEF PAS2JS}external name 'y';{$ENDIF}
+    Fwidth: TJSSVGAnimatedLength; {$IFDEF PAS2JS}external name 'width';{$ENDIF}
+    Fheight: TJSSVGAnimatedLength; {$IFDEF PAS2JS}external name 'height';{$ENDIF}
+    FpreserveAspectRatio: TJSSVGAnimatedPreserveAspectRatio; {$IFDEF PAS2JS}external name 'preserveAspectRatio';{$ENDIF}
   public
     property x: TJSSVGAnimatedLength read Fx;
     property y: TJSSVGAnimatedLength read Fy;
@@ -1152,9 +1122,9 @@ type
   { --------------------------------------------------------------------
     TJSSVGLength
     --------------------------------------------------------------------}
-  TJSSVGLength = class external name 'SVGLength'
+  TJSSVGLength = class {$IFDEF PAS2JS}external name 'SVGLength'{$ENDIF}
   private
-    FunitType: Cardinal; external name 'unitType';
+    FunitType: Cardinal; {$IFDEF PAS2JS}external name 'unitType';{$ENDIF}
   public
   const
     SVG_LENGTHTYPE_UNKNOWN = 0;
@@ -1180,13 +1150,12 @@ type
   { --------------------------------------------------------------------
     TJSSVGLinearGradientElement
     --------------------------------------------------------------------}
-  TJSSVGLinearGradientElement = class external name
-    'SVGLinearGradientElement' (TJSSVGGradientElement)
+  TJSSVGLinearGradientElement = class {$IFDEF PAS2JS}external name 'SVGLinearGradientElement'{$ENDIF} (TJSSVGGradientElement)
     private
-    Fx1: TJSSVGAnimatedLength; external name 'x1';
-    Fy1: TJSSVGAnimatedLength; external name 'y1';
-    Fx2: TJSSVGAnimatedLength; external name 'x2';
-    Fy2: TJSSVGAnimatedLength; external name 'y2';
+    Fx1: TJSSVGAnimatedLength; {$IFDEF PAS2JS}external name 'x1';{$ENDIF}
+    Fy1: TJSSVGAnimatedLength; {$IFDEF PAS2JS}external name 'y1';{$ENDIF}
+    Fx2: TJSSVGAnimatedLength; {$IFDEF PAS2JS}external name 'x2';{$ENDIF}
+    Fy2: TJSSVGAnimatedLength; {$IFDEF PAS2JS}external name 'y2';{$ENDIF}
   public
     property x1: TJSSVGAnimatedLength read Fx1;
     property y1: TJSSVGAnimatedLength read Fy1;
@@ -1197,12 +1166,12 @@ type
   { --------------------------------------------------------------------
     TJSSVGLineElement
     --------------------------------------------------------------------}
-  TJSSVGLineElement = class external name 'SVGLineElement' (TJSSVGGeometryElement)
+  TJSSVGLineElement = class {$IFDEF PAS2JS}external name 'SVGLineElement'{$ENDIF} (TJSSVGGeometryElement)
   private
-    Fx1: TJSSVGAnimatedLength; external name 'x1';
-    Fy1: TJSSVGAnimatedLength; external name 'y1';
-    Fx2: TJSSVGAnimatedLength; external name 'x2';
-    Fy2: TJSSVGAnimatedLength; external name 'y2';
+    Fx1: TJSSVGAnimatedLength; {$IFDEF PAS2JS}external name 'x1';{$ENDIF}
+    Fy1: TJSSVGAnimatedLength; {$IFDEF PAS2JS}external name 'y1';{$ENDIF}
+    Fx2: TJSSVGAnimatedLength; {$IFDEF PAS2JS}external name 'x2';{$ENDIF}
+    Fy2: TJSSVGAnimatedLength; {$IFDEF PAS2JS}external name 'y2';{$ENDIF}
   public
     property x1: TJSSVGAnimatedLength read Fx1;
     property y1: TJSSVGAnimatedLength read Fy1;
@@ -1213,15 +1182,15 @@ type
   { --------------------------------------------------------------------
     TJSSVGMarkerElement
     --------------------------------------------------------------------}
-  TJSSVGMarkerElement = class external name 'SVGMarkerElement' (TJSSVGElement)
+  TJSSVGMarkerElement = class {$IFDEF PAS2JS}external name 'SVGMarkerElement'{$ENDIF} (TJSSVGElement)
   private
-    FrefX: TJSSVGAnimatedLength; external name 'refX';
-    FrefY: TJSSVGAnimatedLength; external name 'refY';
-    FmarkerUnits: TJSSVGAnimatedEnumeration; external name 'markerUnits';
-    FmarkerWidth: TJSSVGAnimatedLength; external name 'markerWidth';
-    FmarkerHeight: TJSSVGAnimatedLength; external name 'markerHeight';
-    ForientType: TJSSVGAnimatedEnumeration; external name 'orientType';
-    ForientAngle: TJSSVGAnimatedAngle; external name 'orientAngle';
+    FrefX: TJSSVGAnimatedLength; {$IFDEF PAS2JS}external name 'refX';{$ENDIF}
+    FrefY: TJSSVGAnimatedLength; {$IFDEF PAS2JS}external name 'refY';{$ENDIF}
+    FmarkerUnits: TJSSVGAnimatedEnumeration; {$IFDEF PAS2JS}external name 'markerUnits';{$ENDIF}
+    FmarkerWidth: TJSSVGAnimatedLength; {$IFDEF PAS2JS}external name 'markerWidth';{$ENDIF}
+    FmarkerHeight: TJSSVGAnimatedLength; {$IFDEF PAS2JS}external name 'markerHeight';{$ENDIF}
+    ForientType: TJSSVGAnimatedEnumeration; {$IFDEF PAS2JS}external name 'orientType';{$ENDIF}
+    ForientAngle: TJSSVGAnimatedAngle; {$IFDEF PAS2JS}external name 'orientAngle';{$ENDIF}
   public
   const
     SVG_MARKERUNITS_UNKNOWN = 0;
@@ -1245,14 +1214,14 @@ type
   { --------------------------------------------------------------------
     TJSSVGMaskElement
     --------------------------------------------------------------------}
-  TJSSVGMaskElement = class external name 'SVGMaskElement' (TJSSVGElement)
+  TJSSVGMaskElement = class {$IFDEF PAS2JS}external name 'SVGMaskElement'{$ENDIF} (TJSSVGElement)
   private
-    FmaskUnits: TJSSVGAnimatedEnumeration; external name 'maskUnits';
-    FmaskContentUnits: TJSSVGAnimatedEnumeration; external name 'maskContentUnits';
-    Fx: TJSSVGAnimatedLength; external name 'x';
-    Fy: TJSSVGAnimatedLength; external name 'y';
-    Fwidth: TJSSVGAnimatedLength; external name 'width';
-    Fheight: TJSSVGAnimatedLength; external name 'height';
+    FmaskUnits: TJSSVGAnimatedEnumeration; {$IFDEF PAS2JS}external name 'maskUnits';{$ENDIF}
+    FmaskContentUnits: TJSSVGAnimatedEnumeration; {$IFDEF PAS2JS}external name 'maskContentUnits';{$ENDIF}
+    Fx: TJSSVGAnimatedLength; {$IFDEF PAS2JS}external name 'x';{$ENDIF}
+    Fy: TJSSVGAnimatedLength; {$IFDEF PAS2JS}external name 'y';{$ENDIF}
+    Fwidth: TJSSVGAnimatedLength; {$IFDEF PAS2JS}external name 'width';{$ENDIF}
+    Fheight: TJSSVGAnimatedLength; {$IFDEF PAS2JS}external name 'height';{$ENDIF}
   public
     property maskUnits: TJSSVGAnimatedEnumeration read FmaskUnits;
     property maskContentUnits: TJSSVGAnimatedEnumeration read FmaskContentUnits;
@@ -1265,7 +1234,7 @@ type
   { --------------------------------------------------------------------
     TJSSVGMatrix
     --------------------------------------------------------------------}
-  TJSSVGMatrix = class external name 'SVGMatrix'
+  TJSSVGMatrix = class {$IFDEF PAS2JS}external name 'SVGMatrix'{$ENDIF}
   private
   public
     a: double;
@@ -1291,7 +1260,7 @@ type
   { --------------------------------------------------------------------
     TJSSVGMetadataElement
     --------------------------------------------------------------------}
-  TJSSVGMetadataElement = class external name 'SVGMetadataElement' (TJSSVGElement)
+  TJSSVGMetadataElement = class {$IFDEF PAS2JS}external name 'SVGMetadataElement'{$ENDIF} (TJSSVGElement)
   private
   public
   end;
@@ -1299,7 +1268,7 @@ type
   { --------------------------------------------------------------------
     TJSSVGMPathElement
     --------------------------------------------------------------------}
-  TJSSVGMPathElement = class external name 'SVGMPathElement' (TJSSVGElement)
+  TJSSVGMPathElement = class {$IFDEF PAS2JS}external name 'SVGMPathElement'{$ENDIF} (TJSSVGElement)
   private
   public
   end;
@@ -1307,7 +1276,7 @@ type
   { --------------------------------------------------------------------
     TJSSVGNumber
     --------------------------------------------------------------------}
-  TJSSVGNumber = class external name 'SVGNumber'
+  TJSSVGNumber = class {$IFDEF PAS2JS}external name 'SVGNumber'{$ENDIF}
   private
   public
     value: Double;
@@ -1316,7 +1285,7 @@ type
   { --------------------------------------------------------------------
     TJSSVGPathElement
     --------------------------------------------------------------------}
-  TJSSVGPathElement = class external name 'SVGPathElement' (TJSSVGGeometryElement)
+  TJSSVGPathElement = class {$IFDEF PAS2JS}external name 'SVGPathElement'{$ENDIF} (TJSSVGGeometryElement)
   private
   public
     function getPathSegAtLength(distance: Double): NativeInt;
@@ -1325,17 +1294,15 @@ type
   { --------------------------------------------------------------------
     TJSSVGPatternElement
     --------------------------------------------------------------------}
-  TJSSVGPatternElement = class external name 'SVGPatternElement' (TJSSVGElement)
+  TJSSVGPatternElement = class {$IFDEF PAS2JS}external name 'SVGPatternElement'{$ENDIF} (TJSSVGElement)
   private
-    FpatternUnits: TJSSVGAnimatedEnumeration; external name 'patternUnits';
-    FpatternContentUnits: TJSSVGAnimatedEnumeration; external name
-      'patternContentUnits';
-    FpatternTransform: TJSSVGAnimatedTransformList; external name
-      'patternTransform';
-    Fx: TJSSVGAnimatedLength; external name 'x';
-    Fy: TJSSVGAnimatedLength; external name 'y';
-    Fwidth: TJSSVGAnimatedLength; external name 'width';
-    Fheight: TJSSVGAnimatedLength; external name 'height';
+    FpatternUnits: TJSSVGAnimatedEnumeration; {$IFDEF PAS2JS}external name 'patternUnits';{$ENDIF}
+    FpatternContentUnits: TJSSVGAnimatedEnumeration; {$IFDEF PAS2JS}external name 'patternContentUnits';{$ENDIF}
+    FpatternTransform: TJSSVGAnimatedTransformList; {$IFDEF PAS2JS}external name 'patternTransform';{$ENDIF}
+    Fx: TJSSVGAnimatedLength; {$IFDEF PAS2JS}external name 'x';{$ENDIF}
+    Fy: TJSSVGAnimatedLength; {$IFDEF PAS2JS}external name 'y';{$ENDIF}
+    Fwidth: TJSSVGAnimatedLength; {$IFDEF PAS2JS}external name 'width';{$ENDIF}
+    Fheight: TJSSVGAnimatedLength; {$IFDEF PAS2JS}external name 'height';{$ENDIF}
   public
     property patternUnits: TJSSVGAnimatedEnumeration read FpatternUnits;
     property patternContentUnits: TJSSVGAnimatedEnumeration read
@@ -1350,7 +1317,7 @@ type
   { --------------------------------------------------------------------
     TJSSVGPoint
     --------------------------------------------------------------------}
-  TJSSVGPoint = class external name 'SVGPoint'
+  TJSSVGPoint = class {$IFDEF PAS2JS}external name 'SVGPoint'{$ENDIF}
   private
   public
     x: Double;
@@ -1361,7 +1328,7 @@ type
   { --------------------------------------------------------------------
     TJSSVGPointList
     --------------------------------------------------------------------}
-  TJSSVGPointList = class external name 'SVGPointList'
+  TJSSVGPointList = class {$IFDEF PAS2JS}external name 'SVGPointList'{$ENDIF}
   public
     numberOfItems: Integer;
     procedure clear;
@@ -1376,11 +1343,10 @@ type
   { --------------------------------------------------------------------
     TJSSVGPolygonElement
     --------------------------------------------------------------------}
-  TJSSVGPolygonElement = class external name
-    'SVGPolygonElement' (TJSSVGGeometryElement)
+  TJSSVGPolygonElement = class {$IFDEF PAS2JS}external name 'SVGPolygonElement'{$ENDIF} (TJSSVGGeometryElement)
     private
-    Fpoints: TJSSVGPointList; external name 'points';
-    FanimatedPoints: TJSSVGPointList; external name 'animatedPoints';
+    Fpoints: TJSSVGPointList; {$IFDEF PAS2JS}external name 'points';{$ENDIF}
+    FanimatedPoints: TJSSVGPointList; {$IFDEF PAS2JS}external name 'animatedPoints';{$ENDIF}
   public
     property points: TJSSVGPointList read Fpoints;
     property animatedPoints: TJSSVGPointList read FanimatedPoints;
@@ -1389,11 +1355,10 @@ type
   { --------------------------------------------------------------------
     TJSSVGPolylineElement
     --------------------------------------------------------------------}
-  TJSSVGPolylineElement = class external name
-    'SVGPolylineElement' (TJSSVGGeometryElement)
+  TJSSVGPolylineElement = class {$IFDEF PAS2JS}external name 'SVGPolylineElement'{$ENDIF} (TJSSVGGeometryElement)
     private
-    Fpoints: TJSSVGPointList; external name 'points';
-    FanimatedPoints: TJSSVGPointList; external name 'animatedPoints';
+    Fpoints: TJSSVGPointList; {$IFDEF PAS2JS}external name 'points';{$ENDIF}
+    FanimatedPoints: TJSSVGPointList; {$IFDEF PAS2JS}external name 'animatedPoints';{$ENDIF}
   public
     property points: TJSSVGPointList read Fpoints;
     property animatedPoints: TJSSVGPointList read FanimatedPoints;
@@ -1402,7 +1367,7 @@ type
   { --------------------------------------------------------------------
     TJSSVGPreserveAspectRatio
     --------------------------------------------------------------------}
-  TJSSVGPreserveAspectRatio = class external name 'SVGPreserveAspectRatio'
+  TJSSVGPreserveAspectRatio = class {$IFDEF PAS2JS}external name 'SVGPreserveAspectRatio'{$ENDIF}
   private
   public
   const
@@ -1428,15 +1393,14 @@ type
   { --------------------------------------------------------------------
     TJSSVGRadialGradientElement
     --------------------------------------------------------------------}
-  TJSSVGRadialGradientElement = class external name
-    'SVGRadialGradientElement' (TJSSVGGradientElement)
+  TJSSVGRadialGradientElement = class {$IFDEF PAS2JS}external name 'SVGRadialGradientElement'{$ENDIF} (TJSSVGGradientElement)
     private
-    Fcx: TJSSVGAnimatedLength; external name 'cx';
-    Fcy: TJSSVGAnimatedLength; external name 'cy';
-    rFr: TJSSVGAnimatedLength; external name 'r';
-    Ffx: TJSSVGAnimatedLength; external name 'fx';
-    Ffy: TJSSVGAnimatedLength; external name 'fy';
-    Ffr: TJSSVGAnimatedLength; external name 'fr';
+    Fcx: TJSSVGAnimatedLength; {$IFDEF PAS2JS}external name 'cx';{$ENDIF}
+    Fcy: TJSSVGAnimatedLength; {$IFDEF PAS2JS}external name 'cy';{$ENDIF}
+    rFr: TJSSVGAnimatedLength; {$IFDEF PAS2JS}external name 'r';{$ENDIF}
+    Ffx: TJSSVGAnimatedLength; {$IFDEF PAS2JS}external name 'fx';{$ENDIF}
+    Ffy: TJSSVGAnimatedLength; {$IFDEF PAS2JS}external name 'fy';{$ENDIF}
+    Ffr: TJSSVGAnimatedLength; {$IFDEF PAS2JS}external name 'fr';{$ENDIF}
   public
     property cx: TJSSVGAnimatedLength read Fcx;
     property cy: TJSSVGAnimatedLength read Fcy;
@@ -1449,7 +1413,7 @@ type
   { --------------------------------------------------------------------
     TJSSVGRect
     --------------------------------------------------------------------}
-  TJSSVGRect = class external name 'SVGRect'
+  TJSSVGRect = class {$IFDEF PAS2JS}external name 'SVGRect'{$ENDIF}
   private
   public
     x: Double;
@@ -1461,14 +1425,14 @@ type
   { --------------------------------------------------------------------
     TJSSVGRectElement
     --------------------------------------------------------------------}
-  TJSSVGRectElement = class external name 'SVGRectElement' (TJSSVGGeometryElement)
+  TJSSVGRectElement = class {$IFDEF PAS2JS}external name 'SVGRectElement'{$ENDIF} (TJSSVGGeometryElement)
   private
-    Fx: TJSSVGAnimatedLength; external name 'x';
-    Fy: TJSSVGAnimatedLength; external name 'y';
-    Fwidth: TJSSVGAnimatedLength; external name 'width';
-    Fheight: TJSSVGAnimatedLength; external name 'height';
-    Frx: TJSSVGAnimatedLength; external name 'rx';
-    Fry: TJSSVGAnimatedLength; external name 'ry';
+    Fx: TJSSVGAnimatedLength; {$IFDEF PAS2JS}external name 'x';{$ENDIF}
+    Fy: TJSSVGAnimatedLength; {$IFDEF PAS2JS}external name 'y';{$ENDIF}
+    Fwidth: TJSSVGAnimatedLength; {$IFDEF PAS2JS}external name 'width';{$ENDIF}
+    Fheight: TJSSVGAnimatedLength; {$IFDEF PAS2JS}external name 'height';{$ENDIF}
+    Frx: TJSSVGAnimatedLength; {$IFDEF PAS2JS}external name 'rx';{$ENDIF}
+    Fry: TJSSVGAnimatedLength; {$IFDEF PAS2JS}external name 'ry';{$ENDIF}
   public
     property x: TJSSVGAnimatedLength read Fx;
     property y: TJSSVGAnimatedLength read Fy;
@@ -1481,16 +1445,16 @@ type
   { --------------------------------------------------------------------
     TJSSVGScriptElement
     --------------------------------------------------------------------}
-  TJSSVGScriptElement = class external name 'SVGScriptElement' (TJSSVGElement)
+  TJSSVGScriptElement = class {$IFDEF PAS2JS}external name 'SVGScriptElement'{$ENDIF} (TJSSVGElement)
   private
   public
-    type_: string; external name 'type';
+    type_: string; {$IFDEF PAS2JS}external name 'type';{$ENDIF}
   end;
 
   { --------------------------------------------------------------------
     TJSSVGSetElement
     --------------------------------------------------------------------}
-  TJSSVGSetElement = class external name 'SVGSetElement' (TJSSVGAnimationElement)
+  TJSSVGSetElement = class {$IFDEF PAS2JS}external name 'SVGSetElement'{$ENDIF} (TJSSVGAnimationElement)
   private
   public
   end;
@@ -1498,9 +1462,9 @@ type
   { --------------------------------------------------------------------
     TJSSVGStopElement
     --------------------------------------------------------------------}
-  TJSSVGStopElement = class external name 'SVGStopElement' (TJSSVGElement)
+  TJSSVGStopElement = class {$IFDEF PAS2JS}external name 'SVGStopElement'{$ENDIF} (TJSSVGElement)
   private
-    Foffset: TJSSVGAnimatedNumber; external name 'offset';
+    Foffset: TJSSVGAnimatedNumber; {$IFDEF PAS2JS}external name 'offset';{$ENDIF}
   public
     property offset: TJSSVGAnimatedNumber read Foffset;
   end;
@@ -1508,11 +1472,11 @@ type
   { --------------------------------------------------------------------
     TJSSVGStyleElement
     --------------------------------------------------------------------}
-  TJSSVGStyleElement = class external name 'SVGStyleElement' (TJSSVGElement)
+  TJSSVGStyleElement = class {$IFDEF PAS2JS}external name 'SVGStyleElement'{$ENDIF} (TJSSVGElement)
   private
-    Fsheet: TJSStyleSheet; external name 'sheet';
+    Fsheet: TJSStyleSheet; {$IFDEF PAS2JS}external name 'sheet';{$ENDIF}
   public
-    type_: string; external name 'type';
+    type_: string; {$IFDEF PAS2JS}external name 'type';{$ENDIF}
     media: string;
     title: string;
     disabled: boolean;
@@ -1522,8 +1486,7 @@ type
   { --------------------------------------------------------------------
     TJSSVGSwitchElement
     --------------------------------------------------------------------}
-  TJSSVGSwitchElement = class external name
-    'SVGSwitchElement' (TJSSVGGraphicsElement)
+  TJSSVGSwitchElement = class {$IFDEF PAS2JS}external name 'SVGSwitchElement'{$ENDIF} (TJSSVGGraphicsElement)
     private
   public
   end;
@@ -1531,7 +1494,7 @@ type
   { --------------------------------------------------------------------
     TJSSVGSymbolElement
     --------------------------------------------------------------------}
-  TJSSVGSymbolElement = class external name 'SVGSymbolElement' (TJSSVGElement)
+  TJSSVGSymbolElement = class {$IFDEF PAS2JS}external name 'SVGSymbolElement'{$ENDIF} (TJSSVGElement)
   private
   public
   end;
@@ -1539,7 +1502,7 @@ type
   { --------------------------------------------------------------------
     TJSSVGStringList
     --------------------------------------------------------------------}
-  TJSSVGStringList = class external name 'SVGStringList'
+  TJSSVGStringList = class {$IFDEF PAS2JS}external name 'SVGStringList'{$ENDIF}
   public
     numberOfItems: Integer;
     procedure clear;
@@ -1554,10 +1517,10 @@ type
   { --------------------------------------------------------------------
     TJSSVGTests
     --------------------------------------------------------------------}
-  TJSSVGTests = class external name 'SVGTests'
+  TJSSVGTests = class {$IFDEF PAS2JS}external name 'SVGTests'{$ENDIF}
   private
-    FrequiredExtensions: TJSSVGStringList; external name 'requiredExtensions';
-    FsystemLanguage: TJSSVGStringList; external name 'systemLanguage';
+    FrequiredExtensions: TJSSVGStringList; {$IFDEF PAS2JS}external name 'requiredExtensions';{$ENDIF}
+    FsystemLanguage: TJSSVGStringList; {$IFDEF PAS2JS}external name 'systemLanguage';{$ENDIF}
   public
     property requiredExtensions: TJSSVGStringList read FrequiredExtensions;
     property systemLanguage: TJSSVGStringList read FsystemLanguage;
@@ -1566,11 +1529,10 @@ type
   { --------------------------------------------------------------------
     TJSSVGTextContentElement
     --------------------------------------------------------------------}
-  TJSSVGTextContentElement = class external name
-    'SVGTextContentElement' (TJSSVGGraphicsElement)
+  TJSSVGTextContentElement = class {$IFDEF PAS2JS}external name 'SVGTextContentElement'{$ENDIF} (TJSSVGGraphicsElement)
     private
-    FtextLength: TJSSVGAnimatedLength; external name 'textLength';
-    FlengthAdjust: TJSSVGAnimatedEnumeration; external name 'lengthAdjust';
+    FtextLength: TJSSVGAnimatedLength; {$IFDEF PAS2JS}external name 'textLength';{$ENDIF}
+    FlengthAdjust: TJSSVGAnimatedEnumeration; {$IFDEF PAS2JS}external name 'lengthAdjust';{$ENDIF}
   public
   const
     LENGTHADJUST_UNKNOWN = 0;
@@ -1593,14 +1555,13 @@ type
   { --------------------------------------------------------------------
     TJSSVGTextPositioningElement
     --------------------------------------------------------------------}
-  TJSSVGTextPositioningElement = class external name
-    'SVGTextPositioningElement' (TJSSVGTextContentElement)
+  TJSSVGTextPositioningElement = class {$IFDEF PAS2JS}external name 'SVGTextPositioningElement'{$ENDIF} (TJSSVGTextContentElement)
     private
-    Fx: TJSSVGAnimatedLengthList; external name 'x';
-    Fy: TJSSVGAnimatedLengthList; external name 'y';
-    Fdx: TJSSVGAnimatedLengthList; external name 'dx';
-    Fdy: TJSSVGAnimatedLengthList; external name 'dy';
-    Frotate: TJSSVGAnimatedNumberList; external name 'rotate';
+    Fx: TJSSVGAnimatedLengthList; {$IFDEF PAS2JS}external name 'x';{$ENDIF}
+    Fy: TJSSVGAnimatedLengthList; {$IFDEF PAS2JS}external name 'y';{$ENDIF}
+    Fdx: TJSSVGAnimatedLengthList; {$IFDEF PAS2JS}external name 'dx';{$ENDIF}
+    Fdy: TJSSVGAnimatedLengthList; {$IFDEF PAS2JS}external name 'dy';{$ENDIF}
+    Frotate: TJSSVGAnimatedNumberList; {$IFDEF PAS2JS}external name 'rotate';{$ENDIF}
   public
     property x: TJSSVGAnimatedLengthList read Fx;
     property y: TJSSVGAnimatedLengthList read Fy;
@@ -1612,7 +1573,7 @@ type
   { --------------------------------------------------------------------
     TJSSVGTextElement
     --------------------------------------------------------------------}
-  TJSSVGTextElement = class external name 'SVGTextElement' (TJSSVGTextPositioningElement)
+  TJSSVGTextElement = class {$IFDEF PAS2JS}external name 'SVGTextElement'{$ENDIF} (TJSSVGTextPositioningElement)
     private
   public
   end;
@@ -1620,12 +1581,11 @@ type
   { --------------------------------------------------------------------
     TJSSVGTextPathElement
     --------------------------------------------------------------------}
-  TJSSVGTextPathElement = class external name
-    'SVGTextPathElement' (TJSSVGTextContentElement)
+  TJSSVGTextPathElement = class {$IFDEF PAS2JS}external name 'SVGTextPathElement'{$ENDIF} (TJSSVGTextContentElement)
     private
-    FstartOffset: TJSSVGAnimatedLength; external name 'startOffset';
-    Fmethod: TJSSVGAnimatedEnumeration; external name 'method';
-    Fspacing: TJSSVGAnimatedEnumeration; external name 'spacing';
+    FstartOffset: TJSSVGAnimatedLength; {$IFDEF PAS2JS}external name 'startOffset';{$ENDIF}
+    Fmethod: TJSSVGAnimatedEnumeration; {$IFDEF PAS2JS}external name 'method';{$ENDIF}
+    Fspacing: TJSSVGAnimatedEnumeration; {$IFDEF PAS2JS}external name 'spacing';{$ENDIF}
   public
   const
     TEXTPATH_METHODTYPE_UNKNOWN = 0;
@@ -1643,7 +1603,7 @@ type
   { --------------------------------------------------------------------
     TJSSVGTitleElement
     --------------------------------------------------------------------}
-  TJSSVGTitleElement = class external name 'SVGTitleElement' (TJSSVGElement)
+  TJSSVGTitleElement = class {$IFDEF PAS2JS}external name 'SVGTitleElement'{$ENDIF} (TJSSVGElement)
   private
   public
   end;
@@ -1651,11 +1611,11 @@ type
   { --------------------------------------------------------------------
     TJSSVGTransform
     --------------------------------------------------------------------}
-  TJSSVGTransform = class external name 'SVGTransform'
+  TJSSVGTransform = class {$IFDEF PAS2JS}external name 'SVGTransform'{$ENDIF}
   private
-    Ftype_: Cardinal; external name 'type';
-    Fmatrix: TJSSVGMatrix; external name 'matrix';
-    Fangle: Double; external name 'angle';
+    Ftype_: Cardinal; {$IFDEF PAS2JS}external name 'type';{$ENDIF}
+    Fmatrix: TJSSVGMatrix; {$IFDEF PAS2JS}external name 'matrix';{$ENDIF}
+    Fangle: Double; {$IFDEF PAS2JS}external name 'angle';{$ENDIF}
   public
   const
     SVG_TRANSFORM_UNKNOWN = 0;
@@ -1680,8 +1640,7 @@ type
   { --------------------------------------------------------------------
     TJSSVGTSpanElement
     --------------------------------------------------------------------}
-  TJSSVGTSpanElement = class external name
-    'SVGTSpanElement' (TJSSVGTextPositioningElement)
+  TJSSVGTSpanElement = class {$IFDEF PAS2JS}external name 'SVGTSpanElement'{$ENDIF} (TJSSVGTextPositioningElement)
     private
   public
   end;
@@ -1689,7 +1648,7 @@ type
   { --------------------------------------------------------------------
     TJSSVGUnitTypes
     --------------------------------------------------------------------}
-  TJSSVGUnitTypes = class external name 'SVGUnitTypes'
+  TJSSVGUnitTypes = class {$IFDEF PAS2JS}external name 'SVGUnitTypes'{$ENDIF}
   private
   public
     const
@@ -1702,9 +1661,9 @@ type
   { --------------------------------------------------------------------
     TJSSVGURIReference
     --------------------------------------------------------------------}
-  TJSSVGURIReference = class external name 'SVGURIReference'
+  TJSSVGURIReference = class {$IFDEF PAS2JS}external name 'SVGURIReference'{$ENDIF}
   private
-    Fhref: TJSSVGAnimatedString; external name 'href';
+    Fhref: TJSSVGAnimatedString; {$IFDEF PAS2JS}external name 'href';{$ENDIF}
   public
     property href: TJSSVGAnimatedString read Fhref;
   end;
@@ -1712,12 +1671,12 @@ type
   { --------------------------------------------------------------------
     TJSSVGUseElement
     --------------------------------------------------------------------}
-  TJSSVGUseElement = class external name 'SVGUseElement' (TJSSVGGraphicsElement)
+  TJSSVGUseElement = class {$IFDEF PAS2JS}external name 'SVGUseElement'{$ENDIF} (TJSSVGGraphicsElement)
   private
-    Fx: TJSSVGAnimatedLength; external name 'x';
-    Fy: TJSSVGAnimatedLength; external name 'y';
-    Fwidth: TJSSVGAnimatedLength; external name 'width';
-    Fheight: TJSSVGAnimatedLength; external name 'height';
+    Fx: TJSSVGAnimatedLength; {$IFDEF PAS2JS}external name 'x';{$ENDIF}
+    Fy: TJSSVGAnimatedLength; {$IFDEF PAS2JS}external name 'y';{$ENDIF}
+    Fwidth: TJSSVGAnimatedLength; {$IFDEF PAS2JS}external name 'width';{$ENDIF}
+    Fheight: TJSSVGAnimatedLength; {$IFDEF PAS2JS}external name 'height';{$ENDIF}
   public
     property x: TJSSVGAnimatedLength read Fx;
     property y: TJSSVGAnimatedLength read Fy;
@@ -1728,7 +1687,7 @@ type
   { --------------------------------------------------------------------
     TJSSVGViewElement
     --------------------------------------------------------------------}
-  TJSSVGViewElement = class external name 'SVGViewElement' (TJSSVGElement)
+  TJSSVGViewElement = class {$IFDEF PAS2JS}external name 'SVGViewElement'{$ENDIF} (TJSSVGElement)
   private
   public
   end;
@@ -1736,7 +1695,7 @@ type
   { --------------------------------------------------------------------
     TJSSVGZoomAndPan
     --------------------------------------------------------------------}
-  TJSSVGZoomAndPan = class external name 'SVGZoomAndPan'
+  TJSSVGZoomAndPan = class {$IFDEF PAS2JS}external name 'SVGZoomAndPan'{$ENDIF}
   private
   public
   const
@@ -1749,4 +1708,645 @@ type
 
 implementation
 
+{$IFDEF DCC}
+{ DOMStringMap }
+
+function DOMStringMap.GetItem(name: String): String;
+begin
+
+end;
+
+procedure DOMStringMap.SetItem(name, value: String);
+begin
+
+end;
+
+{ TJSSVGElement }
+
+procedure TJSSVGElement.blur;
+begin
+
+end;
+
+procedure TJSSVGElement.focus;
+begin
+
+end;
+
+{ TJSSVGGraphicsElement }
+
+function TJSSVGGraphicsElement.getBBox: TJSSVGRect;
+begin
+
+end;
+
+function TJSSVGGraphicsElement.getCTM: TJSSVGMatrix;
+begin
+
+end;
+
+function TJSSVGGraphicsElement.getScreenCTM: TJSSVGMatrix;
+begin
+
+end;
+
+{ TJSSVGSVGElement }
+
+function TJSSVGSVGElement.animationsPaused: boolean;
+begin
+
+end;
+
+function TJSSVGSVGElement.checkEnclosure(element: TJSSVGElement;
+  rect: TJSSVGRect): boolean;
+begin
+
+end;
+
+function TJSSVGSVGElement.checkIntersection(element: TJSSVGElement;
+  rect: TJSSVGRect): boolean;
+begin
+
+end;
+
+function TJSSVGSVGElement.createSVGAngle: TJSSVGAngle;
+begin
+
+end;
+
+function TJSSVGSVGElement.createSVGLength: TJSSVGLength;
+begin
+
+end;
+
+function TJSSVGSVGElement.createSVGMatrix: TJSSVGMatrix;
+begin
+
+end;
+
+function TJSSVGSVGElement.createSVGNumber: TJSSVGNumber;
+begin
+
+end;
+
+function TJSSVGSVGElement.createSVGPoint: TJSSVGPoint;
+begin
+
+end;
+
+function TJSSVGSVGElement.createSVGRect: TJSSVGRect;
+begin
+
+end;
+
+function TJSSVGSVGElement.createSVGTransform: TJSSVGTransform;
+begin
+
+end;
+
+function TJSSVGSVGElement.createSVGTransformFromMatrix(
+  matrix: TJSSVGMatrix): TJSSVGTransform;
+begin
+
+end;
+
+procedure TJSSVGSVGElement.deselectAll;
+begin
+
+end;
+
+procedure TJSSVGSVGElement.forceRedraw;
+begin
+
+end;
+
+function TJSSVGSVGElement.getCurrentTime: Double;
+begin
+
+end;
+
+function TJSSVGSVGElement.getElementById(elementId: string): TJSElement;
+begin
+
+end;
+
+function TJSSVGSVGElement.getEnclosureList(rect: TJSSVGRect;
+  referenceElement: TJSSVGElement): TJSNodeList;
+begin
+
+end;
+
+function TJSSVGSVGElement.getIntersectionList(rect: TJSSVGRect;
+  referenceElement: TJSSVGElement): TJSNodeList;
+begin
+
+end;
+
+procedure TJSSVGSVGElement.pauseAnimations;
+begin
+
+end;
+
+procedure TJSSVGSVGElement.setCurrentTime(seconds: Double);
+begin
+
+end;
+
+function TJSSVGSVGElement.suspendRedraw(
+  maxWaitMilliseconds: NativeInt): NativeInt;
+begin
+
+end;
+
+procedure TJSSVGSVGElement.unpauseAnimations;
+begin
+
+end;
+
+procedure TJSSVGSVGElement.unsuspendRedraw(suspendHandleId: NativeInt);
+begin
+
+end;
+
+procedure TJSSVGSVGElement.unsuspendRedrawAll;
+begin
+
+end;
+
+{ TJSSVGAngle }
+
+procedure TJSSVGAngle.convertToSpecifiedUnits(unitType: Cardinal);
+begin
+
+end;
+
+procedure TJSSVGAngle.newValueSpecifiedUnits(unitType: Cardinal;
+  valueInSpecifiedUnits: Double);
+begin
+
+end;
+
+{ TJSSVGLengthList }
+
+function TJSSVGLengthList.appendItem(newItem: TJSSVGLength): TJSSVGLength;
+begin
+
+end;
+
+procedure TJSSVGLengthList.clear;
+begin
+
+end;
+
+function TJSSVGLengthList.getItem(index: Integer): TJSSVGLength;
+begin
+
+end;
+
+function TJSSVGLengthList.initialize(newItem: TJSSVGLength): TJSSVGLength;
+begin
+
+end;
+
+function TJSSVGLengthList.insertItemBefore(newItem: TJSSVGLength;
+  index: Integer): TJSSVGLength;
+begin
+
+end;
+
+function TJSSVGLengthList.removeItem(index: Integer): TJSSVGLength;
+begin
+
+end;
+
+function TJSSVGLengthList.replaceItem(newItem: TJSSVGLength;
+  index: Integer): TJSSVGLength;
+begin
+
+end;
+
+{ TJSSVGNumberList }
+
+function TJSSVGNumberList.appendItem(newItem: TJSSVGNumber): TJSSVGNumber;
+begin
+
+end;
+
+procedure TJSSVGNumberList.clear;
+begin
+
+end;
+
+function TJSSVGNumberList.getItem(index: Integer): TJSSVGNumber;
+begin
+
+end;
+
+function TJSSVGNumberList.initialize(newItem: TJSSVGNumber): TJSSVGNumber;
+begin
+
+end;
+
+function TJSSVGNumberList.insertItemBefore(newItem: TJSSVGNumber;
+  index: Integer): TJSSVGNumber;
+begin
+
+end;
+
+function TJSSVGNumberList.removeItem(index: Integer): TJSSVGNumber;
+begin
+
+end;
+
+function TJSSVGNumberList.replaceItem(newItem: TJSSVGNumber;
+  index: Integer): TJSSVGNumber;
+begin
+
+end;
+
+{ TJSSVGTransformList }
+
+function TJSSVGTransformList.appendItem(
+  newItem: TJSSVGTransform): TJSSVGTransform;
+begin
+
+end;
+
+procedure TJSSVGTransformList.clear;
+begin
+
+end;
+
+function TJSSVGTransformList.consolidate: TJSSVGTransform;
+begin
+
+end;
+
+function TJSSVGTransformList.createSVGTransformFromMatrix(
+  matrix: TJSSVGMatrix): TJSSVGTransform;
+begin
+
+end;
+
+function TJSSVGTransformList.getItem(index: Integer): TJSSVGTransform;
+begin
+
+end;
+
+function TJSSVGTransformList.initialize(
+  newItem: TJSSVGTransform): TJSSVGTransform;
+begin
+
+end;
+
+function TJSSVGTransformList.insertItemBefore(newItem: TJSSVGTransform;
+  index: Integer): TJSSVGTransform;
+begin
+
+end;
+
+function TJSSVGTransformList.removeItem(index: Integer): TJSSVGTransform;
+begin
+
+end;
+
+function TJSSVGTransformList.replaceItem(newItem: TJSSVGTransform;
+  index: Integer): TJSSVGTransform;
+begin
+
+end;
+
+{ TJSSVGAnimationElement }
+
+procedure TJSSVGAnimationElement.beginElement;
+begin
+
+end;
+
+procedure TJSSVGAnimationElement.beginElementAt(offset: Double);
+begin
+
+end;
+
+procedure TJSSVGAnimationElement.endElement;
+begin
+
+end;
+
+procedure TJSSVGAnimationElement.endElementAt(offset: Double);
+begin
+
+end;
+
+function TJSSVGAnimationElement.getCurrentTime: Double;
+begin
+
+end;
+
+function TJSSVGAnimationElement.getSimpleDuration: Double;
+begin
+
+end;
+
+function TJSSVGAnimationElement.getStartTime: Double;
+begin
+
+end;
+
+{ TJSSVGGeometryElement }
+
+function TJSSVGGeometryElement.getPointAtLength(distance: Double): TJSSVGPoint;
+begin
+
+end;
+
+function TJSSVGGeometryElement.getTotalLength: Double;
+begin
+
+end;
+
+function TJSSVGGeometryElement.isPointInFill(point: TJSSVGPoint): boolean;
+begin
+
+end;
+
+function TJSSVGGeometryElement.isPointInStroke(point: TJSSVGPoint): boolean;
+begin
+
+end;
+
+{ TJSSVGFEDropShadowElement }
+
+procedure TJSSVGFEDropShadowElement.setStdDeviation(stdDeviationX,
+  stdDeviationY: Double);
+begin
+
+end;
+
+{ TJSSVGFEGaussianBlurElement }
+
+procedure TJSSVGFEGaussianBlurElement.setStdDeviation(stdDeviationX,
+  stdDeviationY: Double);
+begin
+
+end;
+
+{ TJSSVGLength }
+
+procedure TJSSVGLength.convertToSpecifiedUnits(unitType: Cardinal);
+begin
+
+end;
+
+procedure TJSSVGLength.newValueSpecifiedUnits(unitType: Cardinal;
+  valueInSpecifiedUnits: Double);
+begin
+
+end;
+
+{ TJSSVGMarkerElement }
+
+procedure TJSSVGMarkerElement.setOrientToAngle(angle: TJSSVGAngle);
+begin
+
+end;
+
+procedure TJSSVGMarkerElement.setOrientToAuto;
+begin
+
+end;
+
+{ TJSSVGMatrix }
+
+function TJSSVGMatrix.flipX: TJSSVGMatrix;
+begin
+
+end;
+
+function TJSSVGMatrix.flipY: TJSSVGMatrix;
+begin
+
+end;
+
+function TJSSVGMatrix.inverse: TJSSVGMatrix;
+begin
+
+end;
+
+function TJSSVGMatrix.multiply(secondMatrix: TJSSVGMatrix): TJSSVGMatrix;
+begin
+
+end;
+
+function TJSSVGMatrix.rotate(angle: Double): TJSSVGMatrix;
+begin
+
+end;
+
+function TJSSVGMatrix.rotateFromVector(x, y: Double): TJSSVGMatrix;
+begin
+
+end;
+
+function TJSSVGMatrix.scale(scaleFactor: Double): TJSSVGMatrix;
+begin
+
+end;
+
+function TJSSVGMatrix.scaleNonUniform(scaleFactorX,
+  scaleFactorY: Double): TJSSVGMatrix;
+begin
+
+end;
+
+function TJSSVGMatrix.skewX(angle: Double): TJSSVGMatrix;
+begin
+
+end;
+
+function TJSSVGMatrix.skewY(angle: Double): TJSSVGMatrix;
+begin
+
+end;
+
+function TJSSVGMatrix.translate(x, y: Double): TJSSVGMatrix;
+begin
+
+end;
+
+{ TJSSVGPathElement }
+
+function TJSSVGPathElement.getPathSegAtLength(distance: Double): NativeInt;
+begin
+
+end;
+
+{ TJSSVGPoint }
+
+function TJSSVGPoint.matrixTransform(matrix: TJSSVGMatrix): TJSSVGPoint;
+begin
+
+end;
+
+{ TJSSVGPointList }
+
+function TJSSVGPointList.appendItem(newItem: TJSSVGPoint): TJSSVGPoint;
+begin
+
+end;
+
+procedure TJSSVGPointList.clear;
+begin
+
+end;
+
+function TJSSVGPointList.getItem(index: Integer): TJSSVGPoint;
+begin
+
+end;
+
+function TJSSVGPointList.initialize(newItem: TJSSVGPoint): TJSSVGPoint;
+begin
+
+end;
+
+function TJSSVGPointList.insertItemBefore(newItem: TJSSVGPoint;
+  index: Integer): TJSSVGPoint;
+begin
+
+end;
+
+function TJSSVGPointList.removeItem(index: Integer): TJSSVGPoint;
+begin
+
+end;
+
+function TJSSVGPointList.replaceItem(newItem: TJSSVGPoint;
+  index: Integer): TJSSVGPoint;
+begin
+
+end;
+
+{ TJSSVGStringList }
+
+function TJSSVGStringList.appendItem(newItem: String): String;
+begin
+
+end;
+
+procedure TJSSVGStringList.clear;
+begin
+
+end;
+
+function TJSSVGStringList.getItem(index: Integer): String;
+begin
+
+end;
+
+function TJSSVGStringList.initialize(newItem: String): String;
+begin
+
+end;
+
+function TJSSVGStringList.insertItemBefore(newItem: String;
+  index: Integer): String;
+begin
+
+end;
+
+function TJSSVGStringList.removeItem(index: Integer): String;
+begin
+
+end;
+
+function TJSSVGStringList.replaceItem(newItem: String; index: Integer): String;
+begin
+
+end;
+
+{ TJSSVGTextContentElement }
+
+function TJSSVGTextContentElement.getCharNumAtPosition(
+  point: TJSSVGPoint): Integer;
+begin
+
+end;
+
+function TJSSVGTextContentElement.getComputedTextLength: Double;
+begin
+
+end;
+
+function TJSSVGTextContentElement.getEndPositionOfChar(
+  charnum: NativeInt): TJSSVGPoint;
+begin
+
+end;
+
+function TJSSVGTextContentElement.getExtentOfChar(
+  charnum: NativeInt): TJSSVGRect;
+begin
+
+end;
+
+function TJSSVGTextContentElement.getNumberOfChars: Integer;
+begin
+
+end;
+
+function TJSSVGTextContentElement.getRotationOfChar(charnum: NativeInt): Double;
+begin
+
+end;
+
+function TJSSVGTextContentElement.getStartPositionOfChar(
+  charnum: NativeInt): TJSSVGPoint;
+begin
+
+end;
+
+function TJSSVGTextContentElement.getSubStringLength(charnum,
+  nchars: NativeInt): Double;
+begin
+
+end;
+
+procedure TJSSVGTextContentElement.selectSubString(charnum, nchars: NativeInt);
+begin
+
+end;
+
+{ TJSSVGTransform }
+
+procedure TJSSVGTransform.setMatrix(matrix: TJSSVGMatrix);
+begin
+
+end;
+
+procedure TJSSVGTransform.setRotate(angle, cx, cy: Double);
+begin
+
+end;
+
+procedure TJSSVGTransform.setScale(sx, sy: Double);
+begin
+
+end;
+
+procedure TJSSVGTransform.setSkewX(angle: Double);
+begin
+
+end;
+
+procedure TJSSVGTransform.setSkewY(angle: Double);
+begin
+
+end;
+
+procedure TJSSVGTransform.setTranslate(tx, ty: Double);
+begin
+
+end;
+{$ENDIF}
 end.

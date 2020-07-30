@@ -1,11 +1,13 @@
 Unit webgl;
 
 {$H+}
+{$IFDEF PAS2JS}
 {$modeswitch externalclass}
+{$ENDIF}
 
 interface
 
-uses JS, Web;
+uses JS, Web {$IFDEF DCC}, types{$ENDIF};
 
 {
   Automatically generated file by TWebIDLToPas on 2018-06-23 15:31:57
@@ -114,17 +116,17 @@ Type
     TJSWebGLObject
     --------------------------------------------------------------------}
   
-  TJSWebGLObject = class external name 'WebGLObject' 
+  TJSWebGLObject = class {$IFDEF PAS2JS}external name 'WebGLObject'{$ENDIF}
   Private
   Public
     
   end;
-  
+
   { --------------------------------------------------------------------
     TJSWebGLBuffer
     --------------------------------------------------------------------}
   
-  TJSWebGLBuffer = class external name 'WebGLBuffer'  (TJSWebGLObject)
+  TJSWebGLBuffer = class {$IFDEF PAS2JS}external name 'WebGLBuffer'{$ENDIF}  (TJSWebGLObject)
   Private
   Public
   end;
@@ -133,7 +135,7 @@ Type
     TJSWebGLFramebuffer
     --------------------------------------------------------------------}
   
-  TJSWebGLFramebuffer = class external name 'WebGLFramebuffer'  (TJSWebGLObject)
+  TJSWebGLFramebuffer = class {$IFDEF PAS2JS}external name 'WebGLFramebuffer'{$ENDIF}  (TJSWebGLObject)
   Private
   Public
   end;
@@ -142,7 +144,7 @@ Type
     TJSWebGLProgram
     --------------------------------------------------------------------}
   
-  TJSWebGLProgram = class external name 'WebGLProgram'  (TJSWebGLObject)
+  TJSWebGLProgram = class {$IFDEF PAS2JS}external name 'WebGLProgram'{$ENDIF}  (TJSWebGLObject)
   Private
   Public
   end;
@@ -151,7 +153,7 @@ Type
     TJSWebGLRenderbuffer
     --------------------------------------------------------------------}
   
-  TJSWebGLRenderbuffer = class external name 'WebGLRenderbuffer'  (TJSWebGLObject)
+  TJSWebGLRenderbuffer = class {$IFDEF PAS2JS}external name 'WebGLRenderbuffer'{$ENDIF}  (TJSWebGLObject)
   Private
   Public
   end;
@@ -160,16 +162,16 @@ Type
     TJSWebGLShader
     --------------------------------------------------------------------}
   
-  TJSWebGLShader = class external name 'WebGLShader'  (TJSWebGLObject)
+  TJSWebGLShader = class {$IFDEF PAS2JS}external name 'WebGLShader'{$ENDIF}  (TJSWebGLObject)
   Private
   Public
   end;
-  
+
   { --------------------------------------------------------------------
     TJSWebGLTexture
     --------------------------------------------------------------------}
   
-  TJSWebGLTexture = class external name 'WebGLTexture'  (TJSWebGLObject)
+  TJSWebGLTexture = class {$IFDEF PAS2JS}external name 'WebGLTexture'{$ENDIF}  (TJSWebGLObject)
   Private
   Public
   end;
@@ -178,7 +180,7 @@ Type
     TJSWebGLUniformLocation
     --------------------------------------------------------------------}
   
-  TJSWebGLUniformLocation = class external name 'WebGLUniformLocation' 
+  TJSWebGLUniformLocation = class {$IFDEF PAS2JS}external name 'WebGLUniformLocation'{$ENDIF}
   Private
   Public
   end;
@@ -187,11 +189,11 @@ Type
     TJSWebGLActiveInfo
     --------------------------------------------------------------------}
   
-  TJSWebGLActiveInfo = class external name 'WebGLActiveInfo' 
+  TJSWebGLActiveInfo = class {$IFDEF PAS2JS}external name 'WebGLActiveInfo'{$ENDIF}
   Private
-    Fsize : GLint; external name 'size'; 
-    Ftype_ : GLenum; external name 'type'; 
-    Fname : String; external name 'name'; 
+    Fsize : GLint; {$IFDEF PAS2JS}external name 'size';{$ENDIF}
+    Ftype_ : GLenum; {$IFDEF PAS2JS}external name 'type';{$ENDIF}
+    Fname : String; {$IFDEF PAS2JS}external name 'name';{$ENDIF}
   Public
     Property size : GLint Read Fsize; 
     Property type_ : GLenum Read Ftype_; 
@@ -202,13 +204,13 @@ Type
     TJSWebGLShaderPrecisionFormat
     --------------------------------------------------------------------}
   
-  TJSWebGLShaderPrecisionFormat = class external name 'WebGLShaderPrecisionFormat' 
+  TJSWebGLShaderPrecisionFormat = class {$IFDEF PAS2JS}external name 'WebGLShaderPrecisionFormat'{$ENDIF}
   Private
-    FrangeMin : GLint; external name 'rangeMin'; 
-    FrangeMax : GLint; external name 'rangeMax'; 
-    Fprecision : GLint; external name 'precision'; 
+    FrangeMin : GLint; {$IFDEF PAS2JS}external name 'rangeMin';{$ENDIF}
+    FrangeMax : GLint; {$IFDEF PAS2JS}external name 'rangeMax';{$ENDIF}
+    Fprecision : GLint; {$IFDEF PAS2JS}external name 'precision';{$ENDIF}
   Public
-    Property rangeMin : GLint Read FrangeMin; 
+    Property rangeMin : GLint Read FrangeMin;
     Property rangeMax : GLint Read FrangeMax; 
     Property precision : GLint Read Fprecision; 
   end;
@@ -223,11 +225,11 @@ Type
   TGLintDynArray = Array of GLint;
 
   // MG: added ancestor (TJSObject), issue 34745
-  TJSWebGLRenderingContextBase = class external name 'WebGLRenderingContextBase' (TJSObject)
+  TJSWebGLRenderingContextBase = class {$IFDEF PAS2JS}external name 'WebGLRenderingContextBase'{$ENDIF} (TJSObject)
   Private
-    Fcanvas : TJSHTMLCanvasElement; external name 'canvas'; 
-    FdrawingBufferWidth : GLsizei; external name 'drawingBufferWidth'; 
-    FdrawingBufferHeight : GLsizei; external name 'drawingBufferHeight'; 
+    Fcanvas : TJSHTMLCanvasElement; {$IFDEF PAS2JS}external name 'canvas';{$ENDIF}
+    FdrawingBufferWidth : GLsizei; {$IFDEF PAS2JS}external name 'drawingBufferWidth';{$ENDIF}
+    FdrawingBufferHeight : GLsizei; {$IFDEF PAS2JS}external name 'drawingBufferHeight';{$ENDIF}
   Public
     Const
       DEPTH_BUFFER_BIT = $00000100;
@@ -675,7 +677,7 @@ Type
     TJSWebGLRenderingContext
     --------------------------------------------------------------------}
   
-  TJSWebGLRenderingContext = class external name 'WebGLRenderingContext'  (TJSWebGLRenderingContextBase)
+  TJSWebGLRenderingContext = class {$IFDEF PAS2JS}external name 'WebGLRenderingContext'{$ENDIF} (TJSWebGLRenderingContextBase)
   Private
   Public
   end;
@@ -684,14 +686,813 @@ Type
     TJSWebGLContextEvent
     --------------------------------------------------------------------}
   
-  TJSWebGLContextEvent = class external name 'WebGLContextEvent'  (TJSEvent)
+  TJSWebGLContextEvent = class {$IFDEF PAS2JS}external name 'WebGLContextEvent'{$ENDIF} (TJSEvent)
   Private
-    FstatusMessage : String; external name 'statusMessage'; 
+    FstatusMessage : String; {$IFDEF PAS2JS}external name 'statusMessage';{$ENDIF}
   Public
     Property statusMessage : String Read FstatusMessage; 
   end;
 
 implementation
 
+{$IFDEF DCC}
+{ TJSWebGLRenderingContextBase }
 
+procedure TJSWebGLRenderingContextBase.activeTexture(texture: GLenum);
+begin
+
+end;
+
+procedure TJSWebGLRenderingContextBase.attachShader(program_: TJSWebGLProgram;
+  shader: TJSWebGLShader);
+begin
+
+end;
+
+procedure TJSWebGLRenderingContextBase.bindAttribLocation(
+  program_: TJSWebGLProgram; index: GLuint; name: String);
+begin
+
+end;
+
+procedure TJSWebGLRenderingContextBase.bindBuffer(target: GLenum;
+  buffer: TJSWebGLBuffer);
+begin
+
+end;
+
+procedure TJSWebGLRenderingContextBase.bindFramebuffer(target: GLenum;
+  framebuffer: TJSWebGLFramebuffer);
+begin
+
+end;
+
+procedure TJSWebGLRenderingContextBase.bindRenderbuffer(target: GLenum;
+  renderbuffer: TJSWebGLRenderbuffer);
+begin
+
+end;
+
+procedure TJSWebGLRenderingContextBase.bindTexture(target: GLenum;
+  texture: TJSWebGLTexture);
+begin
+
+end;
+
+procedure TJSWebGLRenderingContextBase.blendColor(red, green, blue,
+  alpha: GLclampf);
+begin
+
+end;
+
+procedure TJSWebGLRenderingContextBase.blendEquation(mode: GLenum);
+begin
+
+end;
+
+procedure TJSWebGLRenderingContextBase.blendEquationSeparate(modeRGB,
+  modeAlpha: GLenum);
+begin
+
+end;
+
+procedure TJSWebGLRenderingContextBase.blendFunc(sfactor, dfactor: GLenum);
+begin
+
+end;
+
+procedure TJSWebGLRenderingContextBase.blendFuncSeparate(srcRGB, dstRGB,
+  srcAlpha, dstAlpha: GLenum);
+begin
+
+end;
+
+procedure TJSWebGLRenderingContextBase.bufferData(target: GLenum;
+  data: TJSBufferSource; usage: GLenum);
+begin
+
+end;
+
+procedure TJSWebGLRenderingContextBase.bufferData(target: GLenum;
+  size: GLsizeiptr; usage: GLenum);
+begin
+
+end;
+
+procedure TJSWebGLRenderingContextBase.bufferSubData(target: GLenum;
+  offset: GLintptr; data: TJSBufferSource);
+begin
+
+end;
+
+function TJSWebGLRenderingContextBase.checkFramebufferStatus(
+  target: GLenum): GLenum;
+begin
+
+end;
+
+procedure TJSWebGLRenderingContextBase.clear(mask: GLbitfield);
+begin
+
+end;
+
+procedure TJSWebGLRenderingContextBase.clearColor(red, green, blue,
+  alpha: GLclampf);
+begin
+
+end;
+
+procedure TJSWebGLRenderingContextBase.clearDepth(depth: GLclampf);
+begin
+
+end;
+
+procedure TJSWebGLRenderingContextBase.clearStencil(s: GLint);
+begin
+
+end;
+
+procedure TJSWebGLRenderingContextBase.colorMask(red, green, blue,
+  alpha: GLboolean);
+begin
+
+end;
+
+procedure TJSWebGLRenderingContextBase.compileShader(shader: TJSWebGLShader);
+begin
+
+end;
+
+procedure TJSWebGLRenderingContextBase.compressedTexImage2D(target: GLenum;
+  level: GLint; internalformat: GLenum; width, height: GLsizei; border: GLint;
+  data: TJSTypedArray);
+begin
+
+end;
+
+procedure TJSWebGLRenderingContextBase.compressedTexSubImage2D(target: GLenum;
+  level, xoffset, yoffset: GLint; width, height: GLsizei; format: GLenum;
+  data: TJSTypedArray);
+begin
+
+end;
+
+procedure TJSWebGLRenderingContextBase.copyTexImage2D(target: GLenum;
+  level: GLint; internalformat: GLenum; x, y: GLint; width, height: GLsizei;
+  border: GLint);
+begin
+
+end;
+
+procedure TJSWebGLRenderingContextBase.copyTexSubImage2D(target: GLenum; level,
+  xoffset, yoffset, x, y: GLint; width, height: GLsizei);
+begin
+
+end;
+
+function TJSWebGLRenderingContextBase.createBuffer: TJSWebGLBuffer;
+begin
+
+end;
+
+function TJSWebGLRenderingContextBase.createFramebuffer: TJSWebGLFramebuffer;
+begin
+
+end;
+
+function TJSWebGLRenderingContextBase.createProgram: TJSWebGLProgram;
+begin
+
+end;
+
+function TJSWebGLRenderingContextBase.createRenderbuffer: TJSWebGLRenderbuffer;
+begin
+
+end;
+
+function TJSWebGLRenderingContextBase.createShader(
+  type_: GLenum): TJSWebGLShader;
+begin
+
+end;
+
+function TJSWebGLRenderingContextBase.createTexture: TJSWebGLTexture;
+begin
+
+end;
+
+procedure TJSWebGLRenderingContextBase.cullFace(mode: GLenum);
+begin
+
+end;
+
+procedure TJSWebGLRenderingContextBase.deleteBuffer(buffer: TJSWebGLBuffer);
+begin
+
+end;
+
+procedure TJSWebGLRenderingContextBase.deleteFramebuffer(
+  framebuffer: TJSWebGLFramebuffer);
+begin
+
+end;
+
+procedure TJSWebGLRenderingContextBase.deleteProgram(program_: TJSWebGLProgram);
+begin
+
+end;
+
+procedure TJSWebGLRenderingContextBase.deleteRenderbuffer(
+  renderbuffer: TJSWebGLRenderbuffer);
+begin
+
+end;
+
+procedure TJSWebGLRenderingContextBase.deleteShader(shader: TJSWebGLShader);
+begin
+
+end;
+
+procedure TJSWebGLRenderingContextBase.deleteTexture(texture: TJSWebGLTexture);
+begin
+
+end;
+
+procedure TJSWebGLRenderingContextBase.depthFunc(func: GLenum);
+begin
+
+end;
+
+procedure TJSWebGLRenderingContextBase.depthMask(flag: GLboolean);
+begin
+
+end;
+
+procedure TJSWebGLRenderingContextBase.depthRange(zNear, zFar: GLclampf);
+begin
+
+end;
+
+procedure TJSWebGLRenderingContextBase.detachShader(program_: TJSWebGLProgram;
+  shader: TJSWebGLShader);
+begin
+
+end;
+
+procedure TJSWebGLRenderingContextBase.disable(cap: GLenum);
+begin
+
+end;
+
+procedure TJSWebGLRenderingContextBase.disableVertexAttribArray(index: GLuint);
+begin
+
+end;
+
+procedure TJSWebGLRenderingContextBase.drawArrays(mode: GLenum; first: GLint;
+  count: GLsizei);
+begin
+
+end;
+
+procedure TJSWebGLRenderingContextBase.drawElements(mode: GLenum;
+  count: GLsizei; type_: GLenum; offset: GLintptr);
+begin
+
+end;
+
+procedure TJSWebGLRenderingContextBase.enable(cap: GLenum);
+begin
+
+end;
+
+procedure TJSWebGLRenderingContextBase.enableVertexAttribArray(index: GLuint);
+begin
+
+end;
+
+procedure TJSWebGLRenderingContextBase.finish;
+begin
+
+end;
+
+procedure TJSWebGLRenderingContextBase.flush;
+begin
+
+end;
+
+procedure TJSWebGLRenderingContextBase.framebufferRenderbuffer(target,
+  attachment, renderbuffertarget: GLenum; renderbuffer: TJSWebGLRenderbuffer);
+begin
+
+end;
+
+procedure TJSWebGLRenderingContextBase.framebufferTexture2D(target, attachment,
+  textarget: GLenum; texture: TJSWebGLTexture; level: GLint);
+begin
+
+end;
+
+procedure TJSWebGLRenderingContextBase.frontFace(mode: GLenum);
+begin
+
+end;
+
+procedure TJSWebGLRenderingContextBase.generateMipmap(target: GLenum);
+begin
+
+end;
+
+function TJSWebGLRenderingContextBase.getActiveAttrib(program_: TJSWebGLProgram;
+  index: GLuint): TJSWebGLActiveInfo;
+begin
+
+end;
+
+function TJSWebGLRenderingContextBase.getActiveUniform(
+  program_: TJSWebGLProgram; index: GLuint): TJSWebGLActiveInfo;
+begin
+
+end;
+
+function TJSWebGLRenderingContextBase.getAttachedShaders(
+  program_: TJSWebGLProgram): TTJSWebGLShaderDynArray;
+begin
+
+end;
+
+function TJSWebGLRenderingContextBase.getAttribLocation(
+  program_: TJSWebGLProgram; name: String): GLint;
+begin
+
+end;
+
+function TJSWebGLRenderingContextBase.getBufferParameter(target,
+  pname: GLenum): JSValue;
+begin
+
+end;
+
+function TJSWebGLRenderingContextBase.getContextAttributes: TJSWebGLContextAttributes;
+begin
+
+end;
+
+function TJSWebGLRenderingContextBase.getError: GLenum;
+begin
+
+end;
+
+function TJSWebGLRenderingContextBase.getExtension(name: String): TJSObject;
+begin
+
+end;
+
+function TJSWebGLRenderingContextBase.getFramebufferAttachmentParameter(target,
+  attachment, pname: GLenum): JSValue;
+begin
+
+end;
+
+function TJSWebGLRenderingContextBase.getParameter(pname: GLenum): JSValue;
+begin
+
+end;
+
+function TJSWebGLRenderingContextBase.getProgramInfoLog(
+  program_: TJSWebGLProgram): String;
+begin
+
+end;
+
+function TJSWebGLRenderingContextBase.getProgramParameter(
+  program_: TJSWebGLProgram; pname: GLenum): JSValue;
+begin
+
+end;
+
+function TJSWebGLRenderingContextBase.getRenderbufferParameter(target,
+  pname: GLenum): JSValue;
+begin
+
+end;
+
+function TJSWebGLRenderingContextBase.getShaderInfoLog(
+  shader: TJSWebGLShader): String;
+begin
+
+end;
+
+function TJSWebGLRenderingContextBase.getShaderParameter(shader: TJSWebGLShader;
+  pname: GLenum): JSValue;
+begin
+
+end;
+
+function TJSWebGLRenderingContextBase.getShaderPrecisionFormat(shadertype,
+  precisiontype: GLenum): TJSWebGLShaderPrecisionFormat;
+begin
+
+end;
+
+function TJSWebGLRenderingContextBase.getShaderSource(
+  shader: TJSWebGLShader): String;
+begin
+
+end;
+
+function TJSWebGLRenderingContextBase.getSupportedExtensions: TStringDynArray;
+begin
+
+end;
+
+function TJSWebGLRenderingContextBase.getTexParameter(target,
+  pname: GLenum): JSValue;
+begin
+
+end;
+
+function TJSWebGLRenderingContextBase.getUniform(program_: TJSWebGLProgram;
+  location: TJSWebGLUniformLocation): JSValue;
+begin
+
+end;
+
+function TJSWebGLRenderingContextBase.getUniformLocation(
+  program_: TJSWebGLProgram; name: String): TJSWebGLUniformLocation;
+begin
+
+end;
+
+function TJSWebGLRenderingContextBase.getVertexAttrib(index: GLuint;
+  pname: GLenum): JSValue;
+begin
+
+end;
+
+function TJSWebGLRenderingContextBase.getVertexAttribOffset(index: GLuint;
+  pname: GLenum): GLintptr;
+begin
+
+end;
+
+procedure TJSWebGLRenderingContextBase.hint(target, mode: GLenum);
+begin
+
+end;
+
+function TJSWebGLRenderingContextBase.isBuffer(
+  buffer: TJSWebGLBuffer): GLboolean;
+begin
+
+end;
+
+function TJSWebGLRenderingContextBase.isContextLost: boolean;
+begin
+
+end;
+
+function TJSWebGLRenderingContextBase.isEnabled(cap: GLenum): GLboolean;
+begin
+
+end;
+
+function TJSWebGLRenderingContextBase.isFramebuffer(
+  framebuffer: TJSWebGLFramebuffer): GLboolean;
+begin
+
+end;
+
+function TJSWebGLRenderingContextBase.isProgram(
+  program_: TJSWebGLProgram): GLboolean;
+begin
+
+end;
+
+function TJSWebGLRenderingContextBase.isRenderbuffer(
+  renderbuffer: TJSWebGLRenderbuffer): GLboolean;
+begin
+
+end;
+
+function TJSWebGLRenderingContextBase.isShader(
+  shader: TJSWebGLShader): GLboolean;
+begin
+
+end;
+
+function TJSWebGLRenderingContextBase.isTexture(
+  texture: TJSWebGLTexture): GLboolean;
+begin
+
+end;
+
+procedure TJSWebGLRenderingContextBase.lineWidth(width: GLfloat);
+begin
+
+end;
+
+procedure TJSWebGLRenderingContextBase.linkProgram(program_: TJSWebGLProgram);
+begin
+
+end;
+
+procedure TJSWebGLRenderingContextBase.pixelStorei(pname: GLenum; param: GLint);
+begin
+
+end;
+
+procedure TJSWebGLRenderingContextBase.polygonOffset(factor, units: GLfloat);
+begin
+
+end;
+
+procedure TJSWebGLRenderingContextBase.readPixels(x, y: GLint; width,
+  height: GLsizei; format, type_: GLenum; pixels: TJSTypedArray);
+begin
+
+end;
+
+procedure TJSWebGLRenderingContextBase.renderbufferStorage(target,
+  internalformat: GLenum; width, height: GLsizei);
+begin
+
+end;
+
+procedure TJSWebGLRenderingContextBase.sampleCoverage(value: GLclampf;
+  invert: GLboolean);
+begin
+
+end;
+
+procedure TJSWebGLRenderingContextBase.scissor(x, y: GLint; width,
+  height: GLsizei);
+begin
+
+end;
+
+procedure TJSWebGLRenderingContextBase.shaderSource(shader: TJSWebGLShader;
+  source: String);
+begin
+
+end;
+
+procedure TJSWebGLRenderingContextBase.stencilFunc(func: GLenum; ref: GLint;
+  mask: GLuint);
+begin
+
+end;
+
+procedure TJSWebGLRenderingContextBase.stencilFuncSeparate(face, func: GLenum;
+  ref: GLint; mask: GLuint);
+begin
+
+end;
+
+procedure TJSWebGLRenderingContextBase.stencilMask(mask: GLuint);
+begin
+
+end;
+
+procedure TJSWebGLRenderingContextBase.stencilMaskSeparate(face: GLenum;
+  mask: GLuint);
+begin
+
+end;
+
+procedure TJSWebGLRenderingContextBase.stencilOp(fail, zfail, zpass: GLenum);
+begin
+
+end;
+
+procedure TJSWebGLRenderingContextBase.stencilOpSeparate(face, fail, zfail,
+  zpass: GLenum);
+begin
+
+end;
+
+procedure TJSWebGLRenderingContextBase.texImage2D(target: GLenum; level,
+  internalformat: GLint; width, height: GLsizei; border: GLint; format,
+  type_: GLenum; pixels: TJSTypedArray);
+begin
+
+end;
+
+procedure TJSWebGLRenderingContextBase.texImage2D(target: GLenum; level,
+  internalformat: GLint; format, type_: GLenum; source: TexImageSource);
+begin
+
+end;
+
+procedure TJSWebGLRenderingContextBase.texParameterf(target, pname: GLenum;
+  param: GLfloat);
+begin
+
+end;
+
+procedure TJSWebGLRenderingContextBase.texParameteri(target, pname: GLenum;
+  param: GLint);
+begin
+
+end;
+
+procedure TJSWebGLRenderingContextBase.texSubImage2D(target: GLenum; level,
+  xoffset, yoffset: GLint; width, height: GLsizei; format, type_: GLenum;
+  pixels: TJSTypedArray);
+begin
+
+end;
+
+procedure TJSWebGLRenderingContextBase.texSubImage2D(target: GLenum; level,
+  xoffset, yoffset: GLint; format, type_: GLenum; source: TexImageSource);
+begin
+
+end;
+
+procedure TJSWebGLRenderingContextBase.uniform1f(
+  location: TJSWebGLUniformLocation; x: GLfloat);
+begin
+
+end;
+
+procedure TJSWebGLRenderingContextBase.uniform1fv(
+  location: TJSWebGLUniformLocation; v: Float32List);
+begin
+
+end;
+
+procedure TJSWebGLRenderingContextBase.uniform1i(
+  location: TJSWebGLUniformLocation; x: GLint);
+begin
+
+end;
+
+procedure TJSWebGLRenderingContextBase.uniform1iv(
+  location: TJSWebGLUniformLocation; v: Int32List);
+begin
+
+end;
+
+procedure TJSWebGLRenderingContextBase.uniform2f(
+  location: TJSWebGLUniformLocation; x, y: GLfloat);
+begin
+
+end;
+
+procedure TJSWebGLRenderingContextBase.uniform2fv(
+  location: TJSWebGLUniformLocation; v: Float32List);
+begin
+
+end;
+
+procedure TJSWebGLRenderingContextBase.uniform2i(
+  location: TJSWebGLUniformLocation; x, y: GLint);
+begin
+
+end;
+
+procedure TJSWebGLRenderingContextBase.uniform2iv(
+  location: TJSWebGLUniformLocation; v: Int32List);
+begin
+
+end;
+
+procedure TJSWebGLRenderingContextBase.uniform3f(
+  location: TJSWebGLUniformLocation; x, y, z: GLfloat);
+begin
+
+end;
+
+procedure TJSWebGLRenderingContextBase.uniform3fv(
+  location: TJSWebGLUniformLocation; v: Float32List);
+begin
+
+end;
+
+procedure TJSWebGLRenderingContextBase.uniform3i(
+  location: TJSWebGLUniformLocation; x, y, z: GLint);
+begin
+
+end;
+
+procedure TJSWebGLRenderingContextBase.uniform3iv(
+  location: TJSWebGLUniformLocation; v: Int32List);
+begin
+
+end;
+
+procedure TJSWebGLRenderingContextBase.uniform4f(
+  location: TJSWebGLUniformLocation; x, y, z, w: GLfloat);
+begin
+
+end;
+
+procedure TJSWebGLRenderingContextBase.uniform4fv(
+  location: TJSWebGLUniformLocation; v: Float32List);
+begin
+
+end;
+
+procedure TJSWebGLRenderingContextBase.uniform4i(
+  location: TJSWebGLUniformLocation; x, y, z, w: GLint);
+begin
+
+end;
+
+procedure TJSWebGLRenderingContextBase.uniform4iv(
+  location: TJSWebGLUniformLocation; v: Int32List);
+begin
+
+end;
+
+procedure TJSWebGLRenderingContextBase.uniformMatrix2fv(
+  location: TJSWebGLUniformLocation; transpose: GLboolean; value: Float32List);
+begin
+
+end;
+
+procedure TJSWebGLRenderingContextBase.uniformMatrix3fv(
+  location: TJSWebGLUniformLocation; transpose: GLboolean; value: Float32List);
+begin
+
+end;
+
+procedure TJSWebGLRenderingContextBase.uniformMatrix4fv(
+  location: TJSWebGLUniformLocation; transpose: GLboolean; value: Float32List);
+begin
+
+end;
+
+procedure TJSWebGLRenderingContextBase.useProgram(program_: TJSWebGLProgram);
+begin
+
+end;
+
+procedure TJSWebGLRenderingContextBase.validateProgram(
+  program_: TJSWebGLProgram);
+begin
+
+end;
+
+procedure TJSWebGLRenderingContextBase.vertexAttrib1f(index: GLuint;
+  x: GLfloat);
+begin
+
+end;
+
+procedure TJSWebGLRenderingContextBase.vertexAttrib1fv(index: GLuint;
+  values: Float32List);
+begin
+
+end;
+
+procedure TJSWebGLRenderingContextBase.vertexAttrib2f(index: GLuint; x,
+  y: GLfloat);
+begin
+
+end;
+
+procedure TJSWebGLRenderingContextBase.vertexAttrib2fv(index: GLuint;
+  values: Float32List);
+begin
+
+end;
+
+procedure TJSWebGLRenderingContextBase.vertexAttrib3f(index: GLuint; x, y,
+  z: GLfloat);
+begin
+
+end;
+
+procedure TJSWebGLRenderingContextBase.vertexAttrib3fv(index: GLuint;
+  values: Float32List);
+begin
+
+end;
+
+procedure TJSWebGLRenderingContextBase.vertexAttrib4f(index: GLuint; x, y, z,
+  w: GLfloat);
+begin
+
+end;
+
+procedure TJSWebGLRenderingContextBase.vertexAttrib4fv(index: GLuint;
+  values: Float32List);
+begin
+
+end;
+
+procedure TJSWebGLRenderingContextBase.vertexAttribPointer(index: GLuint;
+  size: GLint; type_: GLenum; normalized: GLboolean; stride: GLsizei;
+  offset: GLintptr);
+begin
+
+end;
+
+procedure TJSWebGLRenderingContextBase.viewport(x, y: GLint; width,
+  height: GLsizei);
+begin
+
+end;
+{$ENDIF}
 end.

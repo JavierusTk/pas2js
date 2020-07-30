@@ -1,7 +1,9 @@
 unit webassembly;
 
+{$IFDEF PAS2JS}
 {$mode objfpc}
 {$modeswitch externalclass}
+{$ENDIF}
 
 interface
 
@@ -12,30 +14,30 @@ Type
 
   { TJSModulesArray }
 
-  TJSModulesExports = Class external name 'anon' (TJSObject)
+  TJSModulesExports = Class {$IFDEF PAS2JS}external name 'anon'{$ENDIF} (TJSObject)
   private
-    function GetFun(aName : String): TJSFunction; external name '[]';
+    function GetFun(aName : String): TJSFunction; {$IFDEF PAS2JS}external name '[]';{$ENDIF}
   public
     Property functions [aName : String] : TJSFunction read GetFun; default;
   end;
 
   TJSModulesImports =  TJSModulesExports;
 
-  TJSWebAssemblyModule = class external name 'WebAssembly.Module' (TJSObject)
+  TJSWebAssemblyModule = class {$IFDEF PAS2JS}external name 'WebAssembly.Module'{$ENDIF} (TJSObject)
     constructor new(buffer : TJSArrayBuffer);
     Class Function customSections(module: TJSWebAssemblyModule; const SectionName : string) : TJSArrayBuffer;
-    Class Function exports_(module: TJSWebAssemblyModule) : TJSModulesExports; external name 'exports';
-    Class Function imports(module: TJSWebAssemblyModule) : TJSModulesImports; external name 'exports';
+    Class Function exports_(module: TJSWebAssemblyModule) : TJSModulesExports; {$IFDEF PAS2JS}external name 'exports';{$ENDIF}
+    Class Function imports(module: TJSWebAssemblyModule) : TJSModulesImports; {$IFDEF PAS2JS}external name 'exports';{$ENDIF}
   end;
 
   { TJSWebAssemblyInstance }
 
-  TJSWebAssemblyInstance = class external name 'WebAssembly.Instance' (TJSObject)
+  TJSWebAssemblyInstance = class {$IFDEF PAS2JS}external name 'WebAssembly.Instance'{$ENDIF} (TJSObject)
   private
-    Fexports: TJSModulesExports; external name 'exports';
+    Fexports: TJSModulesExports; {$IFDEF PAS2JS}external name 'exports';{$ENDIF}
   public
-    constructor new(module : TJSWebAssemblyModule; ImportObject : TJSOBject);
-    constructor new(module : TJSWebAssemblyModule);
+    constructor new(module : TJSWebAssemblyModule; ImportObject : TJSOBject); overload;
+    constructor new(module : TJSWebAssemblyModule); overload;
     Property exports_ : TJSModulesExports Read Fexports;
   end;
 
@@ -44,16 +46,16 @@ Type
 
   { TJSInstantiateResult }
 
-  TJSInstantiateResult = Class external name 'anon' (TJSObject)
+  TJSInstantiateResult = Class {$IFDEF PAS2JS}external name 'anon'{$ENDIF} (TJSObject)
   private
-    FInstance: TJSWebAssemblyInstance; external name 'instance';
-    FModule: TJSWebAssemblyModule;  external name 'module';
+    FInstance: TJSWebAssemblyInstance; {$IFDEF PAS2JS}external name 'instance';{$ENDIF}
+    FModule: TJSWebAssemblyModule; {$IFDEF PAS2JS}external name 'module';{$ENDIF}
   public
     Property Module : TJSWebAssemblyModule Read FModule;
     Property Instance : TJSWebAssemblyInstance Read Finstance;
   end;
 
-  TJSWebAssembly = class external name 'WebAssembly' (TJSObject)
+  TJSWebAssembly = class {$IFDEF PAS2JS}external name 'WebAssembly'{$ENDIF} (TJSObject)
     Class Function instantiate(Buffer : TJSArrayBuffer; ImportObject :  TJSObject) : TJSPromise; overload;
     Class Function instantiate(Buffer : TJSArrayBuffer) : TJSPromise; overload;
     Class Function instantiate(Buffer : TJSWebAssemblyModule; ImportObject :  TJSObject) : TJSPromise; overload;
@@ -73,12 +75,12 @@ Type
     maximum : integer;
   end;
 
-  TJSWebAssemblyTable = class external name 'WebAssembly.Table' (TJSObject)
+  TJSWebAssemblyTable = class {$IFDEF PAS2JS}external name 'WebAssembly.Table'{$ENDIF} (TJSObject)
   private
     FLength: NativeInt;
   Public
-    constructor new (tabledescriptor : TJSWebAssemblyTableDescriptor);
-    constructor new (tabledescriptor : TJSObject);
+    constructor new (tabledescriptor : TJSWebAssemblyTableDescriptor); overload;
+    constructor new (tabledescriptor : TJSObject); overload;
     Property length: NativeInt Read FLength;
   end;
   { TJSWebAssemblyMemory }
@@ -88,18 +90,141 @@ Type
     maximum : integer;
   end;
 
-  TJSWebAssemblyMemory = class external name 'WebAssembly.Memory' (TJSObject)
+  TJSWebAssemblyMemory = class {$IFDEF PAS2JS}external name 'WebAssembly.Memory'{$ENDIF} (TJSObject)
   private
-    FBuffer: TJSArrayBuffer; external name 'buffer';
-    FLength: NativeInt; external name 'length';
+    FBuffer: TJSArrayBuffer; {$IFDEF PAS2JS}external name 'buffer';{$ENDIF}
+    FLength: NativeInt; {$IFDEF PAS2JS}external name 'length';{$ENDIF}
   Public
-    constructor new (memorydescriptor : TJSWebAssemblyMemoryDescriptor);
-    constructor new (memorydescriptor : TJSObject);
+    constructor new (memorydescriptor : TJSWebAssemblyMemoryDescriptor); overload;
+    constructor new (memorydescriptor : TJSObject); overload;
     Property buffer : TJSArrayBuffer Read FBuffer;
     Property length: NativeInt Read FLength;
   end;
 
 implementation
+{$IFDEF DCC}
+{ TJSModulesExports }
 
+function TJSModulesExports.GetFun(aName: String): TJSFunction;
+begin
+
+end;
+
+{ TJSWebAssemblyModule }
+
+class function TJSWebAssemblyModule.customSections(module: TJSWebAssemblyModule;
+  const SectionName: string): TJSArrayBuffer;
+begin
+
+end;
+
+class function TJSWebAssemblyModule.exports_(
+  module: TJSWebAssemblyModule): TJSModulesExports;
+begin
+
+end;
+
+class function TJSWebAssemblyModule.imports(
+  module: TJSWebAssemblyModule): TJSModulesImports;
+begin
+
+end;
+
+constructor TJSWebAssemblyModule.new(buffer: TJSArrayBuffer);
+begin
+
+end;
+
+{ TJSWebAssemblyInstance }
+
+constructor TJSWebAssemblyInstance.new(module: TJSWebAssemblyModule);
+begin
+
+end;
+
+constructor TJSWebAssemblyInstance.new(module: TJSWebAssemblyModule;
+  ImportObject: TJSOBject);
+begin
+
+end;
+
+{ TJSWebAssembly }
+
+class function TJSWebAssembly.compile(Buffer: TJSArrayBuffer): TJSPromise;
+begin
+
+end;
+
+class function TJSWebAssembly.compileStreaming(source: TJSResponse): TJSPromise;
+begin
+
+end;
+
+class function TJSWebAssembly.instantiate(Buffer: TJSWebAssemblyModule;
+  ImportObject: TJSObject): TJSPromise;
+begin
+
+end;
+
+class function TJSWebAssembly.instantiate(Buffer: TJSArrayBuffer): TJSPromise;
+begin
+
+end;
+
+class function TJSWebAssembly.instantiate(Buffer: TJSArrayBuffer;
+  ImportObject: TJSObject): TJSPromise;
+begin
+
+end;
+
+class function TJSWebAssembly.instantiate(
+  Buffer: TJSWebAssemblyModule): TJSPromise;
+begin
+
+end;
+
+class function TJSWebAssembly.instantiateStreaming(
+  source: TJSResponse): TJSPromise;
+begin
+
+end;
+
+class function TJSWebAssembly.instantiateStreaming(source: TJSResponse;
+  ImportObject: TJSObject): TJSPromise;
+begin
+
+end;
+
+class function TJSWebAssembly.validate(Buffer: TJSArrayBuffer): Boolean;
+begin
+
+end;
+
+{ TJSWebAssemblyTable }
+
+constructor TJSWebAssemblyTable.new(tabledescriptor: TJSObject);
+begin
+
+end;
+
+constructor TJSWebAssemblyTable.new(
+  tabledescriptor: TJSWebAssemblyTableDescriptor);
+begin
+
+end;
+
+{ TJSWebAssemblyMemory }
+
+constructor TJSWebAssemblyMemory.new(memorydescriptor: TJSObject);
+begin
+
+end;
+
+constructor TJSWebAssemblyMemory.new(
+  memorydescriptor: TJSWebAssemblyMemoryDescriptor);
+begin
+
+end;
+{$ENDIF}
 end.
 

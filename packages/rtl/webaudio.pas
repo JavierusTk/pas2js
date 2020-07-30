@@ -1,7 +1,9 @@
 Unit webaudio;
 
 {$H+}
+{$IFDEF PAS2JS}
 {$modeswitch externalclass}
+{$ENDIF}
 
 interface
 
@@ -150,7 +152,7 @@ Type
   
   TJSOfflineAudioContextOptions = class(TJSObject)
     numberOfChannels : NativeInt;
-    length_ : NativeInt;external name 'length';
+    length_ : NativeInt; {$IFDEF PAS2JS}external name 'length';{$ENDIF}
     sampleRate : Double;
   end;
   
@@ -168,7 +170,7 @@ Type
   
   TJSAudioBufferOptions = class(TJSObject)
     numberOfChannels : NativeInt;
-    length_ : NativeInt;external name 'length';
+    length_ : NativeInt; {$IFDEF PAS2JS}external name 'length';{$ENDIF}
     sampleRate : Double;
   end;
   
@@ -178,10 +180,10 @@ Type
   
   TJSAudioNodeOptions = class(TJSObject)
     channelCount : NativeInt;
-    _channelCountMode : ChannelCountMode;external name 'channelCountMode';
-    _channelInterpretation : ChannelInterpretation;external name 'channelInterpretation';
+    _channelCountMode : ChannelCountMode; {$IFDEF PAS2JS}external name 'channelCountMode';{$ENDIF}
+    _channelInterpretation : ChannelInterpretation; {$IFDEF PAS2JS}external name 'channelInterpretation';{$ENDIF}
   end;
-  
+
   { --------------------------------------------------------------------
     TJSAnalyserOptions
     --------------------------------------------------------------------}
@@ -221,7 +223,7 @@ Type
     --------------------------------------------------------------------}
   
   TJSBiquadFilterOptions = class(TJSObject)
-    type_ : BiquadFilterType;external name 'type';
+    type_ : BiquadFilterType; {$IFDEF PAS2JS}external name 'type';{$ENDIF}
     Q : Double;
     detune : Double;
     frequency : Double;
@@ -328,7 +330,7 @@ Type
     --------------------------------------------------------------------}
   
   TJSOscillatorOptions = class(TJSObject)
-    type_ : OscillatorType;external name 'type';
+    type_ : OscillatorType; {$IFDEF PAS2JS}external name 'type';{$ENDIF}
     frequency : Double;
     detune : Double;
     periodicWave : TJSPeriodicWave;
@@ -410,23 +412,23 @@ Type
     defaultValue : Double;
     minValue : Double;
     maxValue : Double;
-    _automationRate : AutomationRate;external name 'automationRate';
+    _automationRate : AutomationRate; {$IFDEF PAS2JS}external name 'automationRate';{$ENDIF}
   end;
-  
+
   { --------------------------------------------------------------------
     TJSBaseAudioContext
     --------------------------------------------------------------------}
   
   TDoubleDynArray = Array of Double;
   
-  TJSBaseAudioContext = class external name 'BaseAudioContext'  (TJSEventTarget)
+  TJSBaseAudioContext = class {$IFDEF PAS2JS}external name 'BaseAudioContext'{$ENDIF} (TJSEventTarget)
   Private
-    Fdestination : TJSAudioDestinationNode; external name 'destination'; 
-    FsampleRate : Double; external name 'sampleRate'; 
-    FcurrentTime : Double; external name 'currentTime'; 
-    Flistener : TJSAudioListener; external name 'listener'; 
-    Fstate : AudioContextState; external name 'state'; 
-    FaudioWorklet : TJSAudioWorklet; external name 'audioWorklet'; 
+    Fdestination : TJSAudioDestinationNode; {$IFDEF PAS2JS}external name 'destination';{$ENDIF}
+    FsampleRate : Double; {$IFDEF PAS2JS}external name 'sampleRate';{$ENDIF}
+    FcurrentTime : Double; {$IFDEF PAS2JS}external name 'currentTime';{$ENDIF}
+    Flistener : TJSAudioListener; {$IFDEF PAS2JS}external name 'listener';{$ENDIF}
+    Fstate : AudioContextState; {$IFDEF PAS2JS}external name 'state';{$ENDIF}
+    FaudioWorklet : TJSAudioWorklet; {$IFDEF PAS2JS}external name 'audioWorklet';{$ENDIF}
   Public
     
       onstatechange : TJSEVentHandler;
@@ -471,10 +473,10 @@ Type
     TJSAudioContext
     --------------------------------------------------------------------}
   
-  TJSAudioContext = class external name 'AudioContext'  (TJSBaseAudioContext)
+  TJSAudioContext = class {$IFDEF PAS2JS}external name 'AudioContext'{$ENDIF} (TJSBaseAudioContext)
   Private
-    FbaseLatency : Double; external name 'baseLatency'; 
-    FoutputLatency : Double; external name 'outputLatency'; 
+    FbaseLatency : Double; {$IFDEF PAS2JS}external name 'baseLatency';{$ENDIF}
+    FoutputLatency : Double; {$IFDEF PAS2JS}external name 'outputLatency';{$ENDIF}
   Public
     function getOutputTimestamp: TJSAudioTimestamp;
     function suspend: TJSPromise;
@@ -491,9 +493,9 @@ Type
     TJSOfflineAudioContext
     --------------------------------------------------------------------}
   
-  TJSOfflineAudioContext = class external name 'OfflineAudioContext'  (TJSBaseAudioContext)
+  TJSOfflineAudioContext = class {$IFDEF PAS2JS}external name 'OfflineAudioContext'{$ENDIF} (TJSBaseAudioContext)
   Private
-    Flength_ : NativeInt; external name 'length'; 
+    Flength_ : NativeInt; {$IFDEF PAS2JS}external name 'length';{$ENDIF}
   Public
       oncomplete : TJSEVentHandler;
     function startRendering: TJSPromise;
@@ -505,23 +507,23 @@ Type
     TJSOfflineAudioCompletionEvent
     --------------------------------------------------------------------}
   
-  TJSOfflineAudioCompletionEvent = class external name 'OfflineAudioCompletionEvent'  (TJSEvent)
+  TJSOfflineAudioCompletionEvent = class {$IFDEF PAS2JS}external name 'OfflineAudioCompletionEvent'{$ENDIF} (TJSEvent)
   Private
-    FrenderedBuffer : TJSAudioBuffer; external name 'renderedBuffer'; 
+    FrenderedBuffer : TJSAudioBuffer; {$IFDEF PAS2JS}external name 'renderedBuffer';{$ENDIF}
   Public
     Property renderedBuffer : TJSAudioBuffer Read FrenderedBuffer; 
   end;
-  
+
   { --------------------------------------------------------------------
     TJSAudioBuffer
     --------------------------------------------------------------------}
-  
-  TJSAudioBuffer = class external name 'AudioBuffer' 
+
+  TJSAudioBuffer = class {$IFDEF PAS2JS}external name 'AudioBuffer'{$ENDIF}
   Private
-    FsampleRate : Double; external name 'sampleRate'; 
-    Flength_ : NativeInt; external name 'length'; 
-    Fduration : Double; external name 'duration'; 
-    FnumberOfChannels : NativeInt; external name 'numberOfChannels'; 
+    FsampleRate : Double; {$IFDEF PAS2JS}external name 'sampleRate';{$ENDIF}
+    Flength_ : NativeInt; {$IFDEF PAS2JS}external name 'length';{$ENDIF}
+    Fduration : Double; {$IFDEF PAS2JS}external name 'duration';{$ENDIF}
+    FnumberOfChannels : NativeInt; {$IFDEF PAS2JS}external name 'numberOfChannels';{$ENDIF}
   Public
     function getChannelData(channel : NativeInt): TJSFloat32Array;
     Procedure copyFromChannel(destination : TJSFloat32Array; channelNumber : NativeInt; startInChannel : NativeInt); overload;
@@ -538,15 +540,15 @@ Type
     TJSAudioNode
     --------------------------------------------------------------------}
   
-  TJSAudioNode = class external name 'AudioNode'  (TJSEventTarget)
+  TJSAudioNode = class {$IFDEF PAS2JS}external name 'AudioNode'{$ENDIF} (TJSEventTarget)
   Private
-    Fcontext : TJSBaseAudioContext; external name 'context'; 
-    FnumberOfInputs : NativeInt; external name 'numberOfInputs'; 
-    FnumberOfOutputs : NativeInt; external name 'numberOfOutputs'; 
+    Fcontext : TJSBaseAudioContext; {$IFDEF PAS2JS}external name 'context';{$ENDIF}
+    FnumberOfInputs : NativeInt; {$IFDEF PAS2JS}external name 'numberOfInputs';{$ENDIF}
+    FnumberOfOutputs : NativeInt; {$IFDEF PAS2JS}external name 'numberOfOutputs';{$ENDIF}
   Public
       channelCount : NativeInt;
-      _channelCountMode : ChannelCountMode;external name 'channelCountMode';
-      _channelInterpretation : ChannelInterpretation;external name 'channelInterpretation';
+      _channelCountMode : ChannelCountMode; {$IFDEF PAS2JS}external name 'channelCountMode';{$ENDIF}
+      _channelInterpretation : ChannelInterpretation; {$IFDEF PAS2JS}external name 'channelInterpretation';{$ENDIF}
     function connect(destinationNode : TJSAudioNode; output : NativeInt; input : NativeInt): TJSAudioNode; overload;
     function connect(destinationNode : TJSAudioNode): TJSAudioNode; overload;
     function connect(destinationNode : TJSAudioNode; output : NativeInt): TJSAudioNode; overload;
@@ -568,14 +570,14 @@ Type
     TJSAudioParam
     --------------------------------------------------------------------}
   
-  TJSAudioParam = class external name 'AudioParam' 
+  TJSAudioParam = class {$IFDEF PAS2JS}external name 'AudioParam'{$ENDIF}
   Private
-    FdefaultValue : Double; external name 'defaultValue'; 
-    FminValue : Double; external name 'minValue'; 
-    FmaxValue : Double; external name 'maxValue'; 
+    FdefaultValue : Double; {$IFDEF PAS2JS}external name 'defaultValue';{$ENDIF}
+    FminValue : Double; {$IFDEF PAS2JS}external name 'minValue';{$ENDIF}
+    FmaxValue : Double; {$IFDEF PAS2JS}external name 'maxValue';{$ENDIF}
   Public
       value : Double;
-      _automationRate : AutomationRate;external name 'automationRate';
+      _automationRate : AutomationRate; {$IFDEF PAS2JS}external name 'automationRate';{$ENDIF}
     function setValueAtTime(value : Double; startTime : Double): TJSAudioParam;
     function linearRampToValueAtTime(value : Double; endTime : Double): TJSAudioParam;
     function exponentialRampToValueAtTime(value : Double; endTime : Double): TJSAudioParam;
@@ -592,7 +594,7 @@ Type
     TJSAudioScheduledSourceNode
     --------------------------------------------------------------------}
   
-  TJSAudioScheduledSourceNode = class external name 'AudioScheduledSourceNode'  (TJSAudioNode)
+  TJSAudioScheduledSourceNode = class {$IFDEF PAS2JS}external name 'AudioScheduledSourceNode'{$ENDIF} (TJSAudioNode)
   Private
   Public
       onended : TJSEVentHandler;
@@ -606,9 +608,9 @@ Type
     TJSAnalyserNode
     --------------------------------------------------------------------}
   
-  TJSAnalyserNode = class external name 'AnalyserNode'  (TJSAudioNode)
+  TJSAnalyserNode = class {$IFDEF PAS2JS}external name 'AnalyserNode'{$ENDIF} (TJSAudioNode)
   Private
-    FfrequencyBinCount : NativeInt; external name 'frequencyBinCount'; 
+    FfrequencyBinCount : NativeInt; {$IFDEF PAS2JS}external name 'frequencyBinCount';{$ENDIF}
   Public
       fftSize : NativeInt;
       minDecibels : Double;
@@ -625,10 +627,10 @@ Type
     TJSAudioBufferSourceNode
     --------------------------------------------------------------------}
   
-  TJSAudioBufferSourceNode = class external name 'AudioBufferSourceNode'  (TJSAudioScheduledSourceNode)
+  TJSAudioBufferSourceNode = class {$IFDEF PAS2JS}external name 'AudioBufferSourceNode'{$ENDIF} (TJSAudioScheduledSourceNode)
   Private
-    FplaybackRate : TJSAudioParam; external name 'playbackRate'; 
-    Fdetune : TJSAudioParam; external name 'detune'; 
+    FplaybackRate : TJSAudioParam; {$IFDEF PAS2JS}external name 'playbackRate';{$ENDIF}
+    Fdetune : TJSAudioParam; {$IFDEF PAS2JS}external name 'detune';{$ENDIF}
   Public
       buffer : TJSAudioBuffer;
       loop : boolean;
@@ -646,51 +648,51 @@ Type
     TJSAudioDestinationNode
     --------------------------------------------------------------------}
   
-  TJSAudioDestinationNode = class external name 'AudioDestinationNode'  (TJSAudioNode)
+  TJSAudioDestinationNode = class {$IFDEF PAS2JS}external name 'AudioDestinationNode'{$ENDIF} (TJSAudioNode)
   Private
-    FmaxChannelCount : NativeInt; external name 'maxChannelCount'; 
+    FmaxChannelCount : NativeInt; {$IFDEF PAS2JS}external name 'maxChannelCount';{$ENDIF}
   Public
-    Property maxChannelCount : NativeInt Read FmaxChannelCount; 
+    Property maxChannelCount : NativeInt Read FmaxChannelCount;
   end;
   
   { --------------------------------------------------------------------
     TJSAudioListener
     --------------------------------------------------------------------}
   
-  TJSAudioListener = class external name 'AudioListener' 
+  TJSAudioListener = class {$IFDEF PAS2JS}external name 'AudioListener'{$ENDIF}
   Private
-    FpositionX : TJSAudioParam; external name 'positionX'; 
-    FpositionY : TJSAudioParam; external name 'positionY'; 
-    FpositionZ : TJSAudioParam; external name 'positionZ'; 
-    FforwardX : TJSAudioParam; external name 'forwardX'; 
-    FforwardY : TJSAudioParam; external name 'forwardY'; 
-    FforwardZ : TJSAudioParam; external name 'forwardZ'; 
-    FupX : TJSAudioParam; external name 'upX'; 
-    FupY : TJSAudioParam; external name 'upY'; 
-    FupZ : TJSAudioParam; external name 'upZ'; 
+    FpositionX : TJSAudioParam; {$IFDEF PAS2JS}external name 'positionX';{$ENDIF}
+    FpositionY : TJSAudioParam; {$IFDEF PAS2JS}external name 'positionY';{$ENDIF}
+    FpositionZ : TJSAudioParam; {$IFDEF PAS2JS}external name 'positionZ';{$ENDIF}
+    FforwardX : TJSAudioParam; {$IFDEF PAS2JS}external name 'forwardX';{$ENDIF}
+    FforwardY : TJSAudioParam; {$IFDEF PAS2JS}external name 'forwardY';{$ENDIF}
+    FforwardZ : TJSAudioParam; {$IFDEF PAS2JS}external name 'forwardZ';{$ENDIF}
+    FupX : TJSAudioParam; {$IFDEF PAS2JS}external name 'upX';{$ENDIF}
+    FupY : TJSAudioParam; {$IFDEF PAS2JS}external name 'upY';{$ENDIF}
+    FupZ : TJSAudioParam; {$IFDEF PAS2JS}external name 'upZ';{$ENDIF}
   Public
     Procedure setPosition(x : Double; y : Double; z : Double);
     Procedure setOrientation(x : Double; y : Double; z : Double; xUp : Double; yUp : Double; zUp : Double);
     Property positionX : TJSAudioParam Read FpositionX; 
     Property positionY : TJSAudioParam Read FpositionY; 
     Property positionZ : TJSAudioParam Read FpositionZ; 
-    Property forwardX : TJSAudioParam Read FforwardX; 
+    Property forwardX : TJSAudioParam Read FforwardX;
     Property forwardY : TJSAudioParam Read FforwardY; 
-    Property forwardZ : TJSAudioParam Read FforwardZ; 
+    Property forwardZ : TJSAudioParam Read FforwardZ;
     Property upX : TJSAudioParam Read FupX; 
     Property upY : TJSAudioParam Read FupY; 
     Property upZ : TJSAudioParam Read FupZ; 
   end;
-  
+
   { --------------------------------------------------------------------
     TJSAudioProcessingEvent
     --------------------------------------------------------------------}
   
-  TJSAudioProcessingEvent = class external name 'AudioProcessingEvent'  (TJSEvent)
+  TJSAudioProcessingEvent = class {$IFDEF PAS2JS}external name 'AudioProcessingEvent'{$ENDIF} (TJSEvent)
   Private
-    FplaybackTime : Double; external name 'playbackTime'; 
-    FinputBuffer : TJSAudioBuffer; external name 'inputBuffer'; 
-    FoutputBuffer : TJSAudioBuffer; external name 'outputBuffer'; 
+    FplaybackTime : Double; {$IFDEF PAS2JS}external name 'playbackTime';{$ENDIF}
+    FinputBuffer : TJSAudioBuffer; {$IFDEF PAS2JS}external name 'inputBuffer';{$ENDIF}
+    FoutputBuffer : TJSAudioBuffer; {$IFDEF PAS2JS}external name 'outputBuffer';{$ENDIF}
   Public
     Property playbackTime : Double Read FplaybackTime; 
     Property inputBuffer : TJSAudioBuffer Read FinputBuffer; 
@@ -701,14 +703,14 @@ Type
     TJSBiquadFilterNode
     --------------------------------------------------------------------}
   
-  TJSBiquadFilterNode = class external name 'BiquadFilterNode'  (TJSAudioNode)
+  TJSBiquadFilterNode = class {$IFDEF PAS2JS}external name 'BiquadFilterNode'{$ENDIF} (TJSAudioNode)
   Private
-    Ffrequency : TJSAudioParam; external name 'frequency'; 
-    Fdetune : TJSAudioParam; external name 'detune'; 
-    FQ : TJSAudioParam; external name 'Q'; 
-    Fgain : TJSAudioParam; external name 'gain'; 
+    Ffrequency : TJSAudioParam; {$IFDEF PAS2JS}external name 'frequency';{$ENDIF}
+    Fdetune : TJSAudioParam; {$IFDEF PAS2JS}external name 'detune';{$ENDIF}
+    FQ : TJSAudioParam; {$IFDEF PAS2JS}external name 'Q';{$ENDIF}
+    Fgain : TJSAudioParam; {$IFDEF PAS2JS}external name 'gain';{$ENDIF}
   Public
-      type_ : BiquadFilterType;external name 'type';
+      type_ : BiquadFilterType; {$IFDEF PAS2JS}external name 'type';{$ENDIF}
     Procedure getFrequencyResponse(frequencyHz : TJSFloat32Array; magResponse : TJSFloat32Array; phaseResponse : TJSFloat32Array);
     Property frequency : TJSAudioParam Read Ffrequency; 
     Property detune : TJSAudioParam Read Fdetune; 
@@ -720,16 +722,16 @@ Type
     TJSChannelMergerNode
     --------------------------------------------------------------------}
   
-  TJSChannelMergerNode = class external name 'ChannelMergerNode'  (TJSAudioNode)
+  TJSChannelMergerNode = class {$IFDEF PAS2JS}external name 'ChannelMergerNode'{$ENDIF} (TJSAudioNode)
   Private
   Public
   end;
-  
+
   { --------------------------------------------------------------------
     TJSChannelSplitterNode
     --------------------------------------------------------------------}
   
-  TJSChannelSplitterNode = class external name 'ChannelSplitterNode'  (TJSAudioNode)
+  TJSChannelSplitterNode = class {$IFDEF PAS2JS}external name 'ChannelSplitterNode'{$ENDIF} (TJSAudioNode)
   Private
   Public
   end;
@@ -738,18 +740,18 @@ Type
     TJSConstantSourceNode
     --------------------------------------------------------------------}
   
-  TJSConstantSourceNode = class external name 'ConstantSourceNode'  (TJSAudioScheduledSourceNode)
+  TJSConstantSourceNode = class {$IFDEF PAS2JS}external name 'ConstantSourceNode'{$ENDIF} (TJSAudioScheduledSourceNode)
   Private
-    Foffset : TJSAudioParam; external name 'offset'; 
+    Foffset : TJSAudioParam; {$IFDEF PAS2JS}external name 'offset';{$ENDIF}
   Public
-    Property offset : TJSAudioParam Read Foffset; 
+    Property offset : TJSAudioParam Read Foffset;
   end;
   
   { --------------------------------------------------------------------
     TJSConvolverNode
     --------------------------------------------------------------------}
   
-  TJSConvolverNode = class external name 'ConvolverNode'  (TJSAudioNode)
+  TJSConvolverNode = class {$IFDEF PAS2JS}external name 'ConvolverNode'{$ENDIF} (TJSAudioNode)
   Private
   Public
       buffer : TJSAudioBuffer;
@@ -760,41 +762,41 @@ Type
     TJSDelayNode
     --------------------------------------------------------------------}
   
-  TJSDelayNode = class external name 'DelayNode'  (TJSAudioNode)
+  TJSDelayNode = class {$IFDEF PAS2JS}external name 'DelayNode'{$ENDIF} (TJSAudioNode)
   Private
-    FdelayTime : TJSAudioParam; external name 'delayTime'; 
+    FdelayTime : TJSAudioParam; {$IFDEF PAS2JS}external name 'delayTime';{$ENDIF}
   Public
     Property delayTime : TJSAudioParam Read FdelayTime; 
   end;
-  
+
   { --------------------------------------------------------------------
     TJSDynamicsCompressorNode
     --------------------------------------------------------------------}
   
-  TJSDynamicsCompressorNode = class external name 'DynamicsCompressorNode'  (TJSAudioNode)
+  TJSDynamicsCompressorNode = class {$IFDEF PAS2JS}external name 'DynamicsCompressorNode'{$ENDIF} (TJSAudioNode)
   Private
-    Fthreshold : TJSAudioParam; external name 'threshold'; 
-    Fknee : TJSAudioParam; external name 'knee'; 
-    Fratio : TJSAudioParam; external name 'ratio'; 
-    Freduction : Double; external name 'reduction'; 
-    Fattack : TJSAudioParam; external name 'attack'; 
-    Frelease : TJSAudioParam; external name 'release'; 
+    Fthreshold : TJSAudioParam; {$IFDEF PAS2JS}external name 'threshold';{$ENDIF}
+    Fknee : TJSAudioParam; {$IFDEF PAS2JS}external name 'knee';{$ENDIF}
+    Fratio : TJSAudioParam; {$IFDEF PAS2JS}external name 'ratio';{$ENDIF}
+    Freduction : Double; {$IFDEF PAS2JS}external name 'reduction';{$ENDIF}
+    Fattack : TJSAudioParam; {$IFDEF PAS2JS}external name 'attack';{$ENDIF}
+    Frelease : TJSAudioParam; {$IFDEF PAS2JS}external name 'release';{$ENDIF}
   Public
-    Property threshold : TJSAudioParam Read Fthreshold; 
+    Property threshold : TJSAudioParam Read Fthreshold;
     Property knee : TJSAudioParam Read Fknee; 
-    Property ratio : TJSAudioParam Read Fratio; 
+    Property ratio : TJSAudioParam Read Fratio;
     Property reduction : Double Read Freduction; 
     Property attack : TJSAudioParam Read Fattack; 
-    Property release : TJSAudioParam Read Frelease; 
+    Property release : TJSAudioParam Read Frelease;
   end;
   
   { --------------------------------------------------------------------
     TJSGainNode
     --------------------------------------------------------------------}
-  
-  TJSGainNode = class external name 'GainNode'  (TJSAudioNode)
+
+  TJSGainNode = class {$IFDEF PAS2JS}external name 'GainNode'{$ENDIF} (TJSAudioNode)
   Private
-    Fgain : TJSAudioParam; external name 'gain'; 
+    Fgain : TJSAudioParam; {$IFDEF PAS2JS}external name 'gain';{$ENDIF}
   Public
     Property gain : TJSAudioParam Read Fgain; 
   end;
@@ -803,7 +805,7 @@ Type
     TJSIIRFilterNode
     --------------------------------------------------------------------}
   
-  TJSIIRFilterNode = class external name 'IIRFilterNode'  (TJSAudioNode)
+  TJSIIRFilterNode = class {$IFDEF PAS2JS}external name 'IIRFilterNode'{$ENDIF} (TJSAudioNode)
   Private
   Public
     Procedure getFrequencyResponse(frequencyHz : TJSFloat32Array; magResponse : TJSFloat32Array; phaseResponse : TJSFloat32Array);
@@ -813,9 +815,9 @@ Type
     TJSMediaElementAudioSourceNode
     --------------------------------------------------------------------}
   
-  TJSMediaElementAudioSourceNode = class external name 'MediaElementAudioSourceNode'  (TJSAudioNode)
+  TJSMediaElementAudioSourceNode = class {$IFDEF PAS2JS}external name 'MediaElementAudioSourceNode'{$ENDIF} (TJSAudioNode)
   Private
-    FmediaElement : TJSElement; external name 'mediaElement'; 
+    FmediaElement : TJSElement; {$IFDEF PAS2JS}external name 'mediaElement';{$ENDIF}
   Public
     Property mediaElement : TJSElement Read FmediaElement; 
   end;
@@ -824,9 +826,9 @@ Type
     TJSMediaStreamAudioDestinationNode
     --------------------------------------------------------------------}
   
-  TJSMediaStreamAudioDestinationNode = class external name 'MediaStreamAudioDestinationNode'  (TJSAudioNode)
+  TJSMediaStreamAudioDestinationNode = class {$IFDEF PAS2JS}external name 'MediaStreamAudioDestinationNode'{$ENDIF} (TJSAudioNode)
   Private
-    Fstream : JSValue; external name 'stream'; 
+    Fstream : JSValue; {$IFDEF PAS2JS}external name 'stream';{$ENDIF}
   Public
     Property stream : JSValue Read Fstream; 
   end;
@@ -835,18 +837,18 @@ Type
     TJSMediaStreamAudioSourceNode
     --------------------------------------------------------------------}
   
-  TJSMediaStreamAudioSourceNode = class external name 'MediaStreamAudioSourceNode'  (TJSAudioNode)
+  TJSMediaStreamAudioSourceNode = class {$IFDEF PAS2JS}external name 'MediaStreamAudioSourceNode'{$ENDIF} (TJSAudioNode)
   Private
-    FmediaStream : JSValue; external name 'mediaStream'; 
+    FmediaStream : JSValue; {$IFDEF PAS2JS}external name 'mediaStream';{$ENDIF}
   Public
-    Property mediaStream : JSValue Read FmediaStream; 
+    Property mediaStream : JSValue Read FmediaStream;
   end;
   
   { --------------------------------------------------------------------
     TJSMediaStreamTrackAudioSourceNode
     --------------------------------------------------------------------}
   
-  TJSMediaStreamTrackAudioSourceNode = class external name 'MediaStreamTrackAudioSourceNode'  (TJSAudioNode)
+  TJSMediaStreamTrackAudioSourceNode = class {$IFDEF PAS2JS}external name 'MediaStreamTrackAudioSourceNode'{$ENDIF} (TJSAudioNode)
   Private
   Public
   end;
@@ -855,12 +857,12 @@ Type
     TJSOscillatorNode
     --------------------------------------------------------------------}
   
-  TJSOscillatorNode = class external name 'OscillatorNode'  (TJSAudioScheduledSourceNode)
+  TJSOscillatorNode = class {$IFDEF PAS2JS}external name 'OscillatorNode'{$ENDIF} (TJSAudioScheduledSourceNode)
   Private
-    Ffrequency : TJSAudioParam; external name 'frequency'; 
-    Fdetune : TJSAudioParam; external name 'detune'; 
+    Ffrequency : TJSAudioParam; {$IFDEF PAS2JS}external name 'frequency';{$ENDIF}
+    Fdetune : TJSAudioParam; {$IFDEF PAS2JS}external name 'detune';{$ENDIF}
   Public
-      type_ : OscillatorType;external name 'type';
+      type_ : OscillatorType; {$IFDEF PAS2JS}external name 'type';{$ENDIF}
     Procedure setPeriodicWave(periodicWave : TJSPeriodicWave);
     Property frequency : TJSAudioParam Read Ffrequency; 
     Property detune : TJSAudioParam Read Fdetune; 
@@ -870,14 +872,14 @@ Type
     TJSPannerNode
     --------------------------------------------------------------------}
   
-  TJSPannerNode = class external name 'PannerNode'  (TJSAudioNode)
+  TJSPannerNode = class {$IFDEF PAS2JS}external name 'PannerNode'{$ENDIF} (TJSAudioNode)
   Private
-    FpositionX : TJSAudioParam; external name 'positionX'; 
-    FpositionY : TJSAudioParam; external name 'positionY'; 
-    FpositionZ : TJSAudioParam; external name 'positionZ'; 
-    ForientationX : TJSAudioParam; external name 'orientationX'; 
-    ForientationY : TJSAudioParam; external name 'orientationY'; 
-    ForientationZ : TJSAudioParam; external name 'orientationZ'; 
+    FpositionX : TJSAudioParam; {$IFDEF PAS2JS}external name 'positionX';{$ENDIF}
+    FpositionY : TJSAudioParam; {$IFDEF PAS2JS}external name 'positionY';{$ENDIF}
+    FpositionZ : TJSAudioParam; {$IFDEF PAS2JS}external name 'positionZ';{$ENDIF}
+    ForientationX : TJSAudioParam; {$IFDEF PAS2JS}external name 'orientationX';{$ENDIF}
+    ForientationY : TJSAudioParam; {$IFDEF PAS2JS}external name 'orientationY';{$ENDIF}
+    ForientationZ : TJSAudioParam; {$IFDEF PAS2JS}external name 'orientationZ';{$ENDIF}
   Public
       panningModel : PanningModelType;
       distanceModel : DistanceModelType;
@@ -901,7 +903,7 @@ Type
     TJSPeriodicWave
     --------------------------------------------------------------------}
   
-  TJSPeriodicWave = class external name 'PeriodicWave' 
+  TJSPeriodicWave = class {$IFDEF PAS2JS}external name 'PeriodicWave'{$ENDIF}
   Private
   Public
   end;
@@ -910,9 +912,9 @@ Type
     TJSScriptProcessorNode
     --------------------------------------------------------------------}
   
-  TJSScriptProcessorNode = class external name 'ScriptProcessorNode'  (TJSAudioNode)
+  TJSScriptProcessorNode = class {$IFDEF PAS2JS}external name 'ScriptProcessorNode'{$ENDIF} (TJSAudioNode)
   Private
-    FbufferSize : Integer; external name 'bufferSize'; 
+    FbufferSize : Integer; {$IFDEF PAS2JS}external name 'bufferSize';{$ENDIF}
   Public
       onaudioprocess : TJSEVentHandler;
     Property bufferSize : Integer Read FbufferSize; 
@@ -922,18 +924,18 @@ Type
     TJSStereoPannerNode
     --------------------------------------------------------------------}
   
-  TJSStereoPannerNode = class external name 'StereoPannerNode'  (TJSAudioNode)
+  TJSStereoPannerNode = class {$IFDEF PAS2JS}external name 'StereoPannerNode'{$ENDIF} (TJSAudioNode)
   Private
-    Fpan : TJSAudioParam; external name 'pan'; 
+    Fpan : TJSAudioParam; {$IFDEF PAS2JS}external name 'pan';{$ENDIF}
   Public
-    Property pan : TJSAudioParam Read Fpan; 
+    Property pan : TJSAudioParam Read Fpan;
   end;
   
   { --------------------------------------------------------------------
     TJSWaveShaperNode
     --------------------------------------------------------------------}
   
-  TJSWaveShaperNode = class external name 'WaveShaperNode'  (TJSAudioNode)
+  TJSWaveShaperNode = class {$IFDEF PAS2JS}external name 'WaveShaperNode'{$ENDIF} (TJSAudioNode)
   Private
   Public
       curve : TJSFloat32Array;
@@ -943,8 +945,8 @@ Type
   { --------------------------------------------------------------------
     TJSAudioWorklet
     --------------------------------------------------------------------}
-  
-  TJSAudioWorklet = class external name 'AudioWorklet'  (TJSOBject)
+
+  TJSAudioWorklet = class {$IFDEF PAS2JS}external name 'AudioWorklet'{$ENDIF} (TJSOBject)
   Private
   Public
   end;
@@ -952,12 +954,12 @@ Type
   { --------------------------------------------------------------------
     TJSAudioWorkletGlobalScope
     --------------------------------------------------------------------}
-  
-  TJSAudioWorkletGlobalScope = class external name 'AudioWorkletGlobalScope'  (TJSObject)
+
+  TJSAudioWorkletGlobalScope = class {$IFDEF PAS2JS}external name 'AudioWorkletGlobalScope'{$ENDIF} (TJSObject)
   Private
-    FcurrentFrame : NativeInt; external name 'currentFrame'; 
-    FcurrentTime : Double; external name 'currentTime'; 
-    FsampleRate : Double; external name 'sampleRate'; 
+    FcurrentFrame : NativeInt; {$IFDEF PAS2JS}external name 'currentFrame';{$ENDIF}
+    FcurrentTime : Double; {$IFDEF PAS2JS}external name 'currentTime';{$ENDIF}
+    FsampleRate : Double; {$IFDEF PAS2JS}external name 'sampleRate';{$ENDIF}
   Public
     Procedure registerProcessor(name : String; processorCtor : TProcedure);
     Property currentFrame : NativeInt Read FcurrentFrame; 
@@ -969,7 +971,7 @@ Type
     TJSAudioParamMap
     --------------------------------------------------------------------}
   
-  TJSAudioParamMap = class external name 'AudioParamMap' 
+  TJSAudioParamMap = class {$IFDEF PAS2JS}external name 'AudioParamMap'{$ENDIF}
   Private
   Public
   end;
@@ -978,28 +980,502 @@ Type
     TJSAudioWorkletNode
     --------------------------------------------------------------------}
   
-  TJSAudioWorkletNode = class external name 'AudioWorkletNode'  (TJSAudioNode)
+  TJSAudioWorkletNode = class {$IFDEF PAS2JS}external name 'AudioWorkletNode'{$ENDIF} (TJSAudioNode)
   Private
-    Fparameters : TJSAudioParamMap; external name 'parameters'; 
-    Fport : TJSMessagePort; external name 'port'; 
+    Fparameters : TJSAudioParamMap; {$IFDEF PAS2JS}external name 'parameters';{$ENDIF}
+    Fport : TJSMessagePort; {$IFDEF PAS2JS}external name 'port';{$ENDIF}
   Public
       onprocessorerror : TJSEVentHandler;
     Property parameters : TJSAudioParamMap Read Fparameters; 
-    Property port : TJSMessagePort Read Fport; 
+    Property port : TJSMessagePort Read Fport;
   end;
   
   { --------------------------------------------------------------------
     TJSAudioWorkletProcessor
     --------------------------------------------------------------------}
   
-  TJSAudioWorkletProcessor = class external name 'AudioWorkletProcessor' 
+  TJSAudioWorkletProcessor = class {$IFDEF PAS2JS}external name 'AudioWorkletProcessor'{$ENDIF}
   Private
-    Fport : TJSMessagePort; external name 'port'; 
+    Fport : TJSMessagePort; {$IFDEF PAS2JS}external name 'port';{$ENDIF}
   Public
     Property port : TJSMessagePort Read Fport; 
   end;
 
 implementation
 
+{$IFDEF DCC}
+{ TJSBaseAudioContext }
 
+function TJSBaseAudioContext.createAnalyser: TJSAnalyserNode;
+begin
+
+end;
+
+function TJSBaseAudioContext.createBiquadFilter: TJSBiquadFilterNode;
+begin
+
+end;
+
+function TJSBaseAudioContext.createBuffer(numberOfChannels, length_: NativeInt;
+  sampleRate: Double): TJSAudioBuffer;
+begin
+
+end;
+
+function TJSBaseAudioContext.createBufferSource: TJSAudioBufferSourceNode;
+begin
+
+end;
+
+function TJSBaseAudioContext.createChannelMerger: TJSChannelMergerNode;
+begin
+
+end;
+
+function TJSBaseAudioContext.createChannelMerger(
+  numberOfInputs: NativeInt): TJSChannelMergerNode;
+begin
+
+end;
+
+function TJSBaseAudioContext.createChannelSplitter(
+  numberOfOutputs: NativeInt): TJSChannelSplitterNode;
+begin
+
+end;
+
+function TJSBaseAudioContext.createChannelSplitter: TJSChannelSplitterNode;
+begin
+
+end;
+
+function TJSBaseAudioContext.createConstantSource: TJSConstantSourceNode;
+begin
+
+end;
+
+function TJSBaseAudioContext.createConvolver: TJSConvolverNode;
+begin
+
+end;
+
+function TJSBaseAudioContext.createDelay(maxDelayTime: Double): TJSDelayNode;
+begin
+
+end;
+
+function TJSBaseAudioContext.createDelay: TJSDelayNode;
+begin
+
+end;
+
+function TJSBaseAudioContext.createDynamicsCompressor: TJSDynamicsCompressorNode;
+begin
+
+end;
+
+function TJSBaseAudioContext.createGain: TJSGainNode;
+begin
+
+end;
+
+function TJSBaseAudioContext.createIIRFilter(feedforward,
+  feedback: TDoubleDynArray): TJSIIRFilterNode;
+begin
+
+end;
+
+function TJSBaseAudioContext.createOscillator: TJSOscillatorNode;
+begin
+
+end;
+
+function TJSBaseAudioContext.createPanner: TJSPannerNode;
+begin
+
+end;
+
+function TJSBaseAudioContext.createPeriodicWave(real,
+  imag: TDoubleDynArray): TJSPeriodicWave;
+begin
+
+end;
+
+function TJSBaseAudioContext.createPeriodicWave(real, imag: TDoubleDynArray;
+  constraints: TJSPeriodicWaveConstraints): TJSPeriodicWave;
+begin
+
+end;
+
+function TJSBaseAudioContext.createScriptProcessor(bufferSize,
+  numberOfInputChannels: NativeInt): TJSScriptProcessorNode;
+begin
+
+end;
+
+function TJSBaseAudioContext.createScriptProcessor(
+  bufferSize: NativeInt): TJSScriptProcessorNode;
+begin
+
+end;
+
+function TJSBaseAudioContext.createScriptProcessor(bufferSize,
+  numberOfInputChannels,
+  numberOfOutputChannels: NativeInt): TJSScriptProcessorNode;
+begin
+
+end;
+
+function TJSBaseAudioContext.createScriptProcessor: TJSScriptProcessorNode;
+begin
+
+end;
+
+function TJSBaseAudioContext.createStereoPanner: TJSStereoPannerNode;
+begin
+
+end;
+
+function TJSBaseAudioContext.createWaveShaper: TJSWaveShaperNode;
+begin
+
+end;
+
+function TJSBaseAudioContext.decodeAudioData(audioData: TJSArrayBuffer;
+  successCallback: DecodeSuccessCallback): TJSPromise;
+begin
+
+end;
+
+function TJSBaseAudioContext.decodeAudioData(
+  audioData: TJSArrayBuffer): TJSPromise;
+begin
+
+end;
+
+function TJSBaseAudioContext.decodeAudioData(audioData: TJSArrayBuffer;
+  successCallback: DecodeSuccessCallback;
+  errorCallback: DecodeErrorCallback): TJSPromise;
+begin
+
+end;
+
+function TJSBaseAudioContext.resume: TJSPromise;
+begin
+
+end;
+
+{ TJSAudioContext }
+
+function TJSAudioContext.close: TJSPromise;
+begin
+
+end;
+
+function TJSAudioContext.createMediaElementSource(
+  mediaElement: TJSElement): TJSMediaElementAudioSourceNode;
+begin
+
+end;
+
+function TJSAudioContext.createMediaStreamDestination: TJSMediaStreamAudioDestinationNode;
+begin
+
+end;
+
+function TJSAudioContext.createMediaStreamSource(
+  mediaStream: JSValue): TJSMediaStreamAudioSourceNode;
+begin
+
+end;
+
+function TJSAudioContext.createMediaStreamTrackSource(
+  mediaStreamTrack: JSValue): TJSMediaStreamTrackAudioSourceNode;
+begin
+
+end;
+
+function TJSAudioContext.getOutputTimestamp: TJSAudioTimestamp;
+begin
+
+end;
+
+function TJSAudioContext.suspend: TJSPromise;
+begin
+
+end;
+
+{ TJSOfflineAudioContext }
+
+function TJSOfflineAudioContext.startRendering: TJSPromise;
+begin
+
+end;
+
+function TJSOfflineAudioContext.suspend(suspendTime: Double): TJSPromise;
+begin
+
+end;
+
+{ TJSAudioBuffer }
+
+procedure TJSAudioBuffer.copyFromChannel(destination: TJSFloat32Array;
+  channelNumber, startInChannel: NativeInt);
+begin
+
+end;
+
+procedure TJSAudioBuffer.copyFromChannel(destination: TJSFloat32Array;
+  channelNumber: NativeInt);
+begin
+
+end;
+
+procedure TJSAudioBuffer.copyToChannel(source: TJSFloat32Array; channelNumber,
+  startInChannel: NativeInt);
+begin
+
+end;
+
+procedure TJSAudioBuffer.copyToChannel(source: TJSFloat32Array;
+  channelNumber: NativeInt);
+begin
+
+end;
+
+function TJSAudioBuffer.getChannelData(channel: NativeInt): TJSFloat32Array;
+begin
+
+end;
+
+{ TJSAudioNode }
+
+function TJSAudioNode.connect(destinationNode: TJSAudioNode; output,
+  input: NativeInt): TJSAudioNode;
+begin
+
+end;
+
+function TJSAudioNode.connect(destinationNode: TJSAudioNode): TJSAudioNode;
+begin
+
+end;
+
+function TJSAudioNode.connect(destinationNode: TJSAudioNode;
+  output: NativeInt): TJSAudioNode;
+begin
+
+end;
+
+procedure TJSAudioNode.connect(destinationParam: TJSAudioParam);
+begin
+
+end;
+
+procedure TJSAudioNode.connect(destinationParam: TJSAudioParam;
+  output: NativeInt);
+begin
+
+end;
+
+procedure TJSAudioNode.disconnect(destinationNode: TJSAudioNode);
+begin
+
+end;
+
+procedure TJSAudioNode.disconnect(output: NativeInt);
+begin
+
+end;
+
+procedure TJSAudioNode.disconnect;
+begin
+
+end;
+
+procedure TJSAudioNode.disconnect(destinationNode: TJSAudioNode;
+  output: NativeInt);
+begin
+
+end;
+
+procedure TJSAudioNode.disconnect(destinationParam: TJSAudioParam;
+  output: NativeInt);
+begin
+
+end;
+
+procedure TJSAudioNode.disconnect(destinationParam: TJSAudioParam);
+begin
+
+end;
+
+procedure TJSAudioNode.disconnect(destinationNode: TJSAudioNode; output,
+  input: NativeInt);
+begin
+
+end;
+
+{ TJSAudioParam }
+
+function TJSAudioParam.cancelAndHoldAtTime(cancelTime: Double): TJSAudioParam;
+begin
+
+end;
+
+function TJSAudioParam.cancelScheduledValues(cancelTime: Double): TJSAudioParam;
+begin
+
+end;
+
+function TJSAudioParam.exponentialRampToValueAtTime(value,
+  endTime: Double): TJSAudioParam;
+begin
+
+end;
+
+function TJSAudioParam.linearRampToValueAtTime(value,
+  endTime: Double): TJSAudioParam;
+begin
+
+end;
+
+function TJSAudioParam.setTargetAtTime(target, startTime,
+  timeConstant: Double): TJSAudioParam;
+begin
+
+end;
+
+function TJSAudioParam.setValueAtTime(value, startTime: Double): TJSAudioParam;
+begin
+
+end;
+
+function TJSAudioParam.setValueCurveAtTime(values: TDoubleDynArray; startTime,
+  duration: Double): TJSAudioParam;
+begin
+
+end;
+
+{ TJSAudioScheduledSourceNode }
+
+procedure TJSAudioScheduledSourceNode.start(when: Double);
+begin
+
+end;
+
+procedure TJSAudioScheduledSourceNode.start;
+begin
+
+end;
+
+procedure TJSAudioScheduledSourceNode.stop(when: Double);
+begin
+
+end;
+
+procedure TJSAudioScheduledSourceNode.stop;
+begin
+
+end;
+
+{ TJSAnalyserNode }
+
+procedure TJSAnalyserNode.getByteFrequencyData(array_: TJSUint8Array);
+begin
+
+end;
+
+procedure TJSAnalyserNode.getByteTimeDomainData(array_: TJSUint8Array);
+begin
+
+end;
+
+procedure TJSAnalyserNode.getFloatFrequencyData(array_: TJSFloat32Array);
+begin
+
+end;
+
+procedure TJSAnalyserNode.getFloatTimeDomainData(array_: TJSFloat32Array);
+begin
+
+end;
+
+{ TJSAudioBufferSourceNode }
+
+procedure TJSAudioBufferSourceNode.start(when, offset, duration: Double);
+begin
+
+end;
+
+procedure TJSAudioBufferSourceNode.start;
+begin
+
+end;
+
+procedure TJSAudioBufferSourceNode.start(when: Double);
+begin
+
+end;
+
+procedure TJSAudioBufferSourceNode.start(when, offset: Double);
+begin
+
+end;
+
+{ TJSAudioListener }
+
+procedure TJSAudioListener.setOrientation(x, y, z, xUp, yUp, zUp: Double);
+begin
+
+end;
+
+procedure TJSAudioListener.setPosition(x, y, z: Double);
+begin
+
+end;
+
+{ TJSBiquadFilterNode }
+
+procedure TJSBiquadFilterNode.getFrequencyResponse(frequencyHz, magResponse,
+  phaseResponse: TJSFloat32Array);
+begin
+
+end;
+
+{ TJSIIRFilterNode }
+
+procedure TJSIIRFilterNode.getFrequencyResponse(frequencyHz, magResponse,
+  phaseResponse: TJSFloat32Array);
+begin
+
+end;
+
+{ TJSOscillatorNode }
+
+procedure TJSOscillatorNode.setPeriodicWave(periodicWave: TJSPeriodicWave);
+begin
+
+end;
+
+{ TJSPannerNode }
+
+procedure TJSPannerNode.setOrientation(x, y, z: Double);
+begin
+
+end;
+
+procedure TJSPannerNode.setPosition(x, y, z: Double);
+begin
+
+end;
+
+{ TJSAudioWorkletGlobalScope }
+
+procedure TJSAudioWorkletGlobalScope.registerProcessor(name: String;
+  processorCtor: TProcedure);
+begin
+
+end;
+{$ENDIF}
 end.

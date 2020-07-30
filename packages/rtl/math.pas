@@ -34,15 +34,16 @@ type
   float = double;
 
   //EInvalidArgument = class(EMathError);
-
+{$IFDEF PAS2JS}
 function Min(const a, b: Double): Double; {$IFDEF PAS2JS}varargs; external name 'Math.min';{$ENDIF} overload;
 function Max(const a, b: Double): Double; {$IFDEF PAS2JS}varargs; external name 'Math.max';{$ENDIF} overload;
-function Min(const a, b: NativeLargeUInt): NativeLargeUInt; varargs; external name 'Math.min'; overload;
-function Max(const a, b: NativeLargeUInt): NativeLargeUInt; varargs; external name 'Math.max'; overload;
-function Min(const a, b: NativeLargeInt): NativeLargeInt; varargs; external name 'Math.min'; overload;
-function Max(const a, b: NativeLargeInt): NativeLargeInt; varargs; external name 'Math.max'; overload;
-function Min(const a, b: Integer): Integer; varargs; external name 'Math.min'; overload;
-function Max(const a, b: Integer): Integer; varargs; external name 'Math.max'; overload;
+function Min(const a, b: NativeLargeUInt): NativeLargeUInt; {$IFDEF PAS2JS}varargs; external name 'Math.min';{$ENDIF} overload;
+function Max(const a, b: NativeLargeUInt): NativeLargeUInt; {$IFDEF PAS2JS}varargs; external name 'Math.max';{$ENDIF} overload;
+function Min(const a, b: NativeLargeInt): NativeLargeInt; {$IFDEF PAS2JS}varargs; external name 'Math.min';{$ENDIF} overload;
+function Max(const a, b: NativeLargeInt): NativeLargeInt; {$IFDEF PAS2JS}varargs; external name 'Math.max';{$ENDIF} overload;
+function Min(const a, b: Integer): Integer; {$IFDEF PAS2JS}varargs; external name 'Math.min';{$ENDIF} overload;
+function Max(const a, b: Integer): Integer; {$IFDEF PAS2JS}varargs; external name 'Math.max';{$ENDIF} overload;
+{$ENDIF}
 
 function InRange(const AValue, AMin, AMax: Integer): Boolean; assembler; overload;
 function InRange(const AValue, AMin, AMax: Double): Boolean; assembler; overload;
@@ -65,14 +66,19 @@ const
   ZeroValue = 0;
   PositiveValue = 1;
 
+{$IFDEF PAS2JS}
 function Sign(const AValue: Integer): Integer; external name 'Math.sign'; overload;
 function Sign(const AValue: Double): Double; external name 'Math.sign'; overload;
+{$ENDIF}
 
 function IsZero(const d: Double; Epsilon: Double): Boolean; overload;
 function IsZero(const d: Double): Boolean; overload;
 
+{$IFDEF PAS2JS}
 function IsNaN(const v: JSValue): boolean; external name {$IFDEF ECMAScript5}'isNaN'{$ELSE}'Number.isNaN'{$ENDIF}; overload;
 function IsFinite(const d: JSValue): Boolean; external name 'isFinite'; overload;// false if NaN, positive or negative infinity
+{$ENDIF}
+
 function IsInfinite(const d: JSValue): Boolean; assembler; overload; // negative or positive infinity
 {$IFDEF ECMAScript6}
 function IsInteger(const d: JSValue): Boolean; external name 'Number.isInteger'; // any integer representable by a double
@@ -81,6 +87,7 @@ function IsSafeInteger(const d: JSValue): Boolean; external name 'Number.isSafeI
 
 function SameValue(const A, B: Double; Epsilon: Double = 0.0): Boolean; overload;
 
+{$IFDEF PAS2JS}
 // function Abs is in System.pas
 function ArcCos(const A : Double): Double; external name 'Math.acos';
 function ArcCosH(const A: Double): Double; external name 'Math.acosh'; // not on IE
@@ -98,6 +105,8 @@ function Log1p(const A: Double): Double; external name 'Math.log1p'; // not on I
 function Log2(const A: Double): Double; external name 'Math.log2'; // not on IE
 function LogN(const A, Base: Double): Double; 
 function Power(const Base, Exponent: Double): Double; external name 'Math.pow';
+{$ENDIF}
+
 // ln, round, sqrt, trunc, cos, sin, arctan, round, exp are in unit system
 function Ceil(const A: Double): Integer;
 function Floor(const A: Double): Integer;
@@ -183,32 +192,35 @@ implementation
 
 function InRange(const AValue, AMin, AMax: Integer): Boolean; assembler;
 asm
-  return (AValue >= AMin) && (AValue <= AMax);
+  {$IFDEF PAS2JS}return (AValue >= AMin) && (AValue <= AMax);{$ENDIF}
 end;
 
 function InRange(const AValue, AMin, AMax: Double): Boolean; assembler;
 asm
-  return (AValue >= AMin) && (AValue <= AMax);
+  {$IFDEF PAS2JS}return (AValue >= AMin) && (AValue <= AMax);{$ENDIF}
 end;
 
 function EnsureRange(const AValue, AMin, AMax: Integer): Integer; assembler;
 asm
+  {$IFDEF PAS2JS}
   if (AValue<AMin){ return AMin;
   } else if (AValue>AMax){ return AMax;
   } else return AValue;
+  {$ENDIF}
 end;
 
 function EnsureRange(const AValue, AMin, AMax: Double): Double; assembler;
 asm
+  {$IFDEF PAS2JS}
   if (AValue<AMin){ return AMin;
   } else if (AValue>AMax){ return AMax;
   } else return AValue;
+  {$ENDIF}
 end;
 
 function RoundTo(const AValue: Double; const Digits: TRoundToRange): Double;
 var
   RV : Double;
-
 begin
   RV:=IntPower(10,Digits);
   Result:=Round(AValue/RV)*RV;
@@ -217,7 +229,6 @@ end;
 function SimpleRoundTo(const AValue: Double; const Digits: TRoundToRange): Double;
 var
   RV : Double;
-
 begin
   RV := IntPower(10, -Digits);
   if AValue < 0 then
@@ -227,10 +238,8 @@ begin
 end;
 
 function randg(mean,stddev : float) : float;
-
 Var
   U1,S2 : Float;
-
 begin
   repeat
     u1:= 2*random-1;
@@ -239,15 +248,12 @@ begin
   Result:=Sqrt(-2*ln(S2)/S2)*u1*stddev+Mean;
 end;
 
-
 function RandomRange(const aFrom, aTo: Integer): Integer;
 begin
-  Result:=Random(Abs(aFrom-aTo))+Min(aTo,AFrom);
+  {$IFDEF PAS2JS}Result:=Random(Abs(aFrom-aTo))+Min(aTo,AFrom);{$ENDIF}
 end;
 
-
 function RandomRange(const aFrom, aTo: NativeLargeInt): NativeLargeInt;
-
 Var
   m : NativeLargeInt;
 begin
@@ -275,50 +281,58 @@ end;
 
 function IsInfinite(const d: JSValue): Boolean; assembler;
 asm
-  return (d==Infinity) || (d==-Infinity);
+  {$IFDEF PAS2JS}return (d==Infinity) || (d==-Infinity);{$ENDIF}
 end;
 
 function SameValue(const A, B: Double; Epsilon: Double): Boolean;
 begin
+  {$IFDEF PAS2JS}
   if (Epsilon=0.0) then
     Epsilon:=Max(Min(Abs(A),Abs(B))*DZeroResolution,DZeroResolution);
   if (A>B) then
     Result:=((A-B)<=Epsilon)
   else
     Result:=((B-A)<=Epsilon);
+  {$ENDIF}
 end;
 
-function JSFloor(const A: Double): Double; external name 'Math.floor';
-function JSCeil(const A: Double): Double; external name 'Math.ceil';
+function JSFloor(const A: Double): Double; {$IFDEF PAS2JS}external name 'Math.floor';{$ENDIF}
+{$IFDEF DCC}
+begin
+  Result := 0;
+end;
+{$ENDIF}
+
+function JSCeil(const A: Double): Double; {$IFDEF PAS2JS}external name 'Math.ceil';{$ENDIF}
+{$IFDEF DCC}
+begin
+  Result := 0;
+end;
+{$ENDIF}
 
 function Ceil(const A: Double): Integer;
-
 begin
   // TODO: add Range check ?
   Result:=trunc(JSCeil(a));
 end;
 
 function Floor(const A: Double): Integer;
-
 begin
   // TODO: add Range check ?
   Result:=trunc(JSFloor(a));
 end;
 
 function Ceil64(const A: Double): NativeLargeInt;
-
 begin
   Result:=trunc(JSCeil(a));
 end;
 
 function Floor64(const A: Double): NativeLargeInt;
-
 begin
   Result:=trunc(JSCeil(a));
 end;
 
 procedure Frexp(X: double; out Mantissa: double; out Exponent: integer);
-
 begin
   Exponent:=0;
   if (X<>0) then
@@ -329,193 +343,165 @@ begin
       until (abs(X)>=0.5)
     else
       while (abs(X)>=1) do
-        begin
+      begin
         X:=X/2;
         Inc(Exponent);
-        end;
+      end;
   Mantissa:=X;
 end;
 
-function LogN(const A, Base: Double): Double; 
-
+function LogN(const A, Base: Double): Double;
 begin
   Result:=Ln(A)/Ln(Base);
 end;
 
 function lnxp1(x: double): double;
-
 var
   y: float;
-
 begin
   if (x>=4.0) then
     result:=ln(1.0+x)
   else
-    begin
+  begin
     y:=1.0+x;
     if (y=1.0) then
       result:=x
     else
-      begin
+    begin
       result:=ln(y);     { lnxp1(-1) = ln(0) = -Inf }
       if y>0.0 then
         result:=result+(x-(y-1.0))/y;
-      end;
     end;
+  end;
 end;
 
 function ldexp(x : double;const p : Integer) : double;
-
 begin
    result:=x*intpower(2.0,p);
 end;
 
-
 function IntPower(base: float; const exponent: Integer): double;
-
 var
   i : longint;
-
 begin
   if (base = 0.0) and (exponent = 0) then
     result:=1
   else
-    begin
+  begin
     i:=abs(exponent);
     Result:=1.0;
     while i>0 do
-      begin
+    begin
       while (i and 1)=0 do
-        begin
+      begin
         i:=i shr 1;
         base:=sqr(base);
-        end;
+      end;
       i:=i-1;
       Result:=Result*base;
-      end;
+    end;
     if exponent<0 then
       Result:=1.0/Result;
-    end;
+  end;
 end;
 
-procedure DivMod(Dividend: LongInt; Divisor: Word; out Result, Remainder: Word);
+procedure DivMod(Dividend: LongInt; Divisor: Word; out Result, Remainder: Word); overload;
 begin
   if Dividend < 0 then
-    begin
+  begin
     Dividend:=-Dividend;
     Result:=-(Dividend Div Divisor);
     Remainder:=-(Dividend+(Result*Divisor));
-    end
+  end
   else
-    begin
+  begin
     Result:=Dividend Div Divisor;
     Remainder:=Dividend-(Result*Divisor);
-    end;
+  end;
 end;
-
 
 procedure DivMod(Dividend: LongInt; Divisor: Word; out Result,
-  Remainder: SmallInt);
+  Remainder: SmallInt); overload;
 begin
   if Dividend < 0 then
-    begin
+  begin
     Dividend:=-Dividend;
     Result:=-(Dividend Div Divisor);
     Remainder:=-(Dividend+(Result*Divisor));
-    end
+  end
   else
-    begin
+  begin
     Result:=Dividend Div Divisor;
     Remainder:=Dividend-(Result*Divisor);
-    end;
+  end;
 end;
 
-
-procedure DivMod(Dividend: DWord; Divisor: DWord; out Result, Remainder: DWord);
+procedure DivMod(Dividend: DWord; Divisor: DWord; out Result, Remainder: DWord); overload;
 begin
   Result:=Dividend Div Divisor;
   Remainder:=Dividend-(Result*Divisor);
 end;
 
-
 procedure DivMod(Dividend: LongInt; Divisor: LongInt; out Result,
-  Remainder: LongInt);
-
+  Remainder: LongInt); overload;
 begin
   if Dividend < 0 then
-    begin
+  begin
     Dividend:=-Dividend;
     Result:=-(Dividend Div Divisor);
     Remainder:=-(Dividend+(Result*Divisor));
-    end
+  end
   else
-    begin
+  begin
     Result:=Dividend Div Divisor;
     Remainder:=Dividend-(Result*Divisor);
-    end;
+  end;
 end;
 
 { ---------------------------------------------------------------------
   Angle conversion
   ---------------------------------------------------------------------}
 function DegToRad(deg: double): double;
-
 begin
   Result:=deg*(pi/180.0);
 end;
 
-
 function RadToDeg(rad: double): double;
-
 begin
   Result:=rad*(180.0/pi);
 end;
 
-
 function GradToRad(grad: double): double;
-
 begin
   Result:=grad*(pi/200.0);
 end;
 
-
 function RadToGrad(rad: double): double;
-
 begin
   Result:=rad*(200.0/pi);
 end;
 
-
 function DegToGrad(deg: double): double;
-
 begin
   Result:=deg*(200.0/180.0);
 end;
 
-
 function GradToDeg(grad: double): double;
-
 begin
   Result:=grad*(180.0/200.0);
 end;
 
-
 function CycleToRad(cycle: double): double;
-
 begin
   Result:=(2*pi)*cycle;
 end;
 
-
 function RadToCycle(rad: double): double;
-
 begin
   Result:=rad*(1/(2*pi));
 end;
 
-
 function DegNormalize(deg: double): double;
-
 begin
   Result:=Deg-Int(Deg/360)*360;
   If (Result<0) then Result:=Result+360;
@@ -524,7 +510,6 @@ end;
 function sumofsquares(const data : array of double) : double;
 var
   i,N : longint;
-
 begin
   N:=Length(Data);
   Result:=0.0;
@@ -542,10 +527,8 @@ end;
   ---------------------------------------------------------------------}
 
 function Sum(const data: array of double): double;
-
 var
   i,N : longint;
-
 begin
   N:=Length(Data);
   Result:=0.0;
@@ -554,10 +537,8 @@ begin
 end;
 
 function Mean(const data: array of double): double;
-
 Var
   N : integer;
-
 begin
   N:=Length(Data);
   if N=0 then
@@ -565,13 +546,12 @@ begin
   else
     Result:=Sum(Data)/N;
 end;
+
 procedure SumsAndSquares(const data: array of Double; out Sum,
   SumOfSquares: double);
-
 var
   i,n : Integer;
   t,s,ss: double;
-
 begin
   n:=length(Data);
   ss:=0.0; // Use local vars, var is very inefficient in js
@@ -587,16 +567,13 @@ begin
 end;
 
 function StdDev(const data: array of Double): float;
-
 begin
   Result:=Sqrt(Variance(Data));
 end;
 
 function Variance(const data: array of Double): double;
-
 var
   n : integer;
-
 begin
   N:=Length(Data);
   If N=1 then
@@ -606,7 +583,6 @@ begin
 end;
 
 function TotalVariance(const data: array of Double): double;
-
 var
   S,SS : Float;
   N : integer;
@@ -622,11 +598,9 @@ begin
 end;
 
 procedure MeanAndStdDev(const data: array of Double; out Mean, StdDev: double);
-
 Var
   I,N : longint;
   M,S : Double;
-
 begin
   N:=Length(Data);
   M:=0;
@@ -647,16 +621,13 @@ begin
 end;
 
 function PopNStdDev(const data : array of Double) : double;
-
 begin
   Result:=Sqrt(PopnVariance(Data));
 end;
 
 function PopNVariance(const data : array of Double) : double;
-
 Var
   N : integer;
-
 begin
   N:=Length(Data);
   if N=0 then
@@ -666,14 +637,12 @@ begin
 end;
 
 procedure MomentSkewKurtosis(const data: array of Double; out m1, m2, m3, m4, skew, kurtosis: double);
-
 var
   i,N: integer;
   deviation, deviation2: double;
   reciprocalN: float;
   // Use local vars for all calculations, var is very slow
   lm1, lm2, lm3, lm4, lskew, lkurtosis: double;
-
 begin
   N:=length(Data);
   lm1 := 0;
@@ -717,6 +686,7 @@ function FutureValue(ARate: double; NPeriods: Integer;
 var
   q, qn, factor: double;
 begin
+  {$IFDEF PAS2JS}
   if ARate = 0 then
     Result := -APresentValue - APayment * NPeriods
   else begin
@@ -727,6 +697,7 @@ begin
       factor := factor * q;
     Result := -(APresentValue * qn + APayment*factor);
   end;
+  {$ENDIF}
 end;
 
 function InterestRate(NPeriods: Integer; APayment, APresentValue, AFutureValue: double;
@@ -765,6 +736,7 @@ function NumberOfPeriods(ARate, APayment, APresentValue, AFutureValue: double;
 var
   q, x1, x2: double;
 begin
+  {$IFDEF PAS2JS}
   if ARate = 0 then
     Result := -(APresentValue + AFutureValue) / APayment
   else begin
@@ -781,6 +753,7 @@ begin
       Result := ln(x1/x2) / ln(q);
     end;
   end;
+  {$ENDIF}
 end;
 
 function Payment(ARate: double; NPeriods: Integer;
@@ -788,6 +761,7 @@ function Payment(ARate: double; NPeriods: Integer;
 var
   q, qn, factor: double;
 begin
+  {$IFDEF PAS2JS}
   if ARate = 0 then
     Result := -(AFutureValue + APresentValue) / NPeriods
   else begin
@@ -798,6 +772,7 @@ begin
       factor := factor * q;
     Result := -(AFutureValue + APresentValue * qn) / factor;
   end;
+  {$ENDIF}
 end;
 
 function PresentValue(ARate: double; NPeriods: Integer;
@@ -805,6 +780,7 @@ function PresentValue(ARate: double; NPeriods: Integer;
 var
   q, qn, factor: double;
 begin
+  {$IFDEF PAS2JS}
   if ARate = 0.0 then
     Result := -AFutureValue - APayment * NPeriods
   else begin
@@ -815,26 +791,24 @@ begin
       factor := factor * q;
     Result := -(AFutureValue + APayment*factor) / qn;
   end;
+  {$ENDIF}
 end;
 
 { ---------------------------------------------------------------------
   Miscellaneous
   ---------------------------------------------------------------------}
 
-function IfThen(val: boolean; const ifTrue: integer; const ifFalse: integer): integer;
-
+function IfThen(val: boolean; const ifTrue: integer; const ifFalse: integer): integer; overload;
 begin
   if val then result:=iftrue else result:=iffalse;
 end;
 
-function IfThen(val: boolean; const ifTrue: double; const ifFalse: double): double;
-
+function IfThen(val: boolean; const ifTrue: double; const ifFalse: double): double; overload;
 begin
   if val then result:=iftrue else result:=iffalse;
 end;
 
-function CompareValue(const A, B  : Integer): TValueRelationship;
-
+function CompareValue(const A, B  : Integer): TValueRelationship; overload;
 begin
   result:=GreaterThanValue;
   if a=b then
@@ -844,8 +818,7 @@ begin
      result:=LessThanValue;
 end;
 
-function CompareValue(const A, B: NativeLargeInt): TValueRelationship;
-
+function CompareValue(const A, B: NativeLargeInt): TValueRelationship; overload;
 begin
   result:=GreaterThanValue;
   if a=b then
@@ -855,8 +828,7 @@ begin
      result:=LessThanValue;
 end;
 
-function CompareValue(const A, B: NativeLargeUInt): TValueRelationship;
-
+function CompareValue(const A, B: NativeLargeUInt): TValueRelationship; overload;
 begin
   result:=GreaterThanValue;
   if a=b then
@@ -866,7 +838,7 @@ begin
      result:=LessThanValue;
 end;
 
-function CompareValue(const A, B: Double; delta: Double): TValueRelationship;
+function CompareValue(const A, B: Double; delta: Double): TValueRelationship; overload;
 begin
   result:=GreaterThanValue;
   if abs(a-b)<=delta then

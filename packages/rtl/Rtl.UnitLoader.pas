@@ -121,14 +121,25 @@ begin
   Result:=FInstance;  
 end;
 
-Procedure LoadIntf(aModule : JSValue); external name 'rtl.loadintf';
-Procedure LoadImpl(aModule : JSValue); external name 'rtl.loadimpl';
-var pas : TJSOBject; external name 'pas';
+Procedure LoadIntf(aModule : JSValue); {$IFDEF PAS2JS}external name 'rtl.loadintf';{$ENDIF}
+{$IFDEF DCC}
+begin
+
+end;
+{$ENDIF}
+Procedure LoadImpl(aModule : JSValue); {$IFDEF PAS2JS}external name 'rtl.loadimpl';{$ENDIF}
+{$IFDEF DCC}
+begin
+
+end;
+{$ENDIF}
+var pas : TJSOBject; {$IFDEF PAS2JS}external name 'pas';{$ENDIF}
 
 function TUnitLoader.FindModule(aModuleName: string): JSValue;
 var
   Key: string;
 begin
+  {$IFDEF PAS2JS}
   Result:=pas[aModuleName];
   if isModule(Result) then exit;
   for Key in pas do
@@ -138,6 +149,7 @@ begin
     if isModule(Result) then exit;
     end;
   Result:=nil;
+  {$ENDIF}
 end;
 
 function TUnitLoader.HaveModule(aModuleName: string): Boolean;
@@ -163,6 +175,7 @@ var
   l,u : TStringDynArray;
   m : String;
 begin
+  {$IFDEF PAS2JS}
   SetLength(l,0);
   u:=TStringDynArray(TJSOBject(aModule)['$intfuseslist']);
   for m in u do
@@ -173,6 +186,7 @@ begin
     if not (HaveModule(m) or IsInLoadList(m)) then
       TJSArray(l).push(m);
   Result:=l;
+  {$ENDIF}
 end;
 
 function TUnitLoader.AreAllDependenciesLoaded(aTask: TLoadTask;
@@ -195,8 +209,10 @@ end;
 
 procedure TUnitLoader.AddToLoadList(aUnitName: String);
 begin
+  {$IFDEF PAS2JS}
   if IndexOfLoadUnit(aUnitName)<0 then
     TJSArray(FLoadList).Push(aUnitName);
+  {$ENDIF}
 end;
 
 procedure TUnitLoader.RemoveFromLoadList(aUnitName: String);
@@ -222,6 +238,7 @@ Var
   Deps : TStringDynArray;
 
 begin
+  {$IFDEF PAS2JS}
 {$IFDEF DEBUGUNITLOADER}  Writeln('Succesfully loaded sources');{$ENDIF}
   aTask:=TLoadTask(aData);
   For aModuleName in aTask.LoadUnitNames do
@@ -239,6 +256,7 @@ begin
     end;
   if (aTask.AllLoaded) then
     aTask.CallLoaded;
+  {$ENDIF}
 end;
 
 function TUnitLoader.GetUnitURL(const aUnitName: string): String;
@@ -290,7 +308,7 @@ begin
       aOnLoaded(aUnitNames,aData);
     end
   else
-    LoadScripts(Scripts,@UnitSourcesLoaded,TLoadTask.Create(aUnitNames,aOnLoaded,aData));
+    LoadScripts(Scripts,{$IFDEF PAS2JS}@{$ENDIF}UnitSourcesLoaded,TLoadTask.Create(aUnitNames,aOnLoaded,aData));
 end;
 
 end.

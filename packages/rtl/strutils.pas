@@ -19,7 +19,7 @@ unit strutils;
 interface
 
 uses
-  SysUtils, Types;
+  SysUtils, Types {$IFDEF DCC}, SystemPas2JS{$ENDIF};
 
 { ---------------------------------------------------------------------
     Case insensitive search/replace
@@ -235,11 +235,13 @@ function Hex2Dec(const S: string): Longint;
 var
   HexStr: string;
 begin
+  {$IFDEF PAS2JS}
   if Pos('$',S)=0 then
     HexStr:='$'+ S
   else
     HexStr:=S;
   Result:=StrToInt(HexStr);
+  {$ENDIF}
 end;
 
 {
@@ -250,24 +252,26 @@ end;
   In the future, be wary with routines that use strtoint, floating point 
   and/or format() derivatives. And check every divisor for 0.
 }
-
+{$IFDEF PAS2JS}
 {$IMPLICITEXCEPTIONS OFF}
+{$ENDIF}
 
 { ---------------------------------------------------------------------
     Case insensitive search/replace
   ---------------------------------------------------------------------}
 Function AnsiResemblesText(const AText, AOther: string): Boolean;
-
 begin
+  {$IFDEF PAS2JS}
   if Assigned(AnsiResemblesProc) then
     Result:=AnsiResemblesProc(AText,AOther)
   else
     Result:=False;
+  {$ENDIF}
 end;
 
 Function AnsiContainsText(const AText, ASubText: string): Boolean;
 begin
-  Result:=Pos(Uppercase(ASubText),Uppercase(AText))>0;
+  {$IFDEF PAS2JS}Result:=Pos(Uppercase(ASubText),Uppercase(AText))>0;{$ENDIF}
 end;
 
 
@@ -322,7 +326,7 @@ end;
 
 Function AnsiContainsStr(const AText, ASubText: string): Boolean;
 begin
-  Result := Pos(ASubText,AText)>0;
+  {$IFDEF PAS2JS}Result := Pos(ASubText,AText)>0;{$ENDIF}
 end;
 
 
@@ -480,8 +484,8 @@ var
   pStr1, pStr2: integer;
   Len1, Len2: SizeInt;
   TextLen1, TextLen2: SizeInt;
-  TextStr1: string = '';
-  TextStr2: string = '';
+  TextStr1: string {$IFDEF PAS2JS}= ''{$ENDIF};
+  TextStr2: string {$IFDEF PAS2JS}= ''{$ENDIF};
   i: SizeInt;
   j: SizeInt;
   
@@ -1017,11 +1021,10 @@ begin
 end;
 
 function NPos(const C: string; S: string; N: Integer): SizeInt;
-
 var
   i,p,k: SizeInt;
-
 begin
+  {$IFDEF PAS2JS}
   Result:=0;
   if N<1 then
     Exit;
@@ -1036,13 +1039,12 @@ begin
   Until (i>n) or (p=0);
   If (P>0) then
     Result:=K;
+  {$ENDIF}
 end;
 
 function AddChar(C: Char; const S: string; N: Integer): string;
-
 Var
   l : SizeInt;
-
 begin
   Result:=S;
   l:=Length(Result);
@@ -1076,23 +1078,22 @@ end;
 
 
 function Copy2Symb(const S: string; Symb: Char): string;
-
 var
   p: SizeInt;
-
 begin
+  {$IFDEF PAS2JS}
   p:=Pos(Symb,S);
   if p=0 then
     p:=Length(S)+1;
   Result:=Copy(S,1,p-1);
+  {$ENDIF}
 end;
 
 function Copy2SymbDel(var S: string; Symb: Char): string;
-
 var
   p: SizeInt;
-
 begin
+  {$IFDEF PAS2JS}
   p:=Pos(Symb,S);
   if p=0 then
     begin
@@ -1104,6 +1105,7 @@ begin
       Result:=Copy(S,1,p-1);
       delete(s,1,p);		
     end;
+  {$ENDIF}
 end;
 
 function Copy2Space(const S: string): string;
@@ -1654,8 +1656,10 @@ end;
 
 function RomanToInt(const S: string; Strictness: TRomanConversionStrictness = rcsRelaxed): Longint;
 begin
+  {$IFDEF PAS2JS}
   if not TryRomanToInt(S, Result, Strictness) then
     raise EConvertError.CreateFmt(SInvalidRomanNumeral,[S]);
+  {$ENDIF}
 end;
 
 function RomanToIntDef(const S: String; const ADefault: Longint;
@@ -1778,6 +1782,7 @@ var
   Diff, i, J: SizeInt;
 
 begin
+  {$IFDEF PAS2JS}
   Result:=0;
   i:=Pos('?',HelpWilds);
   if (i=0) then
@@ -1800,6 +1805,7 @@ begin
           Break;
       end;
     end;
+  {$ENDIF}
 end;
 
 Function isMatch(level : integer;inputstr,wilds : string; CWild, CinputWord: SizeInt;MaxInputword,maxwilds : SizeInt; Out EOS : Boolean) : Boolean;
@@ -1867,6 +1873,7 @@ var
   eos : Boolean;
 
 begin
+  {$IFDEF PAS2JS}
   Result:=true;
   if Wilds = inputStr then
     Exit;
@@ -1892,6 +1899,7 @@ begin
     Wilds:=UpperCase(Wilds);
     end;
   Result:=isMatch(1,inputStr,wilds,1,1,MaxinputWord, MaxWilds,EOS);
+  {$ENDIF}
 end;
 
 
@@ -1928,14 +1936,16 @@ var
   i: Integer;
   C: Char;
 begin
+  {$IFDEF PAS2JS}
   Result:='';
   for i:=0 to Length(Source) div 2 - 1 do
-    begin
+  begin
     C:=Chr(StrTointDef('$' + Copy(Source, (i * 2) + 1, 2), Ord(' ')));
     if Length(Key) > 0 then
       C:=Chr(Ord(Key[1 + (i mod Length(Key))]) xor Ord(C));
     Result:=Result + C;
-    end;
+  end;
+  {$ENDIF}
 end;
 
 function GetCmdLineArg(const Switch: string; SwitchChars: Array of char): string;
@@ -1946,17 +1956,17 @@ begin
   i:=1;
   Result:='';
   while (Result='') and (i<=ParamCount) do
-    begin
+  begin
     S:=ParamStr(i);
     if (Length(SwitchChars)=0) or (CharInSet(S[1],SwitchChars) and (Length(S) > 1)) and
        (CompareText(Copy(S,2,Length(S)-1),Switch)=0) then
-      begin
+    begin
       inc(i);
       if i<=ParamCount then
         Result:=ParamStr(i);
-      end;
-    inc(i);
     end;
+    inc(i);
+  end;
 end;
 
 Function RPosEX(C:char;const S : String;offs:cardinal):SizeInt; overload;
@@ -2115,7 +2125,7 @@ end;
 
 function SplitString(const S, Delimiters: string): TStringDynArray;
 begin
-  Result:=S.Split(Delimiters);
+  {$IFDEF PAS2JS}Result:=S.Split(Delimiters);{$ENDIF}
 end;
 
 function StartsText(const ASubText, AText: string): Boolean;
@@ -2131,10 +2141,12 @@ end;
 
 function ResemblesText(const AText, AOther: string): Boolean;
 begin
+  {$IFDEF PAS2JS}
   if Assigned(ResemblesProc) then
     Result := ResemblesProc(AText, AOther)
   else
     Result := False;
+  {$ENDIF}
 end;
 
 function ContainsText(const AText, ASubText: string): Boolean;

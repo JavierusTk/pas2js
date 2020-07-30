@@ -22,7 +22,7 @@ unit DateUtils;
 interface
 
 uses
-  SysUtils, Math;
+  SysUtils, Math {$IFDEF DCC}, SystemPas2JS{$ENDIF};
 
 { ---------------------------------------------------------------------
     Various constants
@@ -153,10 +153,10 @@ Function EndOfAMonth(const AYear, AMonth: Word): TDateTime;
 
 Function StartOfTheWeek(const AValue: TDateTime): TDateTime;
 Function EndOfTheWeek(const AValue: TDateTime): TDateTime;
-Function StartOfAWeek(const AYear, AWeekOfYear: Word; const ADayOfWeek: Word): TDateTime;
-Function StartOfAWeek(const AYear, AWeekOfYear: Word): TDateTime; // ADayOFWeek 1
-Function EndOfAWeek(const AYear, AWeekOfYear: Word; const ADayOfWeek: Word): TDateTime;
-Function EndOfAWeek(const AYear, AWeekOfYear: Word): TDateTime; // const ADayOfWeek: Word = 7
+Function StartOfAWeek(const AYear, AWeekOfYear: Word; const ADayOfWeek: Word): TDateTime; overload;
+Function StartOfAWeek(const AYear, AWeekOfYear: Word): TDateTime; overload; // ADayOFWeek 1
+Function EndOfAWeek(const AYear, AWeekOfYear: Word; const ADayOfWeek: Word): TDateTime; overload;
+Function EndOfAWeek(const AYear, AWeekOfYear: Word): TDateTime; overload; // const ADayOfWeek: Word = 7
 
 
 { ---------------------------------------------------------------------
@@ -282,21 +282,21 @@ Function MilliSecondSpan(const ANow, AThen: TDateTime): Double;
     Increment/decrement functions.
   ---------------------------------------------------------------------}
 
-Function IncYear(const AValue: TDateTime; const ANumberOfYears: Integer ): TDateTime;
-Function IncYear(const AValue: TDateTime): TDateTime; // ; const ANumberOfYears: Integer = 1)
+Function IncYear(const AValue: TDateTime; const ANumberOfYears: Integer ): TDateTime; overload;
+Function IncYear(const AValue: TDateTime): TDateTime; overload; // ; const ANumberOfYears: Integer = 1)
 // Function IncMonth is in SysUtils
-Function IncWeek(const AValue: TDateTime; const ANumberOfWeeks: Integer): TDateTime;
-Function IncWeek(const AValue: TDateTime): TDateTime; // ; const ANumberOfWeeks: Integer = 1)
-Function IncDay(const AValue: TDateTime; const ANumberOfDays: Integer): TDateTime;
-Function IncDay(const AValue: TDateTime): TDateTime; //; const ANumberOfDays: Integer = 1)
-Function IncHour(const AValue: TDateTime; const ANumberOfHours: NativeLargeInt): TDateTime;
-Function IncHour(const AValue: TDateTime): TDateTime; //; const ANumberOfHours: NativeLargeInt = 1
-Function IncMinute(const AValue: TDateTime; const ANumberOfMinutes: NativeLargeInt): TDateTime;
-Function IncMinute(const AValue: TDateTime): TDateTime; // ; const ANumberOfMinutes: NativeLargeInt = 1
-Function IncSecond(const AValue: TDateTime; const ANumberOfSeconds: NativeLargeInt): TDateTime;
-Function IncSecond(const AValue: TDateTime): TDateTime; // ; const ANumberOfSeconds: NativeLargeInt = 1
-Function IncMilliSecond(const AValue: TDateTime; const ANumberOfMilliSeconds: NativeLargeInt): TDateTime;
-Function IncMilliSecond(const AValue: TDateTime): TDateTime; // ; const ANumberOfMilliSeconds: NativeLargeInt = 1
+Function IncWeek(const AValue: TDateTime; const ANumberOfWeeks: Integer): TDateTime; overload;
+Function IncWeek(const AValue: TDateTime): TDateTime; overload; // ; const ANumberOfWeeks: Integer = 1)
+Function IncDay(const AValue: TDateTime; const ANumberOfDays: Integer): TDateTime; overload;
+Function IncDay(const AValue: TDateTime): TDateTime; overload; //; const ANumberOfDays: Integer = 1)
+Function IncHour(const AValue: TDateTime; const ANumberOfHours: NativeLargeInt): TDateTime; overload;
+Function IncHour(const AValue: TDateTime): TDateTime; overload; //; const ANumberOfHours: NativeLargeInt = 1
+Function IncMinute(const AValue: TDateTime; const ANumberOfMinutes: NativeLargeInt): TDateTime; overload;
+Function IncMinute(const AValue: TDateTime): TDateTime; overload; // ; const ANumberOfMinutes: NativeLargeInt = 1
+Function IncSecond(const AValue: TDateTime; const ANumberOfSeconds: NativeLargeInt): TDateTime; overload;
+Function IncSecond(const AValue: TDateTime): TDateTime; overload; // ; const ANumberOfSeconds: NativeLargeInt = 1
+Function IncMilliSecond(const AValue: TDateTime; const ANumberOfMilliSeconds: NativeLargeInt): TDateTime; overload;
+Function IncMilliSecond(const AValue: TDateTime): TDateTime; overload; // ; const ANumberOfMilliSeconds: NativeLargeInt = 1
 
 { ---------------------------------------------------------------------
     Encode/Decode of complete timestamp
@@ -310,11 +310,11 @@ Function TryEncodeDateTime(const AYear, AMonth, ADay, AHour, AMinute, ASecond, A
     Encode/decode date, specifying week of year and day of week
   ---------------------------------------------------------------------}
 
-Function EncodeDateWeek(const AYear, AWeekOfYear: Word; const ADayOfWeek: Word): TDateTime;
-Function EncodeDateWeek(const AYear, AWeekOfYear: Word): TDateTime; //; const ADayOfWeek: Word = 1
+Function EncodeDateWeek(const AYear, AWeekOfYear: Word; const ADayOfWeek: Word): TDateTime; overload;
+Function EncodeDateWeek(const AYear, AWeekOfYear: Word): TDateTime; overload; //; const ADayOfWeek: Word = 1
 Procedure DecodeDateWeek(const AValue: TDateTime; out AYear, AWeekOfYear, ADayOfWeek: Word);
-Function TryEncodeDateWeek(const AYear, AWeekOfYear: Word; out AValue: TDateTime; const ADayOfWeek: Word): Boolean;
-Function TryEncodeDateWeek(const AYear, AWeekOfYear: Word; out AValue: TDateTime): Boolean; //; const ADayOfWeek: Word = 1
+Function TryEncodeDateWeek(const AYear, AWeekOfYear: Word; out AValue: TDateTime; const ADayOfWeek: Word): Boolean; overload;
+Function TryEncodeDateWeek(const AYear, AWeekOfYear: Word; out AValue: TDateTime): Boolean; overload; //; const ADayOfWeek: Word = 1
 
 { ---------------------------------------------------------------------
     Encode/decode date, specifying day of year
@@ -383,8 +383,8 @@ Function TryEncodeDayOfWeekInMonth(const AYear, AMonth, ANthDayOfWeek,  ADayOfWe
     Exception throwing routines
   ---------------------------------------------------------------------}
 
-Procedure InvalidDateTimeError(const AYear, AMonth, ADay, AHour, AMinute, ASecond, AMilliSecond: Word; const ABaseDate: TDateTime);
-Procedure InvalidDateTimeError(const AYear, AMonth, ADay, AHour, AMinute, ASecond, AMilliSecond: Word); // const ABaseDate: TDateTime = 0
+Procedure InvalidDateTimeError(const AYear, AMonth, ADay, AHour, AMinute, ASecond, AMilliSecond: Word; const ABaseDate: TDateTime); overload;
+Procedure InvalidDateTimeError(const AYear, AMonth, ADay, AHour, AMinute, ASecond, AMilliSecond: Word); overload; // const ABaseDate: TDateTime = 0
 Procedure InvalidDateWeekError(const AYear, AWeekOfYear, ADayOfWeek: Word);
 Procedure InvalidDateDayError(const AYear, ADayOfYear: Word);
 Procedure InvalidDateMonthWeekError(const AYear, AMonth, AWeekOfMonth, ADayOfWeek: Word);
@@ -427,10 +427,10 @@ Function DosDateTimeToDateTime( AValue: longint): TDateTime;
 
 { UTC <-> Local time }
 
-Function UniversalTimeToLocal(UT: TDateTime): TDateTime;
-Function UniversalTimeToLocal(UT: TDateTime; TZOffset : Integer): TDateTime;
-Function LocalTimeToUniversal(LT: TDateTime): TDateTime;
-Function LocalTimeToUniversal(LT: TDateTime; TZOffset: Integer): TDateTime;
+Function UniversalTimeToLocal(UT: TDateTime): TDateTime; overload;
+Function UniversalTimeToLocal(UT: TDateTime; TZOffset : Integer): TDateTime; overload;
+Function LocalTimeToUniversal(LT: TDateTime): TDateTime; overload;
+Function LocalTimeToUniversal(LT: TDateTime; TZOffset: Integer): TDateTime; overload;
 
 { RFC 3339 support }
 
@@ -708,11 +708,12 @@ const
   DOWMap: array [1..7] of Word = (7, 1, 2, 3, 4, 5, 6);
 
 Function PreviousDayOfWeek (DayOfWeek : Word) : Word;
-
 begin
+  {$IFDEF PAS2JS}
   If Not IsValidDayOfWeek(DayOfWeek) then
     Raise EConvertError.CreateFmt(SErrInvalidDayOfWeek,[DayOfWeek]);
   Result:=DOWMap[DayOfWeek];
+  {$ENDIF}
 end;
 
 
@@ -1893,9 +1894,11 @@ end;
 
 function EncodeTimeInterval(Hour, Minute, Second, MilliSecond: word): TDateTime;
 begin
+  {$IFDEF PAS2JS}
    If not TryEncodeTimeInterval(Hour,Minute,Second,MilliSecond,Result) then
      Raise EConvertError.CreateFmt(SerrInvalidHourMinuteSecMsec,
                                [Hour,Minute,Second,MilliSecond]);
+  {$ENDIF}
 end;
 
 { ---------------------------------------------------------------------
@@ -2120,8 +2123,8 @@ end;
 Procedure InvalidDateTimeError(const AYear, AMonth, ADay, AHour, AMinute, ASecond, AMilliSecond: Word; const ABaseDate: TDateTime);
 
   Function DoField(Arg,Def : Word; Unknown: String) : String;
-
   begin
+    {$IFDEF PAS2JS}
     if Def=0 then ;
     If (Arg<>LFAI) then
       Result:=Format('%.*d',[Length(Unknown),Arg])
@@ -2129,13 +2132,14 @@ Procedure InvalidDateTimeError(const AYear, AMonth, ADay, AHour, AMinute, ASecon
       Result:=Unknown
     else
       Result:=Format('%.*d',[Length(Unknown),Arg]);
+    {$ENDIF}
   end;
 
 Var
   Y,M,D,H,N,S,MS : Word;
   Msg : String;
-
 begin
+  {$IFDEF PAS2JS}
   DecodeDateTime(ABasedate,Y,M,D,H,N,S,MS);
   Msg:=DoField(AYear,Y,'????');
   Msg:=Msg+DateSeparator+DoField(AMonth,M,'??');
@@ -2145,6 +2149,7 @@ begin
   Msg:=Msg+TimeSeparator+Dofield(ASecond,S,'??');
   Msg:=Msg+DecimalSeparator+DoField(AMilliSecond,MS,'???');
   Raise EConvertError.CreateFmt(SErrInvalidTimeStamp,[Msg]);
+  {$ENDIF}
 end;
 
 
@@ -2156,34 +2161,35 @@ end;
 
 Procedure InvalidDateWeekError(const AYear, AWeekOfYear, ADayOfWeek: Word);
 begin
-  Raise EConvertError.CreateFmt(SErrInvalidDateWeek,[AYear,AWeekOfYear,ADayOfWeek]);
+  {$IFDEF PAS2JS}Raise EConvertError.CreateFmt(SErrInvalidDateWeek,[AYear,AWeekOfYear,ADayOfWeek]);{$ENDIF}
 end;
 
 
 Procedure InvalidDateDayError(const AYear, ADayOfYear: Word);
 begin
-  Raise EConvertError.CreateFmt(SErrInvalidDayOfYear,[AYear,ADayOfYear]);
+  {$IFDEF PAS2JS}Raise EConvertError.CreateFmt(SErrInvalidDayOfYear,[AYear,ADayOfYear]);{$ENDIF}
 end;
 
 
 Procedure InvalidDateMonthWeekError(const AYear, AMonth, AWeekOfMonth, ADayOfWeek: Word);
 begin
-  Raise EConvertError.CreateFmt(SErrInvalidDateMonthWeek,[Ayear,AMonth,AWeekOfMonth,ADayOfWeek]);
+  {$IFDEF PAS2JS}Raise EConvertError.CreateFmt(SErrInvalidDateMonthWeek,[Ayear,AMonth,AWeekOfMonth,ADayOfWeek]);{$ENDIF}
 end;
 
 
 Procedure InvalidDayOfWeekInMonthError(const AYear, AMonth, ANthDayOfWeek,  ADayOfWeek: Word);
 
 begin
-  Raise EConvertError.CreateFmt(SErrInvalidDayOfWeekInMonth,[AYear,AMonth,ANthDayOfWeek,ADayOfWeek]);
+  {$IFDEF PAS2JS}Raise EConvertError.CreateFmt(SErrInvalidDayOfWeekInMonth,[AYear,AMonth,ANthDayOfWeek,ADayOfWeek]);{$ENDIF}
 end;
 
 
 { ---------------------------------------------------------------------
     Julian and Modified Julian Date conversion support
   ---------------------------------------------------------------------}
-
+{$IFDEF PAS2JS}
 {$push}
+{$ENDIF}
 {$R-}
 {$Q-}
 
@@ -2203,8 +2209,10 @@ end;
 
 Function JulianDateToDateTime(const AValue: Double): TDateTime;
 begin
+  {$IFDEF PAS2JS}
   if not TryJulianDateToDateTime(AValue, Result) then
     raise EConvertError.CreateFmt(SInvalidJulianDate, [AValue]);
+  {$ENDIF}
 end;
 
 
@@ -2245,7 +2253,9 @@ begin
   Result:=TryJulianDateToDateTime(AValue + 2400000.5, ADateTime);
 end;
 
+{$IFDEF PAS2JS}
 {$pop}//{$R-}{$Q-} for Julian conversion functions
+{$ENDIF}
 
 { ---------------------------------------------------------------------
     Unix timestamp support.
@@ -2432,26 +2442,27 @@ var
   lY, lM, lD, lH, lMi, lS: Integer;
 
 begin
+  {$IFDEF PAS2JS}
   if Trim(AValue) = '' then
-    begin
+  begin
     Result:=True;
     ADateTime:=0;
-    end;
+  end;
   lY:=StrToIntDef(Copy(AValue,P[ppYear],4),-1);
   lM:=StrToIntDef(Copy(AValue,P[ppMonth],2),-1);
   lD:=StrToIntDef(Copy(AValue,P[ppDay],2),-1);
   if (Length(AValue)>=P[ppTime]) then
-    begin
+  begin
     lH:=StrToIntDef(Copy(AValue,P[ppHour],2),-1);
     lMi:=StrToIntDef(Copy(AValue,P[ppMinute],2),-1);
     lS:=StrToIntDef(Copy(AValue,P[ppSec],2),-1);
-    end
+  end
   else
-    begin
+  begin
     lH:=0;
     lMi:=0;
     lS:=0;
-    end;
+  end;
   Result:=(lY>=0) and (lM>=0) and (lD>=0) and (lH>=0) and (lMi>=0) and (ls>=0);
   if Not Result then
     ADateTime:=0
@@ -2461,6 +2472,7 @@ begin
       ADateTime:=EncodeTime(lH, lMi, lS, 0)
     else
       ADateTime:=EncodeDate(lY, lM, lD) + EncodeTime(lH, lMi, lS, 0);
+  {$ENDIF}
 end;
 
 Function RFC3339ToDateTime(const Avalue: String): TDateTime;
@@ -2481,9 +2493,8 @@ const
 
 { TDateTimeScanner }
 procedure TDateTimeScanner.ArrayMatchError;
-
 begin
-  raiseexception(format(SNoArrayMatch,[FPatternPos+1,FPos]))
+  {$IFDEF PAS2JS}raiseexception(format(SNoArrayMatch,[FPatternPos+1,FPos])){$ENDIF}
 end;
 
 procedure TDateTimeScanner.SetPattern(AValue: String);
@@ -2507,6 +2518,7 @@ var
   oi:integer;
 
 begin
+  {$IFDEF PAS2JS}
   Result:=0;
   oi:=FPos;
   c:=FPattern[FPatternPos];
@@ -2523,13 +2535,12 @@ begin
     end;
   if (OI=FPos) then
     raiseexception(format(SPatternCharMismatch,[c,oi]));
+  {$ENDIF}
 end;
 
 function TDateTimeScanner.FindIMatch(const values :array of string; aTerm : string):integer;
-
 var
   l,i : integer;
-
 begin
   Result:=-1;
   l:=high(values);
@@ -2558,11 +2569,10 @@ end;
 
 
 procedure TDateTimeScanner.MatchChar(c:char);
-
 Var
   N : Char;
-
 begin
+  {$IFDEF PAS2JS}
   if (FPos<=Flen) then
     N:=FText[FPos]
   else
@@ -2571,6 +2581,7 @@ begin
     raiseexception(format(SNoCharMatch,[N,C,FPatternPos+FPatternOffset,FPos]));
   inc(FPatternPos);
   inc(FPos);
+  {$ENDIF}
 end;
 
 function TDateTimeScanner.ScanPatternLength :integer;
@@ -2741,6 +2752,7 @@ var
   i : Integer;
 
 begin
+  {$IFDEF PAS2JS}
   if StartPos<1 then
     StartPos:=1;
   if FPos<StartPos then
@@ -2812,6 +2824,7 @@ begin
   Result:=FTimeval;
   if (FY>0) and (FM>0) and (FD>0) then
     Result:=Result+EncodeDate(FY,FM,FD);
+  {$ENDIF}
 end;
 
 Function ScanDateTime(APattern,AValue: String; APos : integer = 1) : TDateTime;

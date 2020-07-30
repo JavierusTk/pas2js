@@ -1,11 +1,13 @@
 Unit webbluetooth;
 
 {$H+}
+{$IFDEF PAS2JS}
 {$modeswitch externalclass}
+{$ENDIF}
 
 interface
 
-uses JS,web;
+uses JS,web{$IFDEF DCC},types{$ENDIF};
 
 Type
   // Forward class definitions
@@ -132,9 +134,9 @@ Type
     TJSBluetooth
     --------------------------------------------------------------------}
   
-  TJSBluetooth = class external name 'Bluetooth'  (TJSEventTarget)
+  TJSBluetooth = class {$IFDEF PAS2JS}external name 'Bluetooth'{$ENDIF} (TJSEventTarget)
   Private
-    FreferringDevice : TJSBluetoothDevice; external name 'referringDevice'; 
+    FreferringDevice : TJSBluetoothDevice; {$IFDEF PAS2JS}external name 'referringDevice';{$ENDIF}
   Public
     onavailabilitychanged : TJSEventHandler;
     function getAvailability: TJSPromise;
@@ -148,7 +150,7 @@ Type
     --------------------------------------------------------------------}
   
   TTJSBluetoothDeviceDynArray = Array of TJSBluetoothDevice;
-  TJSBluetoothPermissionResult = class external name 'BluetoothPermissionResult'  (TJSOBject)
+  TJSBluetoothPermissionResult = class {$IFDEF PAS2JS}external name 'BluetoothPermissionResult'{$ENDIF} (TJSOBject)
   Private
   Public
     devices : TTJSBluetoothDeviceDynArray;
@@ -158,28 +160,28 @@ Type
     TJSValueEvent
     --------------------------------------------------------------------}
   
-  TJSValueEvent = class external name 'ValueEvent'  (TJSEvent)
+  TJSValueEvent = class {$IFDEF PAS2JS}external name 'ValueEvent'{$ENDIF} (TJSEvent)
   Private
-    Fvalue : JSValue; external name 'value'; 
+    Fvalue : JSValue; {$IFDEF PAS2JS}external name 'value';{$ENDIF}
   Public
     Property value : JSValue Read Fvalue; 
   end;
-  
+
   { --------------------------------------------------------------------
     TJSBluetoothDevice
     --------------------------------------------------------------------}
   
-  TJSBluetoothDevice = class external name 'BluetoothDevice' 
+  TJSBluetoothDevice = class {$IFDEF PAS2JS}external name 'BluetoothDevice'{$ENDIF}
   Private
-    Fid : String; external name 'id'; 
-    Fname : String; external name 'name'; 
-    Fgatt : TJSBluetoothRemoteGATTServer; external name 'gatt'; 
-    FwatchingAdvertisements : boolean; external name 'watchingAdvertisements'; 
+    Fid : String; {$IFDEF PAS2JS}external name 'id';{$ENDIF}
+    Fname : String; {$IFDEF PAS2JS}external name 'name';{$ENDIF}
+    Fgatt : TJSBluetoothRemoteGATTServer; {$IFDEF PAS2JS}external name 'gatt';{$ENDIF}
+    FwatchingAdvertisements : boolean; {$IFDEF PAS2JS}external name 'watchingAdvertisements';{$ENDIF}
   Public
     function watchAdvertisements: TJSPromise;
     Procedure unwatchAdvertisements;
     Property id : String Read Fid; 
-    Property name : String Read Fname; 
+    Property name : String Read Fname;
     Property gatt : TJSBluetoothRemoteGATTServer Read Fgatt; 
     Property watchingAdvertisements : boolean Read FwatchingAdvertisements; 
   end;
@@ -188,16 +190,16 @@ Type
     TJSBluetoothManufacturerDataMap
     --------------------------------------------------------------------}
   
-  TJSBluetoothManufacturerDataMap = class external name 'BluetoothManufacturerDataMap' 
+  TJSBluetoothManufacturerDataMap = class {$IFDEF PAS2JS}external name 'BluetoothManufacturerDataMap'{$ENDIF}
   Private
   Public
   end;
-  
+
   { --------------------------------------------------------------------
     TJSBluetoothServiceDataMap
     --------------------------------------------------------------------}
-  
-  TJSBluetoothServiceDataMap = class external name 'BluetoothServiceDataMap' 
+
+  TJSBluetoothServiceDataMap = class {$IFDEF PAS2JS}external name 'BluetoothServiceDataMap'{$ENDIF}
   Private
   Public
   end;
@@ -207,20 +209,20 @@ Type
     --------------------------------------------------------------------}
   
   TUUIDDynArray = Array of UUID;
-  TJSBluetoothAdvertisingEvent = class external name 'BluetoothAdvertisingEvent'  (TJSEvent)
+  TJSBluetoothAdvertisingEvent = class {$IFDEF PAS2JS}external name 'BluetoothAdvertisingEvent'{$ENDIF} (TJSEvent)
   Private
-    Fdevice : TJSBluetoothDevice; external name 'device'; 
-    Fuuids : TUUIDDynArray; external name 'uuids'; 
-    Fname : String; external name 'name'; 
-    Fappearance : Cardinal; external name 'appearance'; 
-    FtxPower : byte; external name 'txPower'; 
-    Frssi : byte; external name 'rssi'; 
-    FmanufacturerData : TJSBluetoothManufacturerDataMap; external name 'manufacturerData'; 
-    FserviceData : TJSBluetoothServiceDataMap; external name 'serviceData'; 
+    Fdevice : TJSBluetoothDevice; {$IFDEF PAS2JS}external name 'device';{$ENDIF}
+    Fuuids : TUUIDDynArray; {$IFDEF PAS2JS}external name 'uuids';{$ENDIF}
+    Fname : String; {$IFDEF PAS2JS}external name 'name';{$ENDIF}
+    Fappearance : Cardinal; {$IFDEF PAS2JS}external name 'appearance';{$ENDIF}
+    FtxPower : byte; {$IFDEF PAS2JS}external name 'txPower';{$ENDIF}
+    Frssi : byte; {$IFDEF PAS2JS}external name 'rssi';{$ENDIF}
+    FmanufacturerData : TJSBluetoothManufacturerDataMap; {$IFDEF PAS2JS}external name 'manufacturerData';{$ENDIF}
+    FserviceData : TJSBluetoothServiceDataMap; {$IFDEF PAS2JS}external name 'serviceData';{$ENDIF}
   Public
     Property device : TJSBluetoothDevice Read Fdevice; 
     Property uuids : TUUIDDynArray Read Fuuids; 
-    Property name : String Read Fname; 
+    Property name : String Read Fname;
     Property appearance : Cardinal Read Fappearance; 
     Property txPower : byte Read FtxPower; 
     Property rssi : byte Read Frssi; 
@@ -232,10 +234,10 @@ Type
     TJSBluetoothRemoteGATTServer
     --------------------------------------------------------------------}
   
-  TJSBluetoothRemoteGATTServer = class external name 'BluetoothRemoteGATTServer' 
+  TJSBluetoothRemoteGATTServer = class {$IFDEF PAS2JS}external name 'BluetoothRemoteGATTServer'{$ENDIF}
   Private
-    Fdevice : TJSBluetoothDevice; external name 'device'; 
-    Fconnected : boolean; external name 'connected'; 
+    Fdevice : TJSBluetoothDevice; {$IFDEF PAS2JS}external name 'device';{$ENDIF}
+    Fconnected : boolean; {$IFDEF PAS2JS}external name 'connected';{$ENDIF}
   Public
     function connect: TJSPromise;
     Procedure disconnect;
@@ -250,11 +252,11 @@ Type
     TJSBluetoothRemoteGATTService
     --------------------------------------------------------------------}
   
-  TJSBluetoothRemoteGATTService = class external name 'BluetoothRemoteGATTService' 
+  TJSBluetoothRemoteGATTService = class {$IFDEF PAS2JS}external name 'BluetoothRemoteGATTService'{$ENDIF}
   Private
-    Fdevice : TJSBluetoothDevice; external name 'device'; 
-    Fuuid : UUID; external name 'uuid'; 
-    FisPrimary : boolean; external name 'isPrimary'; 
+    Fdevice : TJSBluetoothDevice; {$IFDEF PAS2JS}external name 'device';{$ENDIF}
+    Fuuid : UUID; {$IFDEF PAS2JS}external name 'uuid';{$ENDIF}
+    FisPrimary : boolean; {$IFDEF PAS2JS}external name 'isPrimary';{$ENDIF}
   Public
     function getCharacteristic(characteristic : BluetoothCharacteristicUUID): TJSPromise;
     function getCharacteristics(characteristic : BluetoothCharacteristicUUID): TJSPromise; overload;
@@ -271,12 +273,12 @@ Type
     TJSBluetoothRemoteGATTCharacteristic
     --------------------------------------------------------------------}
   
-  TJSBluetoothRemoteGATTCharacteristic = class external name 'BluetoothRemoteGATTCharacteristic' 
+  TJSBluetoothRemoteGATTCharacteristic = class {$IFDEF PAS2JS}external name 'BluetoothRemoteGATTCharacteristic'{$ENDIF}
   Private
-    Fservice : TJSBluetoothRemoteGATTService; external name 'service'; 
-    Fuuid : UUID; external name 'uuid'; 
-    Fproperties : TJSBluetoothCharacteristicProperties; external name 'properties'; 
-    Fvalue : TJSDataView; external name 'value'; 
+    Fservice : TJSBluetoothRemoteGATTService; {$IFDEF PAS2JS}external name 'service';{$ENDIF}
+    Fuuid : UUID; {$IFDEF PAS2JS}external name 'uuid';{$ENDIF}
+    Fproperties : TJSBluetoothCharacteristicProperties; {$IFDEF PAS2JS}external name 'properties';{$ENDIF}
+    Fvalue : TJSDataView; {$IFDEF PAS2JS}external name 'value';{$ENDIF}
   Public
     function getDescriptor(descriptor : BluetoothDescriptorUUID): TJSPromise;
     function getDescriptors(descriptor : BluetoothDescriptorUUID): TJSPromise; overload;
@@ -295,17 +297,17 @@ Type
     TJSBluetoothCharacteristicProperties
     --------------------------------------------------------------------}
   
-  TJSBluetoothCharacteristicProperties = class external name 'BluetoothCharacteristicProperties' 
+  TJSBluetoothCharacteristicProperties = class {$IFDEF PAS2JS}external name 'BluetoothCharacteristicProperties'{$ENDIF}
   Private
-    Fbroadcast : boolean; external name 'broadcast'; 
-    Fread : boolean; external name 'read'; 
-    FwriteWithoutResponse : boolean; external name 'writeWithoutResponse'; 
-    Fwrite : boolean; external name 'write'; 
-    Fnotify : boolean; external name 'notify'; 
-    Findicate : boolean; external name 'indicate'; 
-    FauthenticatedSignedWrites : boolean; external name 'authenticatedSignedWrites'; 
-    FreliableWrite : boolean; external name 'reliableWrite'; 
-    FwritableAuxiliaries : boolean; external name 'writableAuxiliaries'; 
+    Fbroadcast : boolean; {$IFDEF PAS2JS}external name 'broadcast';{$ENDIF}
+    Fread : boolean; {$IFDEF PAS2JS}external name 'read';{$ENDIF}
+    FwriteWithoutResponse : boolean; {$IFDEF PAS2JS}external name 'writeWithoutResponse';{$ENDIF}
+    Fwrite : boolean; {$IFDEF PAS2JS}external name 'write';{$ENDIF}
+    Fnotify : boolean; {$IFDEF PAS2JS}external name 'notify';{$ENDIF}
+    Findicate : boolean; {$IFDEF PAS2JS}external name 'indicate';{$ENDIF}
+    FauthenticatedSignedWrites : boolean; {$IFDEF PAS2JS}external name 'authenticatedSignedWrites';{$ENDIF}
+    FreliableWrite : boolean; {$IFDEF PAS2JS}external name 'reliableWrite';{$ENDIF}
+    FwritableAuxiliaries : boolean; {$IFDEF PAS2JS}external name 'writableAuxiliaries';{$ENDIF}
   Public
     Property broadcast : boolean Read Fbroadcast; 
     Property read : boolean Read Fread; 
@@ -322,11 +324,11 @@ Type
     TJSBluetoothRemoteGATTDescriptor
     --------------------------------------------------------------------}
   
-  TJSBluetoothRemoteGATTDescriptor = class external name 'BluetoothRemoteGATTDescriptor' 
+  TJSBluetoothRemoteGATTDescriptor = class {$IFDEF PAS2JS}external name 'BluetoothRemoteGATTDescriptor'{$ENDIF}
   Private
-    Fcharacteristic : TJSBluetoothRemoteGATTCharacteristic; external name 'characteristic'; 
-    Fuuid : UUID; external name 'uuid'; 
-    Fvalue : TJSDataView; external name 'value'; 
+    Fcharacteristic : TJSBluetoothRemoteGATTCharacteristic; {$IFDEF PAS2JS}external name 'characteristic';{$ENDIF}
+    Fuuid : UUID; {$IFDEF PAS2JS}external name 'uuid';{$ENDIF}
+    Fvalue : TJSDataView; {$IFDEF PAS2JS}external name 'value';{$ENDIF}
   Public
     function readValue: TJSPromise;
     function writeValue(value : TJSBufferSource): TJSPromise;
@@ -339,7 +341,7 @@ Type
     TJSCharacteristicEventHandlers
     --------------------------------------------------------------------}
   
-  TJSCharacteristicEventHandlers = class external name 'CharacteristicEventHandlers' 
+  TJSCharacteristicEventHandlers = class {$IFDEF PAS2JS}external name 'CharacteristicEventHandlers'{$ENDIF}
   Private
   Public
       oncharacteristicvaluechanged : TJSEventHandler;
@@ -349,7 +351,7 @@ Type
     TJSBluetoothDeviceEventHandlers
     --------------------------------------------------------------------}
   
-  TJSBluetoothDeviceEventHandlers = class external name 'BluetoothDeviceEventHandlers' 
+  TJSBluetoothDeviceEventHandlers = class {$IFDEF PAS2JS}external name 'BluetoothDeviceEventHandlers'{$ENDIF}
   Private
   Public
       ongattserverdisconnected : TJSEventHandler;
@@ -359,7 +361,7 @@ Type
     TJSServiceEventHandlers
     --------------------------------------------------------------------}
   
-  TJSServiceEventHandlers = class external name 'ServiceEventHandlers' 
+  TJSServiceEventHandlers = class {$IFDEF PAS2JS}external name 'ServiceEventHandlers'{$ENDIF}
   Private
   Public
       onserviceadded : TJSEventHandler;
@@ -371,7 +373,7 @@ Type
     TJSBluetoothUUID
     --------------------------------------------------------------------}
   
-  TJSBluetoothUUID = class external name 'BluetoothUUID' 
+  TJSBluetoothUUID = class {$IFDEF PAS2JS}external name 'BluetoothUUID'{$ENDIF}
   Private
   Public
     function getService(name : JSValue): UUID;
@@ -384,14 +386,184 @@ Type
     TJSNavigator
     --------------------------------------------------------------------}
   
-  TJSNavigator = class external name 'Navigator' 
+  TJSNavigator = class {$IFDEF PAS2JS}external name 'Navigator'{$ENDIF}
   Private
-    Fbluetooth : TJSBluetooth; external name 'bluetooth';
+    Fbluetooth : TJSBluetooth; {$IFDEF PAS2JS}external name 'bluetooth';{$ENDIF}
   Public
     Property bluetooth : TJSBluetooth Read Fbluetooth;
   end;
 
 implementation
 
+{$IFDEF DCC}
+{ TJSBluetooth }
 
+function TJSBluetooth.getAvailability: TJSPromise;
+begin
+
+end;
+
+function TJSBluetooth.requestDevice(
+  options: TJSRequestDeviceOptions): TJSPromise;
+begin
+
+end;
+
+function TJSBluetooth.requestDevice: TJSPromise;
+begin
+
+end;
+
+{ TJSBluetoothDevice }
+
+procedure TJSBluetoothDevice.unwatchAdvertisements;
+begin
+
+end;
+
+function TJSBluetoothDevice.watchAdvertisements: TJSPromise;
+begin
+
+end;
+
+{ TJSBluetoothRemoteGATTServer }
+
+function TJSBluetoothRemoteGATTServer.connect: TJSPromise;
+begin
+
+end;
+
+procedure TJSBluetoothRemoteGATTServer.disconnect;
+begin
+
+end;
+
+function TJSBluetoothRemoteGATTServer.getPrimaryService(
+  service: BluetoothServiceUUID): TJSPromise;
+begin
+
+end;
+
+function TJSBluetoothRemoteGATTServer.getPrimaryServices(
+  service: BluetoothServiceUUID): TJSPromise;
+begin
+
+end;
+
+function TJSBluetoothRemoteGATTServer.getPrimaryServices: TJSPromise;
+begin
+
+end;
+
+{ TJSBluetoothRemoteGATTService }
+
+function TJSBluetoothRemoteGATTService.getCharacteristic(
+  characteristic: BluetoothCharacteristicUUID): TJSPromise;
+begin
+
+end;
+
+function TJSBluetoothRemoteGATTService.getCharacteristics: TJSPromise;
+begin
+
+end;
+
+function TJSBluetoothRemoteGATTService.getCharacteristics(
+  characteristic: BluetoothCharacteristicUUID): TJSPromise;
+begin
+
+end;
+
+function TJSBluetoothRemoteGATTService.getIncludedService(
+  service: BluetoothServiceUUID): TJSPromise;
+begin
+
+end;
+
+function TJSBluetoothRemoteGATTService.getIncludedServices(
+  service: BluetoothServiceUUID): TJSPromise;
+begin
+
+end;
+
+function TJSBluetoothRemoteGATTService.getIncludedServices: TJSPromise;
+begin
+
+end;
+
+{ TJSBluetoothRemoteGATTCharacteristic }
+
+function TJSBluetoothRemoteGATTCharacteristic.getDescriptor(
+  descriptor: BluetoothDescriptorUUID): TJSPromise;
+begin
+
+end;
+
+function TJSBluetoothRemoteGATTCharacteristic.getDescriptors(
+  descriptor: BluetoothDescriptorUUID): TJSPromise;
+begin
+
+end;
+
+function TJSBluetoothRemoteGATTCharacteristic.getDescriptors: TJSPromise;
+begin
+
+end;
+
+function TJSBluetoothRemoteGATTCharacteristic.readValue: TJSPromise;
+begin
+
+end;
+
+function TJSBluetoothRemoteGATTCharacteristic.startNotifications: TJSPromise;
+begin
+
+end;
+
+function TJSBluetoothRemoteGATTCharacteristic.stopNotifications: TJSPromise;
+begin
+
+end;
+
+function TJSBluetoothRemoteGATTCharacteristic.writeValue(
+  value: TJSBufferSource): TJSPromise;
+begin
+
+end;
+
+{ TJSBluetoothRemoteGATTDescriptor }
+
+function TJSBluetoothRemoteGATTDescriptor.readValue: TJSPromise;
+begin
+
+end;
+
+function TJSBluetoothRemoteGATTDescriptor.writeValue(
+  value: TJSBufferSource): TJSPromise;
+begin
+
+end;
+
+{ TJSBluetoothUUID }
+
+function TJSBluetoothUUID.canonicalUUID(alias: NativeInt): UUID;
+begin
+
+end;
+
+function TJSBluetoothUUID.getCharacteristic(name: JSValue): UUID;
+begin
+
+end;
+
+function TJSBluetoothUUID.getDescriptor(name: JSValue): UUID;
+begin
+
+end;
+
+function TJSBluetoothUUID.getService(name: JSValue): UUID;
+begin
+
+end;
+{$ENDIF}
 end.

@@ -85,13 +85,14 @@ begin
 end;
 
 function THotReload.doAbort(Event: TEventListenerEvent): boolean;
-
 begin
+  {$IFDEF PAS2JS}
   if Event=nil then ;
   if Options.log then
     console.warn('Status request aborted');
   FLastReq:=Nil;
   Result:=false;
+  {$ENDIF}
 end;
 
 Procedure THotReload.Reload;
@@ -101,11 +102,10 @@ begin
 end;
 
 function THotReload.GetLineColor(aLine : String) : String;
-
 var
   P : Integer;
-
 begin
+  {$IFDEF PAS2JS}
   P:=Pos(':',ALine);
   if (P>0) then
     begin
@@ -124,6 +124,7 @@ begin
   else
     Result:='EBE7E3';
   end;
+  {$ENDIF}
 end;
 
 function THotReload.GetLineStyle(aLine : String) : String;
@@ -156,6 +157,7 @@ Var
   N : TJSNode;
   I : Integer;
 begin
+  {$IFDEF PAS2JS}
   Writeln('Searching for '+Options.OverlayElementID);
   D:=document.getElementById(Options.OverlayElementID);
   if D=Nil then
@@ -177,6 +179,7 @@ begin
     MN.appendChild(SP);
     D.appendChild(MN);
     end;
+  {$ENDIF}
 end;
 
 Procedure THotReload.HandleMessage(aData : TJSObject);
@@ -187,6 +190,7 @@ Var
   I : integer;
 
 begin
+  {$IFDEF PAS2JS}
   if Options.Log then
     console.log('Status ',aData);
   if isDefined(aData['ping']) then
@@ -235,14 +239,14 @@ begin
     if Options.Log then
       console.warn('Unknown status data', TJSJSON.stringify(aData));
   end;
+  {$ENDIF}
 end;
 
 function THotReload.doStatus(Event: TEventListenerEvent): boolean;
-
 Var
   Data : TJSObject;
-
 begin
+  {$IFDEF PAS2JS}
   if Event=nil then ;
   if Options.log then
     console.warn('Status received');
@@ -254,14 +258,14 @@ begin
   end;
   FLastReq:=Nil;
   Result:=True;
+  {$ENDIF}
 end;
 
 procedure THotReload.OnTick;
-
 Var
   Req : TJSXMLHttpRequest;
-
 begin
+  {$IFDEF PAS2JS}
   if Options.log then
     console.log('tick');
   if (FLastReq<>Nil) then
@@ -272,16 +276,19 @@ begin
   Req.open('GET',Options.Path);
   Req.send;
   FLastReq:=Req;
+  {$ENDIF}
 end;
 
 procedure THotReload.Initialize;
 
 begin
+  {$IFDEF PAS2JS}
   console.log('init');
   if isunDefined(window) then
     exit; // Cannot do anything
   console.log('init 2');
   Window.setInterval(@OnTick,Options.PollInterval);
+  {$ENDIF}
 end;
 
 { THotReloadOptions }

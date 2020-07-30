@@ -1,6 +1,7 @@
 unit Generics.Strings;
-
+{$IFDEF PAS2JS}
 {$Mode Delphi}
+{$ENDIF}
 
 interface
 

@@ -12,12 +12,14 @@
  **********************************************************************}
 unit RTTI;
 
+{$IFDEF PAS2JS}
 {$ModeSwitch advancedrecords}
+{$ENDIF}
 
 interface
 
 uses
-  JS, RTLConsts, Types, SysUtils, TypInfo;
+  JS, RTLConsts, Types, SysUtils, TypInfo{$IFDEF DCC}, SystemPas2JS{$ENDIF};
 
 resourcestring
   SErrInvokeInvalidCodeAddr = 'CodeAddress is not a function';
@@ -248,9 +250,8 @@ type
   private
     FOnInvoke: TVirtualInterfaceInvokeEvent;
   public
-    constructor Create(InterfaceTypeInfo: Pointer); overload; assembler;
-    constructor Create(InterfaceTypeInfo: Pointer;
-      const InvokeEvent: TVirtualInterfaceInvokeEvent); overload;
+    constructor Create(InterfaceTypeInfo: Pointer); overload; {$IFDEF PAS2JS}assembler;{$ENDIF}
+    constructor Create(InterfaceTypeInfo: Pointer; const InvokeEvent: TVirtualInterfaceInvokeEvent); overload;
     property OnInvoke: TVirtualInterfaceInvokeEvent read FOnInvoke write FOnInvoke;
   end;
 
@@ -269,6 +270,7 @@ var
 procedure CreateVirtualCorbaInterface(InterfaceTypeInfo: Pointer;
   const MethodImplementation: TVirtualInterfaceInvokeEvent; out IntfVar); assembler;
 asm
+  {$IFDEF PAS2JS}
   var IntfType = InterfaceTypeInfo.interface;
   var i = Object.create(IntfType);
   var o = { $name: "virtual", $fullname: "virtual" };
@@ -283,6 +285,7 @@ asm
     IntfType = Object.getPrototypeOf(IntfType);
   } while(IntfType!=null);
   IntfVar.set(i);
+  {$ENDIF}
 end;
 
 { TValue }
@@ -299,6 +302,7 @@ class function TValue.FromJSValue(v: JSValue): TValue;
 var
   i: NativeInt;
 begin
+  {$IFDEF PAS2JS}
   Result.FData:=v;
   case jsTypeOf(v) of
   'number':
@@ -330,6 +334,7 @@ begin
   else
     Result.FTypeInfo:=system.TypeInfo(JSValue);
   end;
+  {$ENDIF}
 end;
 
 function TValue.IsObject: boolean;
@@ -417,6 +422,7 @@ function TValue.AsInterface: IInterface;
 var
   k: TTypeKind;
 begin
+  {$IFDEF PAS2JS}
   k:=Kind;
   if k = tkInterface then
     Result := IInterface(FData)// ToDo
@@ -424,6 +430,7 @@ begin
     Result := Nil
   else
     raise EInvalidCast.Create(SErrInvalidTypecast);
+  {$ENDIF}
 end;
 
 function TValue.AsString: string;
@@ -441,10 +448,12 @@ end;
 
 function TValue.AsExtended: Extended;
 begin
+  {$IFDEF PAS2JS}
   if js.isNumber(FData) then
     Result:=Double(FData)
   else
     raise EInvalidCast.Create(SErrInvalidTypecast);
+  {$ENDIF}
 end;
 
 function TValue.ToString: String;
@@ -522,9 +531,11 @@ end;
 
 constructor TRttiInstanceType.Create(ATypeInfo: PTypeInfo);
 begin
+  {$IFDEF PAS2JS}
   if not (TTypeInfo(ATypeInfo) is TTypeInfoClass) then
     raise EInvalidCast.Create('');
   inherited Create(ATypeInfo);
+  {$ENDIF}
 end;
 
 { TRTTIContext }
@@ -544,12 +555,14 @@ var
   key: string;
   o: TRttiType;
 begin
+  {$IFDEF PAS2JS}
   for key in FPool do
     if FPool.hasOwnProperty(key) then begin
       o:=TRTTIType(FPool[key]);
       o.Free;
       end;
   FPool:=nil;
+  {$ENDIF}
 end;
 
 function TRTTIContext.GetType(aTypeInfo: PTypeInfo): TRTTIType;
@@ -557,6 +570,7 @@ var
   t: TTypeinfo absolute aTypeInfo;
   Name: String;
 begin
+  {$IFDEF PAS2JS}
   if aTypeInfo=nil then exit(nil);
   Name:=t.Name;
   if isModule(t.Module) then
@@ -564,16 +578,19 @@ begin
   if FPool.hasOwnProperty(Name) then
     Result:=TRttiType(FPool[Name])
   else
-    begin
+  begin
     Result:=TRttiType.Create(aTypeInfo);
     FPool[Name]:=Result;
-    end;
+  end;
+  {$ENDIF}
 end;
 
 function TRTTIContext.GetType(aClass: TClass): TRTTIType;
 begin
+  {$IFDEF PAS2JS}
   if aClass=nil then exit(nil);
   Result:=GetType(TypeInfo(aClass));
+  {$ENDIF}
 end;
 
 { TRttiObject }
@@ -736,8 +753,10 @@ end;
 
 function TRttiType.GetAttributes: TCustomAttributeArray;
 begin
+  {$IFDEF PAS2JS}
   FAttributes:=GetRTTIAttributes(FTypeInfo.Attributes);
   Result:=FAttributes;
+  {$ENDIF}
 end;
 
 function TRttiType.GetDeclaredProperties: TRttiPropertyArray;
@@ -782,6 +801,7 @@ end;
 
 constructor TVirtualInterface.Create(InterfaceTypeInfo: Pointer); assembler;
 asm
+  {$IFDEF PAS2JS}
   var IntfType = InterfaceTypeInfo.interface;
   if (IntfType.$kind !== 'com') rtl.raiseE('EInvalidCast');
   var guid = IntfType.$guid;
@@ -813,6 +833,7 @@ asm
   // store the implementation of IntfType (used by the as-operator)
   this.$interfaces = {};
   this.$interfaces[guid] = i;
+  {$ENDIF}
 end;
 
 constructor TVirtualInterface.Create(InterfaceTypeInfo: Pointer;

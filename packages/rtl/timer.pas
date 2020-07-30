@@ -69,7 +69,7 @@ end;
 
 procedure TTimer.DoUpdateTimer;
 begin
-  FID := window.setInterval(@DoTimer, FInterval);
+  {$IFDEF PAS2JS}FID := window.setInterval(@DoTimer, FInterval);{$ENDIF}
 end;
 
 procedure TTimer.DoClearTimer;

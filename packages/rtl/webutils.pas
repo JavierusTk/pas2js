@@ -1,6 +1,8 @@
 unit webutils;
 
+{$IFDEF PAS2JS}
 {$mode objfpc}
+{$ENDIF}
 
 interface
 
@@ -14,6 +16,7 @@ implementation
 function AsyncSleep(ms: NativeInt): TJSPromise;
 
 begin
+  {$IFDEF PAS2JS}
   Result := TJSPromise.New(
   procedure(resolve,reject : TJSPromiseResolver)
   begin
@@ -24,6 +27,7 @@ begin
     end,
     ms);
   end);
+  {$ENDIF}
 end;
 
 end.

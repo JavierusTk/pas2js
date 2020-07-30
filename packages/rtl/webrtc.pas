@@ -1,12 +1,15 @@
 Unit webrtc;
-
+{$IFDEF PAS2JS}
 {$MODE ObjFPC}
+{$ENDIF}
 {$H+}
+{$IFDEF PAS2JS}
 {$modeswitch externalclass}
+{$ENDIF}
 
 interface
 
-uses SysUtils, JS,web;
+uses SysUtils, JS, web{$IFDEF DCC}, types{$ENDIF};
 
 {
   Automatically generated file by TWebIDLToPas on 2020-03-23 14:48:13
@@ -152,7 +155,7 @@ Type
     username : String;
     credentialType : RTCIceCredentialType;
   end;
-  
+
   { --------------------------------------------------------------------
     TJSRTCOfferAnswerOptions
     --------------------------------------------------------------------}
@@ -182,14 +185,14 @@ Type
     --------------------------------------------------------------------}
   
   TJSRTCSessionDescriptionInit = class(TJSObject)
-    type_ : RTCSdpType;external name 'type';
+    type_ : RTCSdpType; {$IFDEF PAS2JS}external name 'type';{$ENDIF}
     sdp : String;
   end;
   
   { --------------------------------------------------------------------
     TJSRTCIceCandidateInit
     --------------------------------------------------------------------}
-  
+
   TJSRTCIceCandidateInit = class(TJSObject)
     candidate : String;
     sdpMid : String;
@@ -446,7 +449,7 @@ Type
   
   TJSRTCStats = class(TJSObject)
     timestamp : double;
-    type_ : String;external name 'type';
+    type_ : String; {$IFDEF PAS2JS}external name 'type';{$ENDIF}
     id : String;
   end;
   
@@ -478,21 +481,21 @@ Type
   TTJSRTCRtpSenderDynArray = Array of TJSRTCRtpSender;
   TTJSRTCRtpReceiverDynArray = Array of TJSRTCRtpReceiver;
   TTJSRTCRtpTransceiverDynArray = Array of TJSRTCRtpTransceiver;
-  
-  TJSRTCPeerConnection = class external name 'RTCPeerConnection'  (TJSEventTarget)
+
+  TJSRTCPeerConnection = class {$IFDEF PAS2JS}external name 'RTCPeerConnection'{$ENDIF} (TJSEventTarget)
   Private
-    FlocalDescription : TJSRTCSessionDescription; external name 'localDescription'; 
-    FcurrentLocalDescription : TJSRTCSessionDescription; external name 'currentLocalDescription'; 
-    FpendingLocalDescription : TJSRTCSessionDescription; external name 'pendingLocalDescription'; 
-    FremoteDescription : TJSRTCSessionDescription; external name 'remoteDescription'; 
-    FcurrentRemoteDescription : TJSRTCSessionDescription; external name 'currentRemoteDescription'; 
-    FpendingRemoteDescription : TJSRTCSessionDescription; external name 'pendingRemoteDescription'; 
-    FsignalingState : RTCSignalingState; external name 'signalingState'; 
-    FiceGatheringState : RTCIceGatheringState; external name 'iceGatheringState'; 
-    FiceConnectionState : RTCIceConnectionState; external name 'iceConnectionState'; 
-    FconnectionState : RTCPeerConnectionState; external name 'connectionState'; 
-    FcanTrickleIceCandidates : boolean; external name 'canTrickleIceCandidates'; 
-    Fsctp : TJSRTCSctpTransport; external name 'sctp'; 
+    FlocalDescription : TJSRTCSessionDescription; {$IFDEF PAS2JS}external name 'localDescription';{$ENDIF}
+    FcurrentLocalDescription : TJSRTCSessionDescription; {$IFDEF PAS2JS}external name 'currentLocalDescription';{$ENDIF}
+    FpendingLocalDescription : TJSRTCSessionDescription; {$IFDEF PAS2JS}external name 'pendingLocalDescription';{$ENDIF}
+    FremoteDescription : TJSRTCSessionDescription; {$IFDEF PAS2JS}external name 'remoteDescription';{$ENDIF}
+    FcurrentRemoteDescription : TJSRTCSessionDescription; {$IFDEF PAS2JS}external name 'currentRemoteDescription';{$ENDIF}
+    FpendingRemoteDescription : TJSRTCSessionDescription; {$IFDEF PAS2JS}external name 'pendingRemoteDescription';{$ENDIF}
+    FsignalingState : RTCSignalingState; {$IFDEF PAS2JS}external name 'signalingState';{$ENDIF}
+    FiceGatheringState : RTCIceGatheringState; {$IFDEF PAS2JS}external name 'iceGatheringState';{$ENDIF}
+    FiceConnectionState : RTCIceConnectionState; {$IFDEF PAS2JS}external name 'iceConnectionState';{$ENDIF}
+    FconnectionState : RTCPeerConnectionState; {$IFDEF PAS2JS}external name 'connectionState';{$ENDIF}
+    FcanTrickleIceCandidates : boolean; {$IFDEF PAS2JS}external name 'canTrickleIceCandidates';{$ENDIF}
+    Fsctp : TJSRTCSctpTransport; {$IFDEF PAS2JS}external name 'sctp';{$ENDIF}
   Public
     
       onnegotiationneeded : TJSEventHandler;
@@ -522,13 +525,13 @@ Type
     Procedure close;
     function createOffer(successCallback : RTCSessionDescriptionCallback; failureCallback : RTCPeerConnectionErrorCallback; options : TJSRTCOfferOptions): TJSPromise; overload;
     function createOffer(successCallback : RTCSessionDescriptionCallback; failureCallback : RTCPeerConnectionErrorCallback): TJSPromise; overload;
-    function createAnswer(successCallback : RTCSessionDescriptionCallback; failureCallback : RTCPeerConnectionErrorCallback): TJSPromise;
-    function addIceCandidate(candidate : TJSRTCIceCandidateInit; successCallback : TProcedure; failureCallback : RTCPeerConnectionErrorCallback): TJSPromise;
+    function createAnswer(successCallback : RTCSessionDescriptionCallback; failureCallback : RTCPeerConnectionErrorCallback): TJSPromise; overload;
+    function addIceCandidate(candidate : TJSRTCIceCandidateInit; successCallback : TProcedure; failureCallback : RTCPeerConnectionErrorCallback): TJSPromise; overload;
     function generateCertificate(keygenAlgorithm : AlgorithmIdentifier): TJSPromise;
     function getSenders: TTJSRTCRtpSenderDynArray;
     function getReceivers: TTJSRTCRtpReceiverDynArray;
     function getTransceivers: TTJSRTCRtpTransceiverDynArray;
-    function addTrack(track : JSValue; streams : TJSHTMLMediaStream): TJSRTCRtpSender; varargs;
+    function addTrack(track : JSValue; streams : TJSHTMLMediaStream): TJSRTCRtpSender; {$IFDEF PAS2JS}varargs;{$ENDIF}
     Procedure removeTrack(sender : TJSRTCRtpSender);
     function addTransceiver(trackOrKind : JSValue; init : TJSRTCRtpTransceiverInit): TJSRTCRtpTransceiver; overload;
     function addTransceiver(trackOrKind : JSValue): TJSRTCRtpTransceiver; overload;
@@ -554,10 +557,10 @@ Type
     TJSRTCSessionDescription
     --------------------------------------------------------------------}
   
-  TJSRTCSessionDescription = class external name 'RTCSessionDescription' 
+  TJSRTCSessionDescription = class {$IFDEF PAS2JS}external name 'RTCSessionDescription'{$ENDIF}
   Private
-    Ftype_ : RTCSdpType; external name 'type'; 
-    Fsdp : String; external name 'sdp'; 
+    Ftype_ : RTCSdpType; {$IFDEF PAS2JS}external name 'type';{$ENDIF}
+    Fsdp : String; {$IFDEF PAS2JS}external name 'sdp';{$ENDIF}
   Public
     constructor New(descriptionInitDict : TJSRTCSessionDescriptionInit); overload;
     constructor New; overload;
@@ -570,22 +573,22 @@ Type
     TJSRTCIceCandidate
     --------------------------------------------------------------------}
   
-  TJSRTCIceCandidate = class external name 'RTCIceCandidate' 
+  TJSRTCIceCandidate = class {$IFDEF PAS2JS}external name 'RTCIceCandidate'{$ENDIF}
   Private
-    Fcandidate : String; external name 'candidate'; 
-    FsdpMid : String; external name 'sdpMid'; 
-    FsdpMLineIndex : Cardinal; external name 'sdpMLineIndex'; 
-    Ffoundation : String; external name 'foundation'; 
-    Fcomponent : RTCIceComponent; external name 'component'; 
-    Fpriority : NativeInt; external name 'priority'; 
-    Faddress : String; external name 'address'; 
-    Fprotocol : RTCIceProtocol; external name 'protocol'; 
-    Fport : Cardinal; external name 'port'; 
-    Ftype_ : RTCIceCandidateType; external name 'type'; 
-    FtcpType : RTCIceTcpCandidateType; external name 'tcpType'; 
-    FrelatedAddress : String; external name 'relatedAddress'; 
-    FrelatedPort : Cardinal; external name 'relatedPort'; 
-    FusernameFragment : String; external name 'usernameFragment'; 
+    Fcandidate : String; {$IFDEF PAS2JS}external name 'candidate';{$ENDIF}
+    FsdpMid : String; {$IFDEF PAS2JS}external name 'sdpMid';{$ENDIF}
+    FsdpMLineIndex : Cardinal; {$IFDEF PAS2JS}external name 'sdpMLineIndex';{$ENDIF}
+    Ffoundation : String; {$IFDEF PAS2JS}external name 'foundation';{$ENDIF}
+    Fcomponent : RTCIceComponent; {$IFDEF PAS2JS}external name 'component';{$ENDIF}
+    Fpriority : NativeInt; {$IFDEF PAS2JS}external name 'priority';{$ENDIF}
+    Faddress : String; {$IFDEF PAS2JS}external name 'address';{$ENDIF}
+    Fprotocol : RTCIceProtocol; {$IFDEF PAS2JS}external name 'protocol';{$ENDIF}
+    Fport : Cardinal; {$IFDEF PAS2JS}external name 'port';{$ENDIF}
+    Ftype_ : RTCIceCandidateType; {$IFDEF PAS2JS}external name 'type';{$ENDIF}
+    FtcpType : RTCIceTcpCandidateType; {$IFDEF PAS2JS}external name 'tcpType';{$ENDIF}
+    FrelatedAddress : String; {$IFDEF PAS2JS}external name 'relatedAddress';{$ENDIF}
+    FrelatedPort : Cardinal; {$IFDEF PAS2JS}external name 'relatedPort';{$ENDIF}
+    FusernameFragment : String; {$IFDEF PAS2JS}external name 'usernameFragment';{$ENDIF}
   Public
     constructor New(candidateInitDict : TJSRTCIceCandidateInit); overload;
     constructor New; overload;
@@ -610,10 +613,10 @@ Type
     TJSRTCPeerConnectionIceEvent
     --------------------------------------------------------------------}
   
-  TJSRTCPeerConnectionIceEvent = class external name 'RTCPeerConnectionIceEvent'  (TJSEvent)
+  TJSRTCPeerConnectionIceEvent = class {$IFDEF PAS2JS}external name 'RTCPeerConnectionIceEvent'{$ENDIF} (TJSEvent)
   Private
-    Fcandidate : TJSRTCIceCandidate; external name 'candidate'; 
-    Furl : String; external name 'url'; 
+    Fcandidate : TJSRTCIceCandidate; {$IFDEF PAS2JS}external name 'candidate';{$ENDIF}
+    Furl : String; {$IFDEF PAS2JS}external name 'url';{$ENDIF}
   Public
     constructor New(type_ : String; eventInitDict : TJSRTCPeerConnectionIceEventInit); overload;
     constructor New(type_ : String); overload;
@@ -625,13 +628,13 @@ Type
     TJSRTCPeerConnectionIceErrorEvent
     --------------------------------------------------------------------}
   
-  TJSRTCPeerConnectionIceErrorEvent = class external name 'RTCPeerConnectionIceErrorEvent'  (TJSEvent)
+  TJSRTCPeerConnectionIceErrorEvent = class {$IFDEF PAS2JS}external name 'RTCPeerConnectionIceErrorEvent'{$ENDIF} (TJSEvent)
   Private
-    Faddress : String; external name 'address'; 
-    Fport : Cardinal; external name 'port'; 
-    Furl : String; external name 'url'; 
-    FerrorCode : Cardinal; external name 'errorCode'; 
-    FerrorText : String; external name 'errorText'; 
+    Faddress : String; {$IFDEF PAS2JS}external name 'address';{$ENDIF}
+    Fport : Cardinal; {$IFDEF PAS2JS}external name 'port';{$ENDIF}
+    Furl : String; {$IFDEF PAS2JS}external name 'url';{$ENDIF}
+    FerrorCode : Cardinal; {$IFDEF PAS2JS}external name 'errorCode';{$ENDIF}
+    FerrorText : String; {$IFDEF PAS2JS}external name 'errorText';{$ENDIF}
   Public
     constructor New(type_ : String; eventInitDict : TJSRTCPeerConnectionIceErrorEventInit);
     Property address : String Read Faddress; 
@@ -647,9 +650,9 @@ Type
   
   TTJSRTCDtlsFingerprintDynArray = Array of TJSRTCDtlsFingerprint;
   
-  TJSRTCCertificate = class external name 'RTCCertificate' 
+  TJSRTCCertificate = class {$IFDEF PAS2JS}external name 'RTCCertificate'{$ENDIF}
   Private
-    Fexpires : String; external name 'expires'; 
+    Fexpires : String; {$IFDEF PAS2JS}external name 'expires';{$ENDIF}
   Public
     function getFingerprints: TTJSRTCDtlsFingerprintDynArray;
     Property expires : String Read Fexpires; 
@@ -659,17 +662,17 @@ Type
     TJSRTCRtpSender
     --------------------------------------------------------------------}
   
-  TJSRTCRtpSender = class external name 'RTCRtpSender' 
+  TJSRTCRtpSender = class {$IFDEF PAS2JS}external name 'RTCRtpSender'{$ENDIF}
   Private
-    Ftrack : JSValue; external name 'track'; 
-    Ftransport : TJSRTCDtlsTransport; external name 'transport'; 
-    Fdtmf : TJSRTCDTMFSender; external name 'dtmf'; 
+    Ftrack : JSValue; {$IFDEF PAS2JS}external name 'track';{$ENDIF}
+    Ftransport : TJSRTCDtlsTransport; {$IFDEF PAS2JS}external name 'transport';{$ENDIF}
+    Fdtmf : TJSRTCDTMFSender; {$IFDEF PAS2JS}external name 'dtmf';{$ENDIF}
   Public
     function getCapabilities(kind : String): TJSRTCRtpCapabilities;
     function setParameters(parameters : TJSRTCRtpSendParameters): TJSPromise;
     function getParameters: TJSRTCRtpSendParameters;
     function replaceTrack(withTrack : JSValue): TJSPromise;
-    Procedure setStreams(streams : TJSHTMLMediaStream); varargs;
+    Procedure setStreams(streams : TJSHTMLMediaStream); {$IFDEF PAS2JS}varargs;{$ENDIF}
     function getStats: TJSPromise;
     Property track : JSValue Read Ftrack; 
     Property transport : TJSRTCDtlsTransport Read Ftransport; 
@@ -683,10 +686,10 @@ Type
   TTJSRTCRtpContributingSourceDynArray = Array of TJSRTCRtpContributingSource;
   TTJSRTCRtpSynchronizationSourceDynArray = Array of TJSRTCRtpSynchronizationSource;
   
-  TJSRTCRtpReceiver = class external name 'RTCRtpReceiver' 
+  TJSRTCRtpReceiver = class {$IFDEF PAS2JS}external name 'RTCRtpReceiver'{$ENDIF}
   Private
-    Ftrack : JSValue; external name 'track'; 
-    Ftransport : TJSRTCDtlsTransport; external name 'transport'; 
+    Ftrack : JSValue; {$IFDEF PAS2JS}external name 'track';{$ENDIF}
+    Ftransport : TJSRTCDtlsTransport; {$IFDEF PAS2JS}external name 'transport';{$ENDIF}
   Public
     function getCapabilities(kind : String): TJSRTCRtpCapabilities;
     function getParameters: TJSRTCRtpReceiveParameters;
@@ -701,12 +704,12 @@ Type
     TJSRTCRtpTransceiver
     --------------------------------------------------------------------}
   
-  TJSRTCRtpTransceiver = class external name 'RTCRtpTransceiver' 
+  TJSRTCRtpTransceiver = class {$IFDEF PAS2JS}external name 'RTCRtpTransceiver'{$ENDIF}
   Private
-    Fmid : String; external name 'mid'; 
-    Fsender : TJSRTCRtpSender; external name 'sender'; 
-    Freceiver : TJSRTCRtpReceiver; external name 'receiver'; 
-    FcurrentDirection : RTCRtpTransceiverDirection; external name 'currentDirection'; 
+    Fmid : String; {$IFDEF PAS2JS}external name 'mid';{$ENDIF}
+    Fsender : TJSRTCRtpSender; {$IFDEF PAS2JS}external name 'sender';{$ENDIF}
+    Freceiver : TJSRTCRtpReceiver; {$IFDEF PAS2JS}external name 'receiver';{$ENDIF}
+    FcurrentDirection : RTCRtpTransceiverDirection; {$IFDEF PAS2JS}external name 'currentDirection';{$ENDIF}
   Public
       direction : RTCRtpTransceiverDirection;
     Procedure stop;
@@ -723,10 +726,10 @@ Type
   
   TTJSArrayBufferDynArray = Array of TJSArrayBuffer;
   
-  TJSRTCDtlsTransport = class external name 'RTCDtlsTransport'  (TJSEventTarget)
+  TJSRTCDtlsTransport = class {$IFDEF PAS2JS}external name 'RTCDtlsTransport'{$ENDIF} (TJSEventTarget)
   Private
-    FiceTransport : TJSRTCIceTransport; external name 'iceTransport'; 
-    Fstate : RTCDtlsTransportState; external name 'state'; 
+    FiceTransport : TJSRTCIceTransport; {$IFDEF PAS2JS}external name 'iceTransport';{$ENDIF}
+    Fstate : RTCDtlsTransportState; {$IFDEF PAS2JS}external name 'state';{$ENDIF}
   Public
       onstatechange : TJSEventHandler;
       onerror : TJSEventHandler;
@@ -741,12 +744,12 @@ Type
   
   TTJSRTCIceCandidateDynArray = Array of TJSRTCIceCandidate;
   
-  TJSRTCIceTransport = class external name 'RTCIceTransport'  (TJSEventTarget)
+  TJSRTCIceTransport = class {$IFDEF PAS2JS}external name 'RTCIceTransport'{$ENDIF} (TJSEventTarget)
   Private
-    Frole : RTCIceRole; external name 'role'; 
-    Fcomponent : RTCIceComponent; external name 'component'; 
-    Fstate : RTCIceTransportState; external name 'state'; 
-    FgatheringState : RTCIceGathererState; external name 'gatheringState'; 
+    Frole : RTCIceRole; {$IFDEF PAS2JS}external name 'role';{$ENDIF}
+    Fcomponent : RTCIceComponent; {$IFDEF PAS2JS}external name 'component';{$ENDIF}
+    Fstate : RTCIceTransportState; {$IFDEF PAS2JS}external name 'state';{$ENDIF}
+    FgatheringState : RTCIceGathererState; {$IFDEF PAS2JS}external name 'gatheringState';{$ENDIF}
   Public
       onstatechange : TJSEventHandler;
       ongatheringstatechange : TJSEventHandler;
@@ -766,12 +769,12 @@ Type
     TJSRTCTrackEvent
     --------------------------------------------------------------------}
   
-  TJSRTCTrackEvent = class external name 'RTCTrackEvent'  (TJSEvent)
+  TJSRTCTrackEvent = class {$IFDEF PAS2JS}external name 'RTCTrackEvent'{$ENDIF} (TJSEvent)
   Private
-    Freceiver : TJSRTCRtpReceiver; external name 'receiver'; 
-    Ftrack : JSValue; external name 'track'; 
-    Fstreams : TTJSHTMLMediaStreamDynArray; external name 'streams'; 
-    Ftransceiver : TJSRTCRtpTransceiver; external name 'transceiver'; 
+    Freceiver : TJSRTCRtpReceiver; {$IFDEF PAS2JS}external name 'receiver';{$ENDIF}
+    Ftrack : JSValue; {$IFDEF PAS2JS}external name 'track';{$ENDIF}
+    Fstreams : TTJSHTMLMediaStreamDynArray; {$IFDEF PAS2JS}external name 'streams';{$ENDIF}
+    Ftransceiver : TJSRTCRtpTransceiver; {$IFDEF PAS2JS}external name 'transceiver';{$ENDIF}
   Public
     constructor New(type_ : String; eventInitDict : TJSRTCTrackEventInit);
     Property receiver : TJSRTCRtpReceiver Read Freceiver; 
@@ -784,17 +787,17 @@ Type
     TJSRTCSctpTransport
     --------------------------------------------------------------------}
   
-  TJSRTCSctpTransport = class external name 'RTCSctpTransport'  (TJSEventTarget)
+  TJSRTCSctpTransport = class {$IFDEF PAS2JS}external name 'RTCSctpTransport'{$ENDIF} (TJSEventTarget)
   Private
-    Ftransport : TJSRTCDtlsTransport; external name 'transport'; 
-    Fstate : RTCSctpTransportState; external name 'state'; 
-    FmaxMessageSize : Double; external name 'maxMessageSize'; 
-    FmaxChannels : Cardinal; external name 'maxChannels'; 
+    Ftransport : TJSRTCDtlsTransport; {$IFDEF PAS2JS}external name 'transport';{$ENDIF}
+    Fstate : RTCSctpTransportState; {$IFDEF PAS2JS}external name 'state';{$ENDIF}
+    FmaxMessageSize : Double; {$IFDEF PAS2JS}external name 'maxMessageSize';{$ENDIF}
+    FmaxChannels : Cardinal; {$IFDEF PAS2JS}external name 'maxChannels';{$ENDIF}
   Public
       onstatechange : TJSEventHandler;
-    Property transport : TJSRTCDtlsTransport Read Ftransport; 
+    Property transport : TJSRTCDtlsTransport Read Ftransport;
     Property state : RTCSctpTransportState Read Fstate; 
-    Property maxMessageSize : Double Read FmaxMessageSize; 
+    Property maxMessageSize : Double Read FmaxMessageSize;
     Property maxChannels : Cardinal Read FmaxChannels; 
   end;
   
@@ -802,17 +805,17 @@ Type
     TJSRTCDataChannel
     --------------------------------------------------------------------}
   
-  TJSRTCDataChannel = class external name 'RTCDataChannel'  (TJSEventTarget)
+  TJSRTCDataChannel = class {$IFDEF PAS2JS}external name 'RTCDataChannel'{$ENDIF} (TJSEventTarget)
   Private
-    Flabel_ : String; external name 'label'; 
-    Fordered : boolean; external name 'ordered'; 
-    FmaxPacketLifeTime : Cardinal; external name 'maxPacketLifeTime'; 
-    FmaxRetransmits : Cardinal; external name 'maxRetransmits'; 
-    Fprotocol : String; external name 'protocol'; 
-    Fnegotiated : boolean; external name 'negotiated'; 
-    Fid : Cardinal; external name 'id'; 
-    FreadyState : RTCDataChannelState; external name 'readyState'; 
-    FbufferedAmount : NativeInt; external name 'bufferedAmount'; 
+    Flabel_ : String; {$IFDEF PAS2JS}external name 'label';{$ENDIF}
+    Fordered : boolean; {$IFDEF PAS2JS}external name 'ordered';{$ENDIF}
+    FmaxPacketLifeTime : Cardinal; {$IFDEF PAS2JS}external name 'maxPacketLifeTime';{$ENDIF}
+    FmaxRetransmits : Cardinal; {$IFDEF PAS2JS}external name 'maxRetransmits';{$ENDIF}
+    Fprotocol : String; {$IFDEF PAS2JS}external name 'protocol';{$ENDIF}
+    Fnegotiated : boolean; {$IFDEF PAS2JS}external name 'negotiated';{$ENDIF}
+    Fid : Cardinal; {$IFDEF PAS2JS}external name 'id';{$ENDIF}
+    FreadyState : RTCDataChannelState; {$IFDEF PAS2JS}external name 'readyState';{$ENDIF}
+    FbufferedAmount : NativeInt; {$IFDEF PAS2JS}external name 'bufferedAmount';{$ENDIF}
   Public
       bufferedAmountLowThreshold : NativeInt;
       onopen : TJSEventHandler;
@@ -823,10 +826,10 @@ Type
       onmessage : TJSEventHandler;
       binaryType : String;
     Procedure close;
-    Procedure send(data : String);
-    Procedure send(data : TJSBlob);
-    Procedure send(data : TJSArrayBuffer);
-    Procedure send(data : TJSTypedArray);
+    Procedure send(data : String); overload;
+    Procedure send(data : TJSBlob); overload;
+    Procedure send(data : TJSArrayBuffer); overload;
+    Procedure send(data : TJSTypedArray); overload;
     Property label_ : String Read Flabel_; 
     Property ordered : boolean Read Fordered; 
     Property maxPacketLifeTime : Cardinal Read FmaxPacketLifeTime; 
@@ -842,9 +845,9 @@ Type
     TJSRTCDataChannelEvent
     --------------------------------------------------------------------}
   
-  TJSRTCDataChannelEvent = class external name 'RTCDataChannelEvent'  (TJSEvent)
+  TJSRTCDataChannelEvent = class {$IFDEF PAS2JS}external name 'RTCDataChannelEvent'{$ENDIF} (TJSEvent)
   Private
-    Fchannel : TJSRTCDataChannel; external name 'channel'; 
+    Fchannel : TJSRTCDataChannel; {$IFDEF PAS2JS}external name 'channel';{$ENDIF}
   Public
     constructor New(type_ : String; eventInitDict : TJSRTCDataChannelEventInit);
     Property channel : TJSRTCDataChannel Read Fchannel; 
@@ -853,11 +856,11 @@ Type
   { --------------------------------------------------------------------
     TJSRTCDTMFSender
     --------------------------------------------------------------------}
-  
-  TJSRTCDTMFSender = class external name 'RTCDTMFSender'  (TJSEventTarget)
+
+  TJSRTCDTMFSender = class {$IFDEF PAS2JS}external name 'RTCDTMFSender'{$ENDIF} (TJSEventTarget)
   Private
-    FcanInsertDTMF : boolean; external name 'canInsertDTMF'; 
-    FtoneBuffer : String; external name 'toneBuffer'; 
+    FcanInsertDTMF : boolean; {$IFDEF PAS2JS}external name 'canInsertDTMF';{$ENDIF}
+    FtoneBuffer : String; {$IFDEF PAS2JS}external name 'toneBuffer';{$ENDIF}
   Public
       ontonechange : TJSEventHandler;
     Procedure insertDTMF(tones : String; duration : NativeInt; interToneGap : NativeInt); overload;
@@ -871,9 +874,9 @@ Type
     TJSRTCDTMFToneChangeEvent
     --------------------------------------------------------------------}
   
-  TJSRTCDTMFToneChangeEvent = class external name 'RTCDTMFToneChangeEvent'  (TJSEvent)
+  TJSRTCDTMFToneChangeEvent = class {$IFDEF PAS2JS}external name 'RTCDTMFToneChangeEvent'{$ENDIF} (TJSEvent)
   Private
-    Ftone : String; external name 'tone'; 
+    Ftone : String; {$IFDEF PAS2JS}external name 'tone';{$ENDIF}
   Public
     constructor New(type_ : String; eventInitDict : TJSRTCDTMFToneChangeEventInit);
     Property tone : String Read Ftone; 
@@ -883,7 +886,7 @@ Type
     TJSRTCStatsReport
     --------------------------------------------------------------------}
   
-  TJSRTCStatsReport = class external name 'RTCStatsReport' 
+  TJSRTCStatsReport = class {$IFDEF PAS2JS}external name 'RTCStatsReport'{$ENDIF}
   Private
   Public
   end;
@@ -892,14 +895,14 @@ Type
     TJSRTCError
     --------------------------------------------------------------------}
   
-  TJSRTCError = class external name 'RTCError'  (TJSError)
+  TJSRTCError = class {$IFDEF PAS2JS}external name 'RTCError'{$ENDIF} (TJSError)
   Private
-    FerrorDetail : RTCErrorDetailType; external name 'errorDetail'; 
-    FsdpLineNumber : Integer; external name 'sdpLineNumber'; 
-    FhttpRequestStatusCode : Integer; external name 'httpRequestStatusCode'; 
-    FsctpCauseCode : Integer; external name 'sctpCauseCode'; 
-    FreceivedAlert : NativeInt; external name 'receivedAlert'; 
-    FsentAlert : NativeInt; external name 'sentAlert'; 
+    FerrorDetail : RTCErrorDetailType; {$IFDEF PAS2JS}external name 'errorDetail';{$ENDIF}
+    FsdpLineNumber : Integer; {$IFDEF PAS2JS}external name 'sdpLineNumber';{$ENDIF}
+    FhttpRequestStatusCode : Integer; {$IFDEF PAS2JS}external name 'httpRequestStatusCode';{$ENDIF}
+    FsctpCauseCode : Integer; {$IFDEF PAS2JS}external name 'sctpCauseCode';{$ENDIF}
+    FreceivedAlert : NativeInt; {$IFDEF PAS2JS}external name 'receivedAlert';{$ENDIF}
+    FsentAlert : NativeInt; {$IFDEF PAS2JS}external name 'sentAlert';{$ENDIF}
   Public
     constructor New(init : TJSRTCErrorInit; message : String); overload;
     constructor New(init : TJSRTCErrorInit); overload;
@@ -915,9 +918,9 @@ Type
     TJSRTCErrorEvent
     --------------------------------------------------------------------}
   
-  TJSRTCErrorEvent = class external name 'RTCErrorEvent'  (TJSEvent)
+  TJSRTCErrorEvent = class {$IFDEF PAS2JS}external name 'RTCErrorEvent'{$ENDIF} (TJSEvent)
   Private
-    Ferror : TJSRTCError; external name 'error'; 
+    Ferror : TJSRTCError; {$IFDEF PAS2JS}external name 'error';{$ENDIF}
   Public
     constructor New(type_ : String; eventInitDict : TJSRTCErrorEventInit);
     Property error : TJSRTCError Read Ferror; 
@@ -925,5 +928,447 @@ Type
 
 implementation
 
+{$IFDEF DCC}
+{ TJSRTCPeerConnection }
 
+function TJSRTCPeerConnection.addIceCandidate(candidate: TJSRTCIceCandidateInit;
+  successCallback: TProcedure;
+  failureCallback: RTCPeerConnectionErrorCallback): TJSPromise;
+begin
+
+end;
+
+function TJSRTCPeerConnection.addIceCandidate: TJSPromise;
+begin
+
+end;
+
+function TJSRTCPeerConnection.addIceCandidate(
+  candidate: TJSRTCIceCandidateInit): TJSPromise;
+begin
+
+end;
+
+function TJSRTCPeerConnection.addTrack(track: JSValue;
+  streams: TJSHTMLMediaStream): TJSRTCRtpSender;
+begin
+
+end;
+
+function TJSRTCPeerConnection.addTransceiver(
+  trackOrKind: JSValue): TJSRTCRtpTransceiver;
+begin
+
+end;
+
+function TJSRTCPeerConnection.addTransceiver(trackOrKind: JSValue;
+  init: TJSRTCRtpTransceiverInit): TJSRTCRtpTransceiver;
+begin
+
+end;
+
+procedure TJSRTCPeerConnection.close;
+begin
+
+end;
+
+function TJSRTCPeerConnection.createAnswer: TJSPromise;
+begin
+
+end;
+
+function TJSRTCPeerConnection.createAnswer(
+  options: TJSRTCAnswerOptions): TJSPromise;
+begin
+
+end;
+
+function TJSRTCPeerConnection.createAnswer(
+  successCallback: RTCSessionDescriptionCallback;
+  failureCallback: RTCPeerConnectionErrorCallback): TJSPromise;
+begin
+
+end;
+
+function TJSRTCPeerConnection.createDataChannel(
+  label_: String): TJSRTCDataChannel;
+begin
+
+end;
+
+function TJSRTCPeerConnection.createDataChannel(label_: String;
+  dataChannelDict: TJSRTCDataChannelInit): TJSRTCDataChannel;
+begin
+
+end;
+
+function TJSRTCPeerConnection.createOffer(
+  successCallback: RTCSessionDescriptionCallback;
+  failureCallback: RTCPeerConnectionErrorCallback;
+  options: TJSRTCOfferOptions): TJSPromise;
+begin
+
+end;
+
+function TJSRTCPeerConnection.createOffer(
+  successCallback: RTCSessionDescriptionCallback;
+  failureCallback: RTCPeerConnectionErrorCallback): TJSPromise;
+begin
+
+end;
+
+function TJSRTCPeerConnection.createOffer(
+  options: TJSRTCOfferOptions): TJSPromise;
+begin
+
+end;
+
+function TJSRTCPeerConnection.createOffer: TJSPromise;
+begin
+
+end;
+
+function TJSRTCPeerConnection.generateCertificate(
+  keygenAlgorithm: AlgorithmIdentifier): TJSPromise;
+begin
+
+end;
+
+function TJSRTCPeerConnection.getConfiguration: TJSRTCConfiguration;
+begin
+
+end;
+
+function TJSRTCPeerConnection.getReceivers: TTJSRTCRtpReceiverDynArray;
+begin
+
+end;
+
+function TJSRTCPeerConnection.getSenders: TTJSRTCRtpSenderDynArray;
+begin
+
+end;
+
+function TJSRTCPeerConnection.getStats(selector: JSValue): TJSPromise;
+begin
+
+end;
+
+function TJSRTCPeerConnection.getStats: TJSPromise;
+begin
+
+end;
+
+function TJSRTCPeerConnection.getTransceivers: TTJSRTCRtpTransceiverDynArray;
+begin
+
+end;
+
+constructor TJSRTCPeerConnection.New;
+begin
+
+end;
+
+constructor TJSRTCPeerConnection.New(configuration: TJSRTCConfiguration);
+begin
+
+end;
+
+procedure TJSRTCPeerConnection.removeTrack(sender: TJSRTCRtpSender);
+begin
+
+end;
+
+procedure TJSRTCPeerConnection.restartIce;
+begin
+
+end;
+
+procedure TJSRTCPeerConnection.setConfiguration(
+  configuration: TJSRTCConfiguration);
+begin
+
+end;
+
+function TJSRTCPeerConnection.setLocalDescription: TJSPromise;
+begin
+
+end;
+
+function TJSRTCPeerConnection.setLocalDescription(
+  description: TJSRTCSessionDescriptionInit): TJSPromise;
+begin
+
+end;
+
+function TJSRTCPeerConnection.setRemoteDescription(
+  description: TJSRTCSessionDescriptionInit): TJSPromise;
+begin
+
+end;
+
+function TJSRTCPeerConnection.setRemoteDescription: TJSPromise;
+begin
+
+end;
+
+{ TJSRTCSessionDescription }
+
+constructor TJSRTCSessionDescription.New(
+  descriptionInitDict: TJSRTCSessionDescriptionInit);
+begin
+
+end;
+
+constructor TJSRTCSessionDescription.New;
+begin
+
+end;
+
+function TJSRTCSessionDescription.toJSON: TJSObject;
+begin
+
+end;
+
+{ TJSRTCIceCandidate }
+
+constructor TJSRTCIceCandidate.New(candidateInitDict: TJSRTCIceCandidateInit);
+begin
+
+end;
+
+constructor TJSRTCIceCandidate.New;
+begin
+
+end;
+
+function TJSRTCIceCandidate.toJSON: TJSRTCIceCandidateInit;
+begin
+
+end;
+
+{ TJSRTCPeerConnectionIceEvent }
+
+constructor TJSRTCPeerConnectionIceEvent.New(type_: String);
+begin
+
+end;
+
+constructor TJSRTCPeerConnectionIceEvent.New(type_: String;
+  eventInitDict: TJSRTCPeerConnectionIceEventInit);
+begin
+
+end;
+
+{ TJSRTCPeerConnectionIceErrorEvent }
+
+constructor TJSRTCPeerConnectionIceErrorEvent.New(type_: String;
+  eventInitDict: TJSRTCPeerConnectionIceErrorEventInit);
+begin
+
+end;
+
+{ TJSRTCCertificate }
+
+function TJSRTCCertificate.getFingerprints: TTJSRTCDtlsFingerprintDynArray;
+begin
+
+end;
+
+{ TJSRTCRtpSender }
+
+function TJSRTCRtpSender.getCapabilities(kind: String): TJSRTCRtpCapabilities;
+begin
+
+end;
+
+function TJSRTCRtpSender.getParameters: TJSRTCRtpSendParameters;
+begin
+
+end;
+
+function TJSRTCRtpSender.getStats: TJSPromise;
+begin
+
+end;
+
+function TJSRTCRtpSender.replaceTrack(withTrack: JSValue): TJSPromise;
+begin
+
+end;
+
+function TJSRTCRtpSender.setParameters(
+  parameters: TJSRTCRtpSendParameters): TJSPromise;
+begin
+
+end;
+
+procedure TJSRTCRtpSender.setStreams(streams: TJSHTMLMediaStream);
+begin
+
+end;
+
+{ TJSRTCRtpReceiver }
+
+function TJSRTCRtpReceiver.getCapabilities(kind: String): TJSRTCRtpCapabilities;
+begin
+
+end;
+
+function TJSRTCRtpReceiver.getContributingSources: TTJSRTCRtpContributingSourceDynArray;
+begin
+
+end;
+
+function TJSRTCRtpReceiver.getParameters: TJSRTCRtpReceiveParameters;
+begin
+
+end;
+
+function TJSRTCRtpReceiver.getStats: TJSPromise;
+begin
+
+end;
+
+function TJSRTCRtpReceiver.getSynchronizationSources: TTJSRTCRtpSynchronizationSourceDynArray;
+begin
+
+end;
+
+{ TJSRTCRtpTransceiver }
+
+procedure TJSRTCRtpTransceiver.setCodecPreferences(
+  codecs: TTJSRTCRtpCodecCapabilityDynArray);
+begin
+
+end;
+
+procedure TJSRTCRtpTransceiver.stop;
+begin
+
+end;
+
+{ TJSRTCDtlsTransport }
+
+function TJSRTCDtlsTransport.getRemoteCertificates: TTJSArrayBufferDynArray;
+begin
+
+end;
+
+{ TJSRTCIceTransport }
+
+function TJSRTCIceTransport.getLocalCandidates: TTJSRTCIceCandidateDynArray;
+begin
+
+end;
+
+function TJSRTCIceTransport.getLocalParameters: TJSRTCIceParameters;
+begin
+
+end;
+
+function TJSRTCIceTransport.getRemoteCandidates: TTJSRTCIceCandidateDynArray;
+begin
+
+end;
+
+function TJSRTCIceTransport.getRemoteParameters: TJSRTCIceParameters;
+begin
+
+end;
+
+function TJSRTCIceTransport.getSelectedCandidatePair: TJSRTCIceCandidatePair;
+begin
+
+end;
+
+{ TJSRTCTrackEvent }
+
+constructor TJSRTCTrackEvent.New(type_: String;
+  eventInitDict: TJSRTCTrackEventInit);
+begin
+
+end;
+
+{ TJSRTCDataChannel }
+
+procedure TJSRTCDataChannel.close;
+begin
+
+end;
+
+procedure TJSRTCDataChannel.send(data: String);
+begin
+
+end;
+
+procedure TJSRTCDataChannel.send(data: TJSBlob);
+begin
+
+end;
+
+procedure TJSRTCDataChannel.send(data: TJSArrayBuffer);
+begin
+
+end;
+
+procedure TJSRTCDataChannel.send(data: TJSTypedArray);
+begin
+
+end;
+
+{ TJSRTCDataChannelEvent }
+
+constructor TJSRTCDataChannelEvent.New(type_: String;
+  eventInitDict: TJSRTCDataChannelEventInit);
+begin
+
+end;
+
+{ TJSRTCDTMFSender }
+
+procedure TJSRTCDTMFSender.insertDTMF(tones: String; duration,
+  interToneGap: NativeInt);
+begin
+
+end;
+
+procedure TJSRTCDTMFSender.insertDTMF(tones: String);
+begin
+
+end;
+
+procedure TJSRTCDTMFSender.insertDTMF(tones: String; duration: NativeInt);
+begin
+
+end;
+
+{ TJSRTCDTMFToneChangeEvent }
+
+constructor TJSRTCDTMFToneChangeEvent.New(type_: String;
+  eventInitDict: TJSRTCDTMFToneChangeEventInit);
+begin
+
+end;
+
+{ TJSRTCError }
+
+constructor TJSRTCError.New(init: TJSRTCErrorInit);
+begin
+
+end;
+
+constructor TJSRTCError.New(init: TJSRTCErrorInit; message: String);
+begin
+
+end;
+
+{ TJSRTCErrorEvent }
+
+constructor TJSRTCErrorEvent.New(type_: String;
+  eventInitDict: TJSRTCErrorEventInit);
+begin
+
+end;
+{$ENDIF}
 end.

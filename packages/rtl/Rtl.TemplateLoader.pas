@@ -19,7 +19,7 @@ unit Rtl.TemplateLoader;
 interface
 
 uses
-  Classes, SysUtils, JS, web;
+  Classes, SysUtils, JS, web{$IFDEF DCC}, types{$ENDIF};
 
 Type
    TFailData = Record
@@ -128,6 +128,7 @@ procedure TURLLoader.dofetch(resolve,reject : TJSPromiseResolver);
     F : TFailData;
 
   begin
+    {$IFDEF PAS2JS}
     If (Res.status<>200) then
       begin
       F.Message:=res.StatusText;
@@ -144,6 +145,7 @@ procedure TURLLoader.dofetch(resolve,reject : TJSPromiseResolver);
           Result:=Resolve(Name);
           end
       );
+      {$ENDIF}
   end;
 
   function doFail(response : JSValue) : JSValue;
@@ -152,19 +154,21 @@ procedure TURLLoader.dofetch(resolve,reject : TJSPromiseResolver);
     F : TFailData;
 
   begin
+    {$IFDEF PAS2JS}
     F.message:='unknown error';
     F.code:=999;
     Result:=Reject(F);
+    {$ENDIF}
   end;
 
 begin
-  Window.Fetch(URl)._then(@DoOK).catch(@DoFail);
+  {$IFDEF PAS2JS}Window.Fetch(URl)._then(@DoOK).catch(@DoFail);{$ENDIF}
 end;
 
 function TURLLoader.fetch : TJSPromise;
 
 begin
-  Result:=TJSPromise.New(@Dofetch)
+  {$IFDEF PAS2JS}Result:=TJSPromise.New(@Dofetch){$ENDIF}
 end;
 
 function TCustomTemplateLoader.GetTemplate(aName : String): String;
@@ -182,7 +186,7 @@ end;
 
 procedure TCustomTemplateLoader.SetTemplate(aName : String; AValue: String);
 begin
-  FTemplates[LowerCase(aName)]:=AValue;
+  {$IFDEF PAS2JS}FTemplates[LowerCase(aName)]:=AValue;{$ENDIF}
 end;
 
 function TCustomTemplateLoader.ProcessURL(const aURL: String): String;
@@ -212,7 +216,7 @@ end;
 
 procedure TCustomTemplateLoader.RemoveRemplate(aName: String);
 begin
-  jsDelete(FTemplates,Lowercase(aName));
+  {$IFDEF PAS2JS}jsDelete(FTemplates,Lowercase(aName));{$ENDIF}
 end;
 
 function TCustomTemplateLoader.FetchTemplate(const aName, aURL: String): TJSPromise;
@@ -250,7 +254,7 @@ procedure TCustomTemplateLoader.LoadTemplate(const aName, aURL: String; aOnSucce
   end;
 
 begin
-  FetchTemplate(aName,aURL)._then(@DoOK).catch(@doFail);
+  {$IFDEF PAS2JS}FetchTemplate(aName,aURL)._then(@DoOK).catch(@doFail);{$ENDIF}
 end;
 
 procedure TCustomTemplateLoader.LoadTemplates(const Templates: array of String; aOnSuccess: TTemplateNotifyEvent;
@@ -260,6 +264,7 @@ Var
   I,L : Integer;
 
 begin
+  {$IFDEF PAS2JS}
   L:=Length(Templates);
   if (L mod 2)<>0 then
     Raise Exception.CreateFmt('Number of arguments (%d) must be even',[L]);
@@ -269,6 +274,7 @@ begin
    LoadTemplate(Templates[I],Templates[I+1],aOnsuccess,aOnFail);
    Inc(I,2);
    end;
+  {$ENDIF}
 end;
 
 end.
