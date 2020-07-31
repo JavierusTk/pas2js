@@ -36,6 +36,9 @@ contains
   Environment.Options.Frame in 'Environment.Options.Frame.pas' {EnvironmentOptionsFrame: TFrame},
   IDE.Notifier in 'IDE.Notifier.pas',
   Pas2Js.Registry in 'Pas2Js.Registry.pas',
-  Pas2Js.Reg in 'Pas2Js.Reg.pas';
+  Pas2Js.Reg in 'Pas2Js.Reg.pas',
+  Pas2Js.Compiler in 'Pas2Js.Compiler.pas',
+  Pipe in 'Pipe.pas',
+  Process in 'Process.pas';
 
 end.
