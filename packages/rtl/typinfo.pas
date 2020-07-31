@@ -107,7 +107,7 @@ type
 
   { TTypeInfoInteger - Kind = tkInteger }
 
-  TTypeInfoInteger = class {$IFDEF PAS2JS}external name 'rtl.tTypeInfoInteger'(TTypeInfo){$ENDIF}
+  TTypeInfoInteger = class {$IFDEF PAS2JS}external name 'rtl.tTypeInfoInteger'{$ENDIF}(TTypeInfo)
   public
     MinValue: NativeInt; {$IFDEF PAS2JS}external name 'minvalue';{$ENDIF}
     MaxValue: NativeInt; {$IFDEF PAS2JS}external name 'maxvalue';{$ENDIF}
@@ -127,7 +127,7 @@ type
 
   { TTypeInfoEnum - Kind = tkEnumeration }
 
-  TTypeInfoEnum = class {$IFDEF PAS2JS}external name 'rtl.tTypeInfoEnum'(TTypeInfoInteger){$ENDIF}
+  TTypeInfoEnum = class {$IFDEF PAS2JS}external name 'rtl.tTypeInfoEnum'{$ENDIF}(TTypeInfoInteger)
   public
     // not supported: BaseType: TTypeInfo
     EnumType: TEnumType; {$IFDEF PAS2JS}external name 'enumtype';{$ENDIF}
@@ -135,7 +135,7 @@ type
 
   { TTypeInfoSet - Kind = tkSet }
 
-  TTypeInfoSet = class {$IFDEF PAS2JS}external name 'rtl.tTypeInfoSet'(TTypeInfo){$ENDIF}
+  TTypeInfoSet = class {$IFDEF PAS2JS}external name 'rtl.tTypeInfoSet'{$ENDIF}(TTypeInfo)
   public
     // not supported: BaseType: TTypeInfo
     CompType: TTypeInfo; {$IFDEF PAS2JS}external name 'comptype';{$ENDIF}
@@ -143,7 +143,7 @@ type
 
   { TTypeInfoStaticArray - Kind = tkArray }
 
-  TTypeInfoStaticArray = class {$IFDEF PAS2JS}external name 'rtl.tTypeInfoStaticArray'(TTypeInfo){$ENDIF}
+  TTypeInfoStaticArray = class {$IFDEF PAS2JS}external name 'rtl.tTypeInfoStaticArray'{$ENDIF}(TTypeInfo)
   public
     Dims: TIntegerDynArray;
     ElType: TTypeInfo; {$IFDEF PAS2JS}external name 'eltype';{$ENDIF}
@@ -151,7 +151,7 @@ type
 
   { TTypeInfoDynArray - Kind = tkDynArray }
 
-  TTypeInfoDynArray = class {$IFDEF PAS2JS}external name 'rtl.tTypeInfoDynArray'(TTypeInfo){$ENDIF}
+  TTypeInfoDynArray = class {$IFDEF PAS2JS}external name 'rtl.tTypeInfoDynArray'{$ENDIF}(TTypeInfo)
   public
     DimCount: NativeInt; {$IFDEF PAS2JS}external name 'dimcount';{$ENDIF}
     ElType: TTypeInfo; {$IFDEF PAS2JS}external name 'eltype';{$ENDIF}
@@ -196,14 +196,14 @@ type
 
   { TTypeInfoProcVar - Kind = tkProcVar }
 
-  TTypeInfoProcVar = class {$IFDEF PAS2JS}external name 'rtl.tTypeInfoProcVar'(TTypeInfo){$ENDIF}
+  TTypeInfoProcVar = class {$IFDEF PAS2JS}external name 'rtl.tTypeInfoProcVar'{$ENDIF}(TTypeInfo)
   public
     ProcSig: TProcedureSignature; {$IFDEF PAS2JS}external name 'procsig';{$ENDIF}
   end;
 
   { TTypeInfoRefToProcVar - Kind = tkRefToProcVar }
 
-  TTypeInfoRefToProcVar = class {$IFDEF PAS2JS}external name 'rtl.tTypeInfoRefToProcVar'(TTypeInfoProcVar){$ENDIF}
+  TTypeInfoRefToProcVar = class {$IFDEF PAS2JS}external name 'rtl.tTypeInfoRefToProcVar'{$ENDIF}(TTypeInfoProcVar)
   end;
 
   TMethodKind = (
@@ -219,7 +219,7 @@ type
 
   { TTypeInfoMethodVar - Kind = tkMethod }
 
-  TTypeInfoMethodVar = class {$IFDEF PAS2JS}external name 'rtl.tTypeInfoMethodVar'(TTypeInfoProcVar){$ENDIF}
+  TTypeInfoMethodVar = class {$IFDEF PAS2JS}external name 'rtl.tTypeInfoMethodVar'{$ENDIF}(TTypeInfoProcVar)
   public
     MethodKind: TMethodKind {$IFDEF PAS2JS}external name 'methodkind';{$ENDIF}
   end;
@@ -244,14 +244,14 @@ type
 
   { TTypeMemberField - Kind = tmkField }
 
-  TTypeMemberField = class {$IFDEF PAS2JS}external name 'rtl.tTypeMemberField'(TTypeMember){$ENDIF}
+  TTypeMemberField = class {$IFDEF PAS2JS}external name 'rtl.tTypeMemberField'{$ENDIF}(TTypeMember)
   public
     TypeInfo: TTypeInfo; {$IFDEF PAS2JS}external name 'typeinfo';{$ENDIF}
   end;
 
   { TTypeMemberMethod - Kind = tmkMethod }
 
-  TTypeMemberMethod = class {$IFDEF PAS2JS}external name 'rtl.tTypeMemberMethod'(TTypeMember){$ENDIF}
+  TTypeMemberMethod = class {$IFDEF PAS2JS}external name 'rtl.tTypeMemberMethod'{$ENDIF}(TTypeMember)
   public
     MethodKind: TMethodKind; {$IFDEF PAS2JS}external name 'methodkind';{$ENDIF}
     ProcSig: TProcedureSignature; {$IFDEF PAS2JS}external name 'procsig';{$ENDIF}
@@ -270,7 +270,7 @@ const
 type
   { TTypeMemberProperty - Kind = tmkProperty }
 
-  TTypeMemberProperty = class {$IFDEF PAS2JS}external name 'rtl.tTypeMemberProperty'(TTypeMember){$ENDIF}
+  TTypeMemberProperty = class {$IFDEF PAS2JS}external name 'rtl.tTypeMemberProperty'{$ENDIF}(TTypeMember)
   public
     TypeInfo: TTypeInfo; {$IFDEF PAS2JS}external name 'typeinfo';{$ENDIF}
     Flags: NativeInt; {$IFDEF PAS2JS}external name 'flags';{$ENDIF} // bit vector, see pf constants above
@@ -295,7 +295,7 @@ type
 
   { TTypeInfoStruct }
 
-  TTypeInfoStruct = class {$IFDEF PAS2JS}external name 'rtl.tTypeInfoStruct'(TTypeInfo){$ENDIF}
+  TTypeInfoStruct = class {$IFDEF PAS2JS}external name 'rtl.tTypeInfoStruct'{$ENDIF}(TTypeInfo)
   private
     FFieldCount: NativeInt; {$IFDEF PAS2JS}external name 'fields.length';{$ENDIF}
     FMethodCount: NativeInt; {$IFDEF PAS2JS}external name 'methods.length';{$ENDIF}
@@ -323,14 +323,14 @@ type
 
   { TTypeInfoRecord - Kind = tkRecord }
 
-  TTypeInfoRecord = class {$IFDEF PAS2JS}external name 'rtl.tTypeInfoRecord'(TTypeInfoStruct){$ENDIF}
+  TTypeInfoRecord = class {$IFDEF PAS2JS}external name 'rtl.tTypeInfoRecord'{$ENDIF}(TTypeInfoStruct)
   public
     RecordType: TJSObject; {$IFDEF PAS2JS}external name 'record';{$ENDIF}
   end;
 
   { TTypeInfoClass - Kind = tkClass }
 
-  TTypeInfoClass = class {$IFDEF PAS2JS}external name 'rtl.tTypeInfoClass'(TTypeInfoStruct){$ENDIF}
+  TTypeInfoClass = class {$IFDEF PAS2JS}external name 'rtl.tTypeInfoClass'{$ENDIF}(TTypeInfoStruct)
   public
     ClassType: TClass; {$IFDEF PAS2JS}external name 'class';{$ENDIF}
     Ancestor: TTypeInfoClass; {$IFDEF PAS2JS}external name 'ancestor';{$ENDIF}
@@ -338,28 +338,28 @@ type
 
   { TTypeInfoExtClass - Kind = tkExtClass }
 
-  TTypeInfoExtClass = class {$IFDEF PAS2JS}external name 'rtl.tTypeInfoExtClass'(TTypeInfoClass){$ENDIF}
+  TTypeInfoExtClass = class {$IFDEF PAS2JS}external name 'rtl.tTypeInfoExtClass'{$ENDIF}(TTypeInfoClass)
   public
     JSClassName: String; {$IFDEF PAS2JS}external name 'jsclass';{$ENDIF}
   end;
 
   { TTypeInfoClassRef - class-of, Kind = tkClassRef }
 
-  TTypeInfoClassRef = class {$IFDEF PAS2JS}external name 'rtl.tTypeInfoClassRef'(TTypeInfo){$ENDIF}
+  TTypeInfoClassRef = class {$IFDEF PAS2JS}external name 'rtl.tTypeInfoClassRef'{$ENDIF}(TTypeInfo)
   public
     InstanceType: TTypeInfo; {$IFDEF PAS2JS}external name 'instancetype';{$ENDIF}
   end;
 
   { TTypeInfoPointer - Kind = tkPointer }
 
-  TTypeInfoPointer = class {$IFDEF PAS2JS}external name 'rtl.tTypeInfoPointer'(TTypeInfo){$ENDIF}
+  TTypeInfoPointer = class {$IFDEF PAS2JS}external name 'rtl.tTypeInfoPointer'{$ENDIF}(TTypeInfo)
   public
     RefType: TTypeInfo; {$IFDEF PAS2JS}external name 'reftype';{$ENDIF} // can be null
   end;
 
   { TTypeInfoInterface - Kind = tkInterface }
 
-  TTypeInfoInterface = class {$IFDEF PAS2JS}external name 'rtl.tTypeInfoInterface'(TTypeInfoStruct){$ENDIF}
+  TTypeInfoInterface = class {$IFDEF PAS2JS}external name 'rtl.tTypeInfoInterface'{$ENDIF}(TTypeInfoStruct)
   public
     InterfaceType: TJSObject; {$IFDEF PAS2JS}external name 'interface';{$ENDIF}
     Ancestor: TTypeInfoInterface; {$IFDEF PAS2JS}external name 'ancestor';{$ENDIF}
@@ -367,7 +367,7 @@ type
 
   { TTypeInfoHelper - Kind = tkHelper }
 
-  TTypeInfoHelper = class {$IFDEF PAS2JS}external name 'rtl.tTypeInfoHelper'(TTypeInfoStruct){$ENDIF}
+  TTypeInfoHelper = class {$IFDEF PAS2JS}external name 'rtl.tTypeInfoHelper'{$ENDIF}(TTypeInfoStruct)
   public
     HelperType: TJSObject; {$IFDEF PAS2JS}external name 'helper';{$ENDIF}
     Ancestor: TTypeInfoHelper; {$IFDEF PAS2JS}external name 'ancestor';{$ENDIF}
@@ -1584,14 +1584,11 @@ end;
 
 procedure SetInterfaceProp(Instance: TObject; PropInfo: TTypeMemberProperty;
   const Value: IInterface);
+{$IFDEF PAS2JS}
 type
   TSetter = procedure(Value: IInterface) of object;
   TSetterWithIndex = procedure(Index: JSValue; Value: IInterface) of object;
-  procedure setIntfP(Instance: TObject; const PropName: string; value: jsvalue);{$IFDEF PAS2JS} external name 'rtl.setIntfP';{$ENDIF}
-  {$IFDEF DCC}
-  begin
-  end;
-  {$ENDIF}
+  procedure setIntfP(Instance: TObject; const PropName: string; value: jsvalue); external name 'rtl.setIntfP';
 var
   sk: TSetterKind;
   Setter: String;
@@ -1614,6 +1611,11 @@ begin
       raise EPropertyError.CreateFmt(SIndexedPropertyNeedsParams, [PropInfo.Name]);
   end;
 end;
+{$ENDIF}
+{$IFDEF DCC}
+begin
+end;
+{$ENDIF}
 
 function GetRawInterfaceProp(Instance: TObject; const PropName: string
   ): Pointer; overload;
