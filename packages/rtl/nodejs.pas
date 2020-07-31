@@ -13,6 +13,7 @@
 unit NodeJS;
 
 {$IFDEF PAS2JS}
+{$mode objfpc}
 {$ModeSwitch externalclass}
 {$ENDIF}
 
@@ -294,6 +295,9 @@ type
     function refresh : TNJSTimeout;
     function unref : TNJSTimeout;
   end;
+
+
+
 {$IFDEF PAS2JS}
 function Require(ModuleName: String): JSValue; {$IFDEF PAS2JS}external name 'require';{$ENDIF}
 Procedure clearImmediate(aImmediate : TNJSImmediate); {$IFDEF PAS2JS}external name 'clearImmediate';{$ENDIF}

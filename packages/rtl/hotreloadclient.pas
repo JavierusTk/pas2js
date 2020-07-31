@@ -1,5 +1,9 @@
 unit hotreloadclient;
 
+{$IFDEF PAS2JS}
+{$mode objfpc}
+{$ENDIF}
+
 interface
 
 uses sysutils, types, js, web;
@@ -85,6 +89,7 @@ begin
 end;
 
 function THotReload.doAbort(Event: TEventListenerEvent): boolean;
+
 begin
   {$IFDEF PAS2JS}
   if Event=nil then ;
@@ -102,8 +107,10 @@ begin
 end;
 
 function THotReload.GetLineColor(aLine : String) : String;
+
 var
   P : Integer;
+
 begin
   {$IFDEF PAS2JS}
   P:=Pos(':',ALine);
@@ -243,8 +250,10 @@ begin
 end;
 
 function THotReload.doStatus(Event: TEventListenerEvent): boolean;
+
 Var
   Data : TJSObject;
+
 begin
   {$IFDEF PAS2JS}
   if Event=nil then ;
@@ -262,8 +271,10 @@ begin
 end;
 
 procedure THotReload.OnTick;
+
 Var
   Req : TJSXMLHttpRequest;
+
 begin
   {$IFDEF PAS2JS}
   if Options.log then

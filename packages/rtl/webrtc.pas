@@ -1,9 +1,8 @@
 Unit webrtc;
+
 {$IFDEF PAS2JS}
 {$MODE ObjFPC}
-{$ENDIF}
 {$H+}
-{$IFDEF PAS2JS}
 {$modeswitch externalclass}
 {$ENDIF}
 

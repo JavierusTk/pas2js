@@ -12,12 +12,15 @@
  **********************************************************************}
 unit Types;
 
+{$IFDEF PAS2JS}
+{$mode objfpc}
+{$ENDIF}
+
 interface
 
 type
   {$IFDEF DCC}
   JSValue = class
-
   end;
   {$ENDIF}
   TDirection = (FromBeginning, FromEnd);

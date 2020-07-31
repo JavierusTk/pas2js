@@ -10,7 +10,9 @@
     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
 
  **********************************************************************}
+
 {$IFDEF PAS2JS}
+{$mode objfpc}
 {$modeswitch externalclass}
 {$ENDIF}
 
@@ -42,8 +44,17 @@ Type
   TJSUIEvent = class;
   TJSTouchEvent = Class;
 
+
   { TEventListenerEvent }
 
+(*
+TEventListenerEvent = class external name 'EventListener_Event' (TJSObject)
+  private
+    FTarget: TJSEventTarget; external name 'target';
+  public
+    Property target: TJSEventTarget Read FTarget;
+  end;
+*)
   TEventListenerEvent = TJSEvent;
 
   TJSEventHandler = reference to function(Event: TEventListenerEvent): boolean; {$IFDEF PAS2JS}{$IFDEF PAS2JS}safecall;{$ENDIF}{$ENDIF}
@@ -480,8 +491,7 @@ Type
     property previousElementSibling : TJSElement read FpreviousElementSibling;
   end;
 
-  TJSProcessingInstruction = class {$IFDEF PAS2JS}external name 'ProcessingInstruction'{$ENDIF} (TJSCharacterData)
-  end;
+  TJSProcessingInstruction = class {$IFDEF PAS2JS}external name 'ProcessingInstruction'{$ENDIF} (TJSCharacterData);
 
   { TJSRange }
 
@@ -1230,7 +1240,6 @@ Type
     JsonWebKey
     --------------------------------------------------------------------}
   
-  TStringDynArray = Array of String;
   TRsaOtherPrimesInfoDynArray = Array of RsaOtherPrimesInfo;
   JsonWebKey = record
     kty : String;
@@ -1512,7 +1521,7 @@ Type
 
   TJSIDBRequest = class {$IFDEF PAS2JS}external name 'IDBRequest'{$ENDIF} (TJSEventTarget)
   private
-    Ferror : JSValue; {$IFDEF PAS2JS} external name 'error';{$ENDIF}
+    Ferror : JSValue; {$IFDEF PAS2JS} external name 'error';{$ENDIF} // standards are not quite clear on this one
     FReadyState: string; {$IFDEF PAS2JS} external name 'readyState';{$ENDIF}
     FResult: JSValue; {$IFDEF PAS2JS} external name 'result';{$ENDIF}
     FResultDatabase: TIDBDatabase; {$IFDEF PAS2JS} external name 'result';{$ENDIF}
@@ -2590,7 +2599,7 @@ Type
 
   { TJSHTMLMenuElement }
 
-  TJSHTMLMenuElement = class {$IFDEF PAS2JS}external name 'HTMLMenuElement'{$ENDIF} (TJSHTMLElement)
+  TJSHTMLMenuElement = class {$IFDEF PAS2JS}external name 'HTMLMenuElement'{$ENDIF} (TJSHTMLElement) //  uhm... should it be declared? it is experimental at Mozilla docs...
   end;
 
   { TJSHTMLButtonElement }
@@ -2874,15 +2883,16 @@ Type
 
   { TJSHTMLTableDataCellElement }
 
-  TJSCanvasRenderingContext2D = Class;
-
-  TJSHTMLTableDataCellElement = class {$IFDEF PAS2JS}external name 'HTMLTableDataCellElement'{$ENDIF} (TJSHTMLElement)
+  TJSHTMLTableDataCellElement = class {$IFDEF PAS2JS}external name 'HTMLTableDataCellElement' (TJSHTMLElement){$ENDIF}
   private
     Fabbr: String; {$IFDEF PAS2JS} external name 'abbr';{$ENDIF}
   public
   { Properties }
     property abbr: String read Fabbr write Fabbr;
   end;
+
+
+  TJSCanvasRenderingContext2D = Class;
 
   THTMLCanvasToBlobCallback = Reference to function (aBlob : TJSBlob) : boolean; {$IFDEF PAS2JS}safecall;{$ENDIF}
 

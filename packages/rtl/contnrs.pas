@@ -10,12 +10,16 @@
     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
 
  **********************************************************************}
+{$IFDEF PAS2JS}
+{$mode objfpc}
+{$ENDIF}
+
 unit contnrs;
 
 interface
 
 uses
-  SysUtils, Classes {$IFDEF DCC}, types{$ENDIF};
+  SysUtils, Classes {$IFDEF DCC}, Types{$ENDIF};
 
 
 Type

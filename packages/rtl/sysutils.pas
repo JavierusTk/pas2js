@@ -13,6 +13,7 @@
 unit SysUtils;
 
 {$IFDEF PAS2JS}
+{$mode objfpc}
 {$modeswitch typehelpers}
 {$modeswitch advancedrecords}
 {$ENDIF}
@@ -20,7 +21,7 @@ unit SysUtils;
 interface
 
 uses
-  RTLConsts, JS, Types, SystemPas2JS;
+  RTLConsts, js{$IFDEF DCC}, Types, SystemPas2JS{$ENDIF};
 
 procedure FreeAndNil(var Obj);
 
@@ -627,7 +628,7 @@ function ConcatPaths(const Paths: array of PathStr): PathStr;
 *****************************************************************************}
 
 const
-  GUID_NULL = '{00000000-0000-0000-0000-000000000000}';
+  GUID_NULL: TGuid = '{00000000-0000-0000-0000-000000000000}';
 
 function Supports(const Instance: IInterface; const AClass: TClass; out Obj): Boolean; overload;
 function Supports(const Instance: IInterface; const IID: TGuid; out Intf): Boolean; overload;
@@ -868,9 +869,9 @@ Type
     const
     {$IFDEF PAS2JS}
     {$push}
-    {$ENDIF}
     {$R-}
     {$Q-}
+    {$ENDIF}
       Epsilon          : Double = 4.9406564584124654418e-324;
       MaxValue         : Double = 1.7976931348623157081e+308;
       MinValue         : Double = -1.7976931348623157081e+308;
@@ -1334,6 +1335,7 @@ var
   InfNan: string;
   OutPos,Error, N, L, C: Integer;
   GotNonZeroBeforeDot, BeforeDot : boolean;
+
 begin
   Result.Negative:=False;
   Result.Exponent:=0;
@@ -2098,7 +2100,7 @@ Var
 
 begin
   {$IFDEF PAS2JS}
-  P := Pos('.',S);
+  P:=Pos('.',S);
   if P>0 then
     Result:=Copy(S,1,P-1)+DS+Copy(S,P+1,Length(S)-P)
   else
@@ -2864,6 +2866,7 @@ begin
 end;
 
 Function LastDelimiter(const Delimiters, S: string): SizeInt;
+
 begin
   {$IFDEF PAS2JS}
   Result:=Length(S);
@@ -3016,6 +3019,7 @@ end;
 { Date/Time routines}
 
 Function DoEncodeDate(Year, Month, Day: Word): longint;
+
 Var
   D : TDateTime;
 
@@ -3027,12 +3031,14 @@ begin
 end;
 
 function DoEncodeTime(Hour, Minute, Second, MilliSecond: word): TDateTime;
+
 begin
   If not TryEncodeTime(Hour,Minute,Second,MilliSecond,Result) then
     Result:=0;
 end;
 
 function DateTimeToJSDate(aDateTime: TDateTime): TJSDate;
+
 Var
   Y,M,D,h,n,s,z : Word;
 
@@ -3043,6 +3049,7 @@ begin
 end;
 
 function JSDateToDateTime(aDate: TJSDate): TDateTime;
+
 begin
   Result:=EncodeDate(ADate.FullYear,ADate.Month+1,ADate.Date) +
           EncodeTime(ADate.Hours,ADate.Minutes,ADate.Seconds,ADate.Milliseconds);
@@ -3051,6 +3058,7 @@ end;
 
 {   ComposeDateTime converts a Date and a Time into one TDateTime   }
 function ComposeDateTime(Date,Time : TDateTime) : TDateTime;
+
 begin
   if Date < 0 then
     Result := trunc(Date) - Abs(frac(Time))
@@ -3059,6 +3067,7 @@ begin
 end;
 
 function TryEncodeDate(Year, Month, Day: Word; out Date: TDateTime): Boolean;
+
 var
   c, ya: LongWord;
 begin
@@ -3085,6 +3094,7 @@ end;
 
 function TryEncodeTime(Hour, Min, Sec, MSec: Word; out Time: TDateTime
   ): Boolean;
+
 begin
   Result:=(Hour<24) and (Min<60) and (Sec<60) and (MSec<1000);
   If Result then
@@ -3095,6 +3105,7 @@ end;
     TDateTime value the result is the number of days since 12/30/1899   }
 
 function EncodeDate(Year, Month, Day: word): TDateTime;
+
 begin
   {$IFDEF PAS2JS}
   If Not TryEncodeDate(Year,Month,Day,Result) then
@@ -3107,6 +3118,7 @@ end;
     a TDateTime value     }
 
 function EncodeTime(Hour, Minute, Second, MilliSecond:word):TDateTime;
+
 begin
   {$IFDEF PAS2JS}
   If not TryEncodeTime(Hour,Minute,Second,MilliSecond,Result) then
@@ -3170,6 +3182,7 @@ end;
   {   DateTimeToTimeStamp converts DateTime to a TTimeStamp   }
 
 function DateTimeToTimeStamp(DateTime: TDateTime): TTimeStamp;
+
 Var
   D : Double;
 begin
@@ -3338,11 +3351,13 @@ end ;
     an EConvertError will be raised   }
 
 function IntStrToDate(Out ErrorMsg : String; const S: String; const useformat : string; separator : char): TDateTime;
+
 Const
   WhiteSpace = ' '#8#9#10#12#13;
   Digits = '0123456789';
 
   procedure FixErrorMsg(const errmarg : String);
+
   begin
     {$IFDEF PAS2JS}ErrorMsg:=Format(SInvalidDateFormat,[errmarg]);{$ENDIF}
   end;
@@ -3520,6 +3535,7 @@ end;
 
 
 function IntStrToTime(Out ErrorMsg : String; const S: String; Len : integer; separator : char): TDateTime;
+
 const
   AMPM_None = 0;
   AMPM_AM = 1;
@@ -4079,6 +4095,7 @@ end ;
 
 
 function CurrentYear: Word;
+
 begin
   Result:=TJSDate.New().FullYear;
 end;
@@ -4089,13 +4106,17 @@ begin
 end;
 
 function TryStrToDate(const S: String; out Value: TDateTime; separator : char): Boolean;
+
 begin
   Result:=TryStrToDate(S,Value,ShortDateFormat,Separator);
 end;
 
-function TryStrToDate(const S: String; out Value: TDateTime; const useformat : string; separator : char): Boolean;
+function TryStrToDate(const S: String; out Value: TDateTime;
+                    const useformat : string; separator : char): Boolean;
+
 Var
   Msg : String;
+
 begin
   Result:=Length(S)<>0;
   If Result then
@@ -4104,6 +4125,9 @@ begin
     Result:=(Msg='');
     end;
 end;
+
+
+
 
 function TryStrToTime(const S: String; out Value: TDateTime; separator : char): Boolean;
 Var
@@ -4233,6 +4257,7 @@ end;
 *)
 
 function StrToCurr(const S: string): Currency;
+
 begin
   {$IFDEF PAS2JS}
   if not TryStrToCurr(S,Result) then
@@ -7046,24 +7071,28 @@ begin
 end;
 
 Function TByteHelper.SetBit(const index: TByteBitIndex) : Byte;
+
 begin
   Self := Self or (Byte(1) shl index);
   Result:=Self;
 end;
 
 Function TByteHelper.ClearBit(const index: TByteBitIndex) : Byte;
+
 begin
   Self:=Self and not Byte((Byte(1) shl index));
   Result:=Self;
 end;
 
 Function TByteHelper.ToggleBit(const index: TByteBitIndex) : Byte;
+
 begin
   Self := Self xor Byte((Byte(1) shl index));
   Result:=Self;
 end;
 
 Function TByteHelper.TestBit(const Index: TByteBitIndex):Boolean;
+
 begin
   Result := (Self and Byte((Byte(1) shl index)))<>0;
 end;
@@ -7073,21 +7102,25 @@ end;
   ---------------------------------------------------------------------}
 
 Class Function TShortIntHelper.Parse(const AString: string): ShortInt;
+
 begin
   Result:=StrToInt(AString);
 end;
 
 Class Function TShortIntHelper.Size: Integer;
+
 begin
   Result:=1;
 end;
 
 Class Function TShortIntHelper.ToString(const AValue: ShortInt): string;
+
 begin
   Result:=IntToStr(AValue);
 end;
 
 Class Function TShortIntHelper.TryParse(const AString: string; out AValue: ShortInt): Boolean;
+
 Var
   C : Integer;
 
@@ -7097,26 +7130,31 @@ begin
 end;
 
 Function TShortIntHelper.ToBoolean: Boolean;
+
 begin
   Result:=(Self<>0);
 end;
 
 Function TShortIntHelper.ToDouble: Double;
+
 begin
   Result:=Self;
 end;
 
 Function TShortIntHelper.ToExtended: Extended;
+
 begin
   Result:=Self;
 end;
 
 Function TShortIntHelper.ToBinString: string;
+
 begin
   Result:=BinStr(Self,Size*8);
 end;
 
 Function TShortIntHelper.ToHexString(const AMinDigits: Integer): string;
+
 Var
   B : Word;
   U : TJSUInt8Array;
@@ -7140,34 +7178,40 @@ begin
 end;
 
 Function TShortIntHelper.ToHexString: string;
+
 begin
   Result:=ToHexString(Size*2);
 end;
 
 Function TShortIntHelper.ToString: string;
+
 begin
   Result:=IntToStr(Self);
 end;
 
 Function TShortIntHelper.SetBit(const index: TShortIntBitIndex) : ShortInt;
+
 begin
   Self := Self or (ShortInt(1) shl index);
   Result:=Self;
 end;
 
 Function TShortIntHelper.ClearBit(const index: TShortIntBitIndex) : ShortInt;
+
 begin
   Self:=Self and not ShortInt((ShortInt(1) shl index));
   Result:=Self;
 end;
 
 Function TShortIntHelper.ToggleBit(const index: TShortIntBitIndex) : ShortInt;
+
 begin
   Self := Self xor ShortInt((ShortInt(1) shl index));
   Result:=Self;
 end;
 
 Function TShortIntHelper.TestBit(const Index: TShortIntBitIndex):Boolean;
+
 begin
   Result := (Self and ShortInt((ShortInt(1) shl index)))<>0;
 end;
@@ -7177,21 +7221,25 @@ end;
   ---------------------------------------------------------------------}
 
 Class Function TSmallIntHelper.Parse(const AString: string): SmallInt;
+
 begin
   Result:=StrToInt(AString);
 end;
 
 Class Function TSmallIntHelper.Size: Integer;
+
 begin
   Result:=2;
 end;
 
 Class Function TSmallIntHelper.ToString(const AValue: SmallInt): string;
+
 begin
   Result:=IntToStr(AValue);
 end;
 
 Class Function TSmallIntHelper.TryParse(const AString: string; out AValue: SmallInt): Boolean;
+
 Var
   C : Integer;
 
@@ -7201,30 +7249,36 @@ begin
 end;
 
 Function TSmallIntHelper.ToBoolean: Boolean;
+
 begin
   Result:=(Self<>0);
 end;
 
 Function TSmallIntHelper.ToDouble: Double;
+
 begin
   Result:=Self;
 end;
 
 Function TSmallIntHelper.ToExtended: Extended;
+
 begin
   Result:=Self;
 end;
 
 Function TSmallIntHelper.ToBinString: string;
+
 begin
   Result:=BinStr(Self,Size*8);
 end;
 
 Function TSmallIntHelper.ToHexString(const AMinDigits: Integer): string;
+
 Var
   B : Cardinal;
   U : TJSUInt16Array;
   S : TJSInt16array;
+
 
 begin
   {$IFDEF PAS2JS}
@@ -7246,35 +7300,41 @@ begin
 end;
 
 Function TSmallIntHelper.ToHexString: string;
+
 begin
   Result:=ToHexString(Size*2);
 end;
 
 
 Function TSmallIntHelper.ToString: string;
+
 begin
   Result:=IntToStr(Self);
 end;
 
 Function TSmallIntHelper.SetBit(const index: TSmallIntBitIndex) : SmallInt;
+
 begin
   Self := Self or (SmallInt(1) shl index);
   Result:=Self;
 end;
 
 Function TSmallIntHelper.ClearBit(const index: TSmallIntBitIndex) : SmallInt;
+
 begin
   Self:=Self and not SmallInt((SmallInt(1) shl index));
   Result:=Self;
 end;
 
 Function TSmallIntHelper.ToggleBit(const index: TSmallIntBitIndex) : SmallInt;
+
 begin
   Self := Self xor SmallInt((SmallInt(1) shl index));
   Result:=Self;
 end;
 
 Function TSmallIntHelper.TestBit(const Index: TSmallIntBitIndex):Boolean;
+
 begin
   Result := (Self and SmallInt((SmallInt(1) shl index)))<>0;
 end;
@@ -7284,21 +7344,25 @@ end;
   ---------------------------------------------------------------------}
 
 Class Function TWordHelper.Parse(const AString: string): Word;
+
 begin
   Result:=StrToInt(AString);
 end;
 
 Class Function TWordHelper.Size: Integer;
+
 begin
   Result:=2;
 end;
 
 Class Function TWordHelper.ToString(const AValue: Word): string;
+
 begin
   Result:=IntToStr(AValue);
 end;
 
 Class Function TWordHelper.TryParse(const AString: string; out AValue: Word): Boolean;
+
 Var
   C : Integer;
 
@@ -7332,40 +7396,47 @@ begin
 end;
 
 Function TWordHelper.ToHexString(const AMinDigits: Integer): string;
+
 begin
   Result:=IntToHex(Self,AMinDigits);
 end;
 
 Function TWordHelper.ToHexString: string;
+
 begin
   Result:=IntToHex(Self,Size*2);
 end;
 
 
 Function TWordHelper.ToString: string;
+
 begin
   Result:=IntToStr(Self);
 end;
 
 Function TWordHelper.SetBit(const index: TWordBitIndex) : Word;
+
 begin
   Self := Self or (Word(1) shl index);
   Result:=Self;
 end;
 
 Function TWordHelper.ClearBit(const index: TWordBitIndex) : Word;
+
 begin
   Self:=Self and not Word((Word(1) shl index));
   Result:=Self;
 end;
 
 Function TWordHelper.ToggleBit(const index: TWordBitIndex) : Word;
+
 begin
   Self := Self xor Word((Word(1) shl index));
   Result:=Self;
 end;
 
 Function TWordHelper.TestBit(const Index: TWordBitIndex):Boolean;
+
 begin
   Result := (Self and Word((Word(1) shl index)))<>0;
 end;
@@ -7375,21 +7446,25 @@ end;
   ---------------------------------------------------------------------}
 
 Class Function TCardinalHelper.Parse(const AString: string): Cardinal;
+
 begin
   Result:=StrToInt(AString);
 end;
 
 Class Function TCardinalHelper.Size: Integer;
+
 begin
   Result:=4;
 end;
 
 Class Function TCardinalHelper.ToString(const AValue: Cardinal): string;
+
 begin
   Result:=IntToStr(AValue);
 end;
 
 Class Function TCardinalHelper.TryParse(const AString: string; out AValue: Cardinal): Boolean;
+
 Var
   C : Integer;
 
@@ -7399,59 +7474,70 @@ begin
 end;
 
 Function TCardinalHelper.ToBoolean: Boolean;
+
 begin
   Result:=(Self<>0);
 end;
 
 Function TCardinalHelper.ToDouble: Double;
+
 begin
   Result:=Self;
 end;
 
 Function TCardinalHelper.ToExtended: Extended;
+
 begin
   Result:=Self;
 end;
 
 Function TCardinalHelper.ToBinString: string;
+
 begin
   Result:=BinStr(Self,Size*8);
 end;
 
 Function TCardinalHelper.ToHexString(const AMinDigits: Integer): string;
+
 begin
   Result:=IntToHex(Self,AMinDigits);
 end;
 
 Function TCardinalHelper.ToHexString: string;
+
 begin
   Result:=ToHexString(Size*2);
 end;
 
 Function TCardinalHelper.ToString: string;
+
 begin
   Result:=IntToStr(Self);
 end;
 
 Function TCardinalHelper.SetBit(const index: TCardinalBitIndex) : Cardinal;
+
 begin
   Self := Self or (Cardinal(1) shl index);
   Result:=Self;
 end;
 
 Function TCardinalHelper.ClearBit(const index: TCardinalBitIndex) : Cardinal;
+
 begin
   Self:=Self and not Cardinal((Cardinal(1) shl index));
   Result:=Self;
 end;
 
 Function TCardinalHelper.ToggleBit(const index: TCardinalBitIndex) : Cardinal;
+
 begin
   Self := Self xor Cardinal((Cardinal(1) shl index));
   Result:=Self;
 end;
 
 Function TCardinalHelper.TestBit(const Index: TCardinalBitIndex):Boolean;
+
 begin
   Result := (Self and Cardinal((Cardinal(1) shl index)))<>0;
 end;
@@ -7462,21 +7548,25 @@ end;
   ---------------------------------------------------------------------}
 
 Class Function TIntegerHelper.Parse(const AString: string): Integer;
+
 begin
   Result:=StrToInt(AString);
 end;
 
 Class Function TIntegerHelper.Size: Integer;
+
 begin
   Result:=4;
 end;
 
 Class Function TIntegerHelper.ToString(const AValue: Integer): string;
+
 begin
   Result:=IntToStr(AValue);
 end;
 
 Class Function TIntegerHelper.TryParse(const AString: string; out AValue: Integer): Boolean;
+
 Var
   C : Integer;
 
@@ -7486,26 +7576,32 @@ begin
 end;
 
 Function TIntegerHelper.ToBoolean: Boolean;
+
 begin
   Result:=(Self<>0);
 end;
 
 Function TIntegerHelper.ToDouble: Double;
+
 begin
   Result:=Self;
 end;
 
 Function TIntegerHelper.ToExtended: Extended;
+
 begin
   Result:=Self;
 end;
 
 Function TIntegerHelper.ToBinString: string;
+
 begin
   Result:=BinStr(Self,Size*8);
 end;
 
 Function TIntegerHelper.ToHexString(const AMinDigits: Integer): string;
+
+
 Var
   B : Word;
   U : TJSUInt32Array;
@@ -7527,35 +7623,41 @@ begin
 end;
 
 Function TIntegerHelper.ToHexString: string;
+
 begin
   Result:=ToHexString(Size*2);
 end;
 
 
 Function TIntegerHelper.ToString: string;
+
 begin
   Result:=IntToStr(Self);
 end;
 
 Function TIntegerHelper.SetBit(const index: TIntegerBitIndex) : Integer;
+
 begin
   Self := Self or (Integer(1) shl index);
   Result:=Self;
 end;
 
 Function TIntegerHelper.ClearBit(const index: TIntegerBitIndex) : Integer;
+
 begin
   Self:=Self and not Integer((Integer(1) shl index));
   Result:=Self;
 end;
 
 Function TIntegerHelper.ToggleBit(const index: TIntegerBitIndex) : Integer;
+
 begin
   Self := Self xor Integer((Integer(1) shl index));
   Result:=Self;
 end;
 
 Function TIntegerHelper.TestBit(const Index: TIntegerBitIndex):Boolean;
+
 begin
   Result := (Self and Integer((Integer(1) shl index)))<>0;
 end;
@@ -7566,21 +7668,25 @@ end;
   ---------------------------------------------------------------------}
 
 Class Function TNativeIntHelper.Parse(const AString: string): NativeInt;
+
 begin
   Result:=StrToInt(AString);
 end;
 
 Class Function TNativeIntHelper.Size: Integer;
+
 begin
   Result:=7;
 end;
 
 Class Function TNativeIntHelper.ToString(const AValue: NativeInt): string;
+
 begin
   Result:=IntToStr(AValue);
 end;
 
 Class Function TNativeIntHelper.TryParse(const AString: string; out AValue: NativeInt): Boolean;
+
 Var
   C : Integer;
 
@@ -7590,59 +7696,70 @@ begin
 end;
 
 Function TNativeIntHelper.ToBoolean: Boolean;
+
 begin
   Result:=(Self<>0);
 end;
 
 Function TNativeIntHelper.ToDouble: Double;
+
 begin
   Result:=Self;
 end;
 
 Function TNativeIntHelper.ToExtended: Extended;
+
 begin
   Result:=Self;
 end;
 
 Function TNativeIntHelper.ToBinString: string;
+
 begin
   Result:=BinStr(Self,Size*8);
 end;
 
 Function TNativeIntHelper.ToHexString(const AMinDigits: Integer): string;
+
 begin
   Result:=IntToHex(Self,AMinDigits);
 end;
 
 Function TNativeIntHelper.ToHexString: string;
+
 begin
   Result:=IntToHex(Self,Size*2);
 end;
 
 Function TNativeIntHelper.ToString: string;
+
 begin
   Result:=IntToStr(Self);
 end;
 
 Function TNativeIntHelper.SetBit(const index: TNativeIntBitIndex) : NativeInt;
+
 begin
   Self := Self or (NativeInt(1) shl index);
   Result:=Self;
 end;
 
 Function TNativeIntHelper.ClearBit(const index: TNativeIntBitIndex) : NativeInt;
+
 begin
   Self:=Self and not NativeInt((NativeInt(1) shl index));
   Result:=Self;
 end;
 
 Function TNativeIntHelper.ToggleBit(const index: TNativeIntBitIndex) : NativeInt;
+
 begin
   Self := Self xor NativeInt((NativeInt(1) shl index));
   Result:=Self;
 end;
 
 Function TNativeIntHelper.TestBit(const Index: TNativeIntBitIndex):Boolean;
+
 begin
   Result := (Self and NativeInt((NativeInt(1) shl index)))<>0;
 end;
@@ -7653,21 +7770,25 @@ end;
   ---------------------------------------------------------------------}
 
 Class Function TNativeUIntHelper.Parse(const AString: string): NativeUInt;
+
 begin
   Result:=StrToInt(AString);
 end;
 
 Class Function TNativeUIntHelper.Size: Integer;
+
 begin
   Result:=7;
 end;
 
 Class Function TNativeUIntHelper.ToString(const AValue: NativeUInt): string;
+
 begin
   Result:=IntToStr(AValue);
 end;
 
 Class Function TNativeUIntHelper.TryParse(const AString: string; out AValue: NativeUInt): Boolean;
+
 Var
   C : Integer;
 
@@ -7677,64 +7798,76 @@ begin
 end;
 
 Function TNativeUIntHelper.ToBoolean: Boolean;
+
 begin
   Result:=(Self<>0);
 end;
 
 Function TNativeUIntHelper.ToDouble: Double;
+
 begin
   Result:=Self;
 end;
 
 Function TNativeUIntHelper.ToExtended: Extended;
+
 begin
   Result:=Self;
 end;
 
 Function TNativeUIntHelper.ToBinString: string;
+
 begin
   Result:=BinStr(Self,Size*8);
 end;
 
 Function TNativeUIntHelper.ToHexString(const AMinDigits: Integer): string;
+
 begin
   Result:=IntToHex(Self,AMinDigits);
 end;
 
 Function TNativeUIntHelper.ToHexString: string;
+
 begin
   Result:=IntToHex(Self,Size*2);
 end;
 
 Function TNativeUIntHelper.ToSingle: Single;
+
 begin
   Result:=Self;
 end;
 
 Function TNativeUIntHelper.ToString: string;
+
 begin
   Result:=IntToStr(Self);
 end;
 
 Function TNativeUIntHelper.SetBit(const index: TNativeUIntBitIndex) : NativeUInt;
+
 begin
   Self := Self or (NativeUInt(1) shl index);
   Result:=Self;
 end;
 
 Function TNativeUIntHelper.ClearBit(const index: TNativeUIntBitIndex) : NativeUInt;
+
 begin
   Self:=Self and not NativeUInt((NativeUInt(1) shl index));
   Result:=Self;
 end;
 
 Function TNativeUIntHelper.ToggleBit(const index: TNativeUIntBitIndex) : NativeUInt;
+
 begin
   Self := Self xor NativeUInt((NativeUInt(1) shl index));
   Result:=Self;
 end;
 
 Function TNativeUIntHelper.TestBit(const Index: TNativeUIntBitIndex):Boolean;
+
 begin
   Result := (Self and NativeUInt((NativeUInt(1) shl index)))<>0;
 end;
@@ -7744,31 +7877,37 @@ end;
   ---------------------------------------------------------------------}
 
 Class Function TBooleanHelper.Parse(const S: string): Boolean;
+
 begin
   Result:=StrToBool(S);
 end;
 
 Class Function TBooleanHelper.Size: Integer;
+
 begin
   Result:=1;
 end;
 
 Class Function TBooleanHelper.ToString(const AValue: Boolean; UseBoolStrs: TUseBoolStrs = TUseBoolStrs.False): string;
+
 begin
   Result:=BoolToStr(AValue,UseBoolStrs=TUseBoolStrs.True);
 end;
 
 Class Function TBooleanHelper.TryToParse(const S: string; out AValue: Boolean): Boolean;
+
 begin
   Result:=TryStrToBool(S,AValue);
 end;
 
 Function TBooleanHelper.ToInteger: Integer;
+
 begin
   Result:=Integer(Self);
 end;
 
 Function TBooleanHelper.ToString(UseBoolStrs: TUseBoolStrs = TUseBoolStrs.False): string;
+
 begin
   Result:=BoolToStr(Self,UseBoolStrs=TUseBoolStrs.True);
 end;
@@ -7778,31 +7917,37 @@ end;
   ---------------------------------------------------------------------}
 
 Class Function TByteBoolHelper.Parse(const S: string): Boolean;
+
 begin
   Result:=StrToBool(S);
 end;
 
 Class Function TByteBoolHelper.Size: Integer;
+
 begin
   Result:=1;
 end;
 
 Class Function TByteBoolHelper.ToString(const AValue: Boolean; UseBoolStrs: TUseBoolStrs = TUseBoolStrs.False): string;
+
 begin
   Result:=BoolToStr(AValue,UseBoolStrs=TUseBoolStrs.True);
 end;
 
 Class Function TByteBoolHelper.TryToParse(const S: string; out AValue: Boolean): Boolean;
+
 begin
   Result:=TryStrToBool(S,AValue);
 end;
 
 Function TByteBoolHelper.ToInteger: Integer;
+
 begin
   Result:=Integer(Self);
 end;
 
 Function TByteBoolHelper.ToString(UseBoolStrs: TUseBoolStrs = TUseBoolStrs.False): string;
+
 begin
   Result:=BoolToStr(Self,UseBoolStrs=TUseBoolStrs.True);
 end;
@@ -7812,31 +7957,37 @@ end;
   ---------------------------------------------------------------------}
 
 Class Function TWordBoolHelper.Parse(const S: string): Boolean;
+
 begin
   Result:=StrToBool(S);
 end;
 
 Class Function TWordBoolHelper.Size: Integer;
+
 begin
   Result:=2;
 end;
 
 Class Function TWordBoolHelper.ToString(const AValue: Boolean; UseBoolStrs: TUseBoolStrs = TUseBoolStrs.False): string;
+
 begin
   Result:=BoolToStr(AValue,UseBoolStrs=TUseBoolStrs.True);
 end;
 
 Class Function TWordBoolHelper.TryToParse(const S: string; out AValue: Boolean): Boolean;
+
 begin
   Result:=TryStrToBool(S,AValue);
 end;
 
 Function TWordBoolHelper.ToInteger: Integer;
+
 begin
   Result:=Integer(Self);
 end;
 
 Function TWordBoolHelper.ToString(UseBoolStrs: TUseBoolStrs = TUseBoolStrs.False): string;
+
 begin
   Result:=BoolToStr(Self,UseBoolStrs=TUseBoolStrs.True);
 end;
@@ -7847,31 +7998,37 @@ end;
 
 
 Class Function TLongBoolHelper.Parse(const S: string): Boolean;
+
 begin
   Result:=StrToBool(S);
 end;
 
 Class Function TLongBoolHelper.Size: Integer;
+
 begin
   Result:=4;
 end;
 
 Class Function TLongBoolHelper.ToString(const AValue: Boolean; UseBoolStrs: TUseBoolStrs = TUseBoolStrs.False): string;
+
 begin
   Result:=BoolToStr(AValue,UseBoolStrs=TUseBoolStrs.True);
 end;
 
 Class Function TLongBoolHelper.TryToParse(const S: string; out AValue: Boolean): Boolean;
+
 begin
   Result:=TryStrToBool(S,AValue);
 end;
 
 Function TLongBoolHelper.ToInteger: Integer;
+
 begin
   Result:=Integer(Self);
 end;
 
 Function TLongBoolHelper.ToString(UseBoolStrs: TUseBoolStrs = TUseBoolStrs.False): string;
+
 begin
   Result:=BoolToStr(Self,UseBoolStrs=TUseBoolStrs.True);
 end;

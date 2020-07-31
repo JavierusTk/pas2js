@@ -11,7 +11,9 @@
 
  **********************************************************************}
 unit TypInfo;
+
 {$IFDEF PAS2JS}
+{$mode objfpc}
 {$modeswitch externalclass}
 {$ENDIF}
 
@@ -379,6 +381,7 @@ function GetClassMember(aTIStruct: TTypeInfoStruct; const aName: String): TTypeM
 function GetInstanceMethod(Instance: TObject; const aName: String): Pointer;
 function GetClassMethods(aTIStruct: TTypeInfoStruct): TTypeMemberMethodDynArray;
 function CreateMethod(Instance: TObject; FuncName: String): Pointer; {$IFDEF PAS2JS}external name 'rtl.createCallback';{$ENDIF}
+
 function GetInterfaceMembers(aTIInterface: TTypeInfoInterface): TTypeMemberDynArray;
 function GetInterfaceMember(aTIInterface: TTypeInfoInterface; const aName: String): TTypeMember;
 function GetInterfaceMethods(aTIInterface: TTypeInfoInterface): TTypeMemberMethodDynArray;
@@ -1581,16 +1584,14 @@ end;
 
 procedure SetInterfaceProp(Instance: TObject; PropInfo: TTypeMemberProperty;
   const Value: IInterface);
-begin
-
-end;
-
 type
   TSetter = procedure(Value: IInterface) of object;
   TSetterWithIndex = procedure(Index: JSValue; Value: IInterface) of object;
-
-{$IFDEF PAS2JS}
-procedure setIntfP(Instance: TObject; const PropName: string; value: jsvalue); external name 'rtl.setIntfP';
+  procedure setIntfP(Instance: TObject; const PropName: string; value: jsvalue);{$IFDEF PAS2JS} external name 'rtl.setIntfP';{$ENDIF}
+  {$IFDEF DCC}
+  begin
+  end;
+  {$ENDIF}
 var
   sk: TSetterKind;
   Setter: String;
@@ -1613,7 +1614,7 @@ begin
       raise EPropertyError.CreateFmt(SIndexedPropertyNeedsParams, [PropInfo.Name]);
   end;
 end;
-{$ENDIF}
+
 function GetRawInterfaceProp(Instance: TObject; const PropName: string
   ): Pointer; overload;
 begin

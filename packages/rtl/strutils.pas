@@ -12,6 +12,9 @@
     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
 
  **********************************************************************}
+{$IFDEF PAS2JS}
+{$mode objfpc}
+{$ENDIF}
 
 {$inline on}
 unit strutils;
@@ -260,6 +263,7 @@ end;
     Case insensitive search/replace
   ---------------------------------------------------------------------}
 Function AnsiResemblesText(const AText, AOther: string): Boolean;
+
 begin
   {$IFDEF PAS2JS}
   if Assigned(AnsiResemblesProc) then
@@ -1021,8 +1025,10 @@ begin
 end;
 
 function NPos(const C: string; S: string; N: Integer): SizeInt;
+
 var
   i,p,k: SizeInt;
+
 begin
   {$IFDEF PAS2JS}
   Result:=0;
@@ -1043,8 +1049,10 @@ begin
 end;
 
 function AddChar(C: Char; const S: string; N: Integer): string;
+
 Var
   l : SizeInt;
+
 begin
   Result:=S;
   l:=Length(Result);
@@ -1078,8 +1086,10 @@ end;
 
 
 function Copy2Symb(const S: string; Symb: Char): string;
+
 var
   p: SizeInt;
+
 begin
   {$IFDEF PAS2JS}
   p:=Pos(Symb,S);
@@ -1090,8 +1100,10 @@ begin
 end;
 
 function Copy2SymbDel(var S: string; Symb: Char): string;
+
 var
   p: SizeInt;
+
 begin
   {$IFDEF PAS2JS}
   p:=Pos(Symb,S);
@@ -1939,12 +1951,12 @@ begin
   {$IFDEF PAS2JS}
   Result:='';
   for i:=0 to Length(Source) div 2 - 1 do
-  begin
+    begin
     C:=Chr(StrTointDef('$' + Copy(Source, (i * 2) + 1, 2), Ord(' ')));
     if Length(Key) > 0 then
       C:=Chr(Ord(Key[1 + (i mod Length(Key))]) xor Ord(C));
     Result:=Result + C;
-  end;
+    end;
   {$ENDIF}
 end;
 
@@ -1956,17 +1968,17 @@ begin
   i:=1;
   Result:='';
   while (Result='') and (i<=ParamCount) do
-  begin
+    begin
     S:=ParamStr(i);
     if (Length(SwitchChars)=0) or (CharInSet(S[1],SwitchChars) and (Length(S) > 1)) and
        (CompareText(Copy(S,2,Length(S)-1),Switch)=0) then
-    begin
+      begin
       inc(i);
       if i<=ParamCount then
         Result:=ParamStr(i);
-    end;
+      end;
     inc(i);
-  end;
+    end;
 end;
 
 Function RPosEX(C:char;const S : String;offs:cardinal):SizeInt; overload;

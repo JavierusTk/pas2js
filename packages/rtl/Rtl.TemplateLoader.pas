@@ -14,7 +14,9 @@
  **********************************************************************}
 unit Rtl.TemplateLoader;
 
-//{$mode objfpc}
+{$IFDEF PAS2JS}
+{$mode objfpc}
+{$ENDIF}
 
 interface
 

@@ -12,6 +12,10 @@
  **********************************************************************}
 unit ObjPas;
 
+{$IFDEF PAS2JS}
+{$mode objfpc}
+{$ENDIF}
+
 interface
 
 const

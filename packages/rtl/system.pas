@@ -13,13 +13,16 @@
 {$IFDEF PAS2JS}
 unit System;
 
+{$mode objfpc}
 {$modeswitch externalclass}
 {$ENDIF}
 
 interface
 
+{$IFDEF DCC}
 uses
   Types;
+{$ENDIF}
 
 {$IFDEF NodeJS}
 var
@@ -123,11 +126,11 @@ type
   end;
 
   TClass = class of TObject;
+
   { TObject }
 
   {$DispatchField Msg} // enable checking message methods for record field name "Msg"
   {$DispatchStrField MsgStr}
-
   TObject = class
   private
     class var FClassName: String; external name '$classname';
@@ -188,9 +191,7 @@ const
   E_NOTIMPL     = -2147467263; // FPC: longint($80004001)
 
 type
-
   {$Interfaces COM}
-
   IUnknown = interface
     ['{00000000-0000-0000-C000-000000000046}']
     function QueryInterface(const iid: TGuid; out obj): Integer;
@@ -256,7 +257,7 @@ type
 
 const
   { for safe as operator support }
-  IObjectInstance = '{D91C9AF4-3C93-420F-A303-BF5BA82BFD23}';
+  IObjectInstance: TGuid = '{D91C9AF4-3C93-420F-A303-BF5BA82BFD23}';
 
 function GUIDToString(const GUID: TGUID): string; external name 'rtl.guidrToStr';
 {$ENDIF}
@@ -438,7 +439,6 @@ type
     property Length: NativeInt read FLength;
     property Elements[Index: NativeInt]: JSValue read GetElements; default;
   end;
-
 var
   JSArguments: TJSArguments; external name 'arguments';
 
@@ -462,14 +462,14 @@ begin
   Result:=nil;
   {$IFDEF PAS2JS}
   while i<JSArguments.Length do
-  begin
+    begin
     new(v);
     v^.VType:=byte(JSArguments[i]);
     inc(i);
     v^.VJSValue:=JSArguments[i];
     inc(i);
     TJSArray(Result).push(v^);
-  end;
+    end;
   {$ENDIF}
 end;
 
@@ -486,7 +486,7 @@ end;
 function ParamStr(Index: Longint): String;
 begin
   {$IFDEF PAS2JS}
-  if Assigned(OnParamStr)then
+  if Assigned(OnParamStr) then
     Result:=OnParamStr(Index)
   else if Index=0 then
     Result:='js'
@@ -593,6 +593,7 @@ var
   WriteCallBack : TConsoleHandler;
 
 Function SetWriteCallBack(H : TConsoleHandler) : TConsoleHandler;
+
 begin
   Result:=WriteCallBack;
   WriteCallBack:=H;
@@ -622,11 +623,11 @@ begin
   L:=JSArguments.Length-1;
   if Assigned(WriteCallBack) then
     begin
-      for i:=0 to L do
-        WriteCallBack(JSArguments[i],I=L);
+    for i:=0 to L do
+      WriteCallBack(JSArguments[i],I=L);
     end
   else
-  begin
+    begin
     s:=WriteBuf;
     for i:=0 to L do
       s:=s+String(JSArguments[i]);
@@ -634,20 +635,23 @@ begin
       console.log(s);
     end;
     WriteBuf:='';
-  end;
+    end;
   {$ENDIF}
 end;
 
 function Int(const A: Double): double;
+
 begin
   // trunc contains fix for missing Math.trunc in IE
   Result:=Trunc(A);
 end;
 
 function Number(S: String): Double; {$IFDEF PAS2JS}external name 'Number';{$ENDIF}
+{$IFDEF DCC}
 begin
   Result := 0;
 end;
+{$ENDIF}
 
 function valint(const S: String; MinVal, MaxVal: NativeInt; out Code: Integer): NativeInt;
 var
@@ -676,12 +680,12 @@ begin
   {$ENDIF}
 end;
 
-procedure val(const S: String; out NI : NativeInt; out Code: Integer);overload;
+procedure val(const S: String; out NI : NativeInt; out Code: Integer); overload;
 begin
   NI:=valint(S,low(NI),high(NI),Code);
 end;
 
-procedure val(const S: String; out NI: NativeUInt; out Code: Integer);overload;
+procedure val(const S: String; out NI: NativeUInt; out Code: Integer); overload;
 var
   x : double;
 begin
@@ -690,10 +694,10 @@ begin
   if isNaN(x) or (X<>Int(X)) or (X<0) then
     Code:=1
   else
-  begin
+    begin
     Code:=0;
     NI:=Trunc(x);
-  end;
+    end;
   {$ENDIF}
 end;
 
@@ -702,32 +706,32 @@ begin
   SI:=valint(S,low(SI),high(SI),Code);
 end;
 
-procedure val(const S: String; out SI: smallint; out Code: Integer);overload;
+procedure val(const S: String; out SI: smallint; out Code: Integer); overload;
 begin
   SI:=valint(S,low(SI),high(SI),Code);
 end;
 
-procedure val(const S: String; out C: Cardinal; out Code: Integer);overload;
+procedure val(const S: String; out C: Cardinal; out Code: Integer); overload;
 begin
   C:=valint(S,low(C),high(C),Code);
 end;
 
-procedure val(const S: String; out B: Byte; out Code: Integer);overload;
+procedure val(const S: String; out B: Byte; out Code: Integer); overload;
 begin
   B:=valint(S,low(B),high(B),Code);
 end;
 
-procedure val(const S: String; out W: word; out Code: Integer);overload;
+procedure val(const S: String; out W: word; out Code: Integer); overload;
 begin
   W:=valint(S,low(W),high(W),Code);
 end;
 
-procedure val(const S : String; out I : integer; out Code : Integer);overload;
+procedure val(const S : String; out I : integer; out Code : Integer); overload;
 begin
   I:=valint(S,low(I),high(I),Code);
 end;
 
-procedure val(const S : String; out d : double; out Code : Integer);overload;
+procedure val(const S : String; out d : double; out Code : Integer); overload;
 Var
   x: double;
 begin
@@ -736,14 +740,14 @@ begin
   if isNaN(x) then
     Code:=1
   else
-  begin
+    begin
     Code:=0;
     d:=x;
-  end;
+    end;
   {$ENDIF}
 end;
 
-procedure val(const S: String; out b: boolean; out Code: Integer);overload;
+procedure val(const S: String; out b: boolean; out Code: Integer); overload;
 begin
   if SameText(S,'true') then
     begin
@@ -1132,3 +1136,4 @@ initialization
   ExitCode:=0; // set it here, so that WPO does not remove it
 
 end.
+

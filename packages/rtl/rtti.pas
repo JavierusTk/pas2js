@@ -13,6 +13,7 @@
 unit RTTI;
 
 {$IFDEF PAS2JS}
+{$mode objfpc}
 {$ModeSwitch advancedrecords}
 {$ENDIF}
 
@@ -251,7 +252,8 @@ type
     FOnInvoke: TVirtualInterfaceInvokeEvent;
   public
     constructor Create(InterfaceTypeInfo: Pointer); overload; {$IFDEF PAS2JS}assembler;{$ENDIF}
-    constructor Create(InterfaceTypeInfo: Pointer; const InvokeEvent: TVirtualInterfaceInvokeEvent); overload;
+    constructor Create(InterfaceTypeInfo: Pointer;
+      const InvokeEvent: TVirtualInterfaceInvokeEvent); overload;
     property OnInvoke: TVirtualInterfaceInvokeEvent read FOnInvoke write FOnInvoke;
   end;
 
@@ -578,10 +580,10 @@ begin
   if FPool.hasOwnProperty(Name) then
     Result:=TRttiType(FPool[Name])
   else
-  begin
+    begin
     Result:=TRttiType.Create(aTypeInfo);
     FPool[Name]:=Result;
-  end;
+    end;
   {$ENDIF}
 end;
 

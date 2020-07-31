@@ -708,6 +708,7 @@ const
   DOWMap: array [1..7] of Word = (7, 1, 2, 3, 4, 5, 6);
 
 Function PreviousDayOfWeek (DayOfWeek : Word) : Word;
+
 begin
   {$IFDEF PAS2JS}
   If Not IsValidDayOfWeek(DayOfWeek) then
@@ -2123,6 +2124,7 @@ end;
 Procedure InvalidDateTimeError(const AYear, AMonth, ADay, AHour, AMinute, ASecond, AMilliSecond: Word; const ABaseDate: TDateTime);
 
   Function DoField(Arg,Def : Word; Unknown: String) : String;
+
   begin
     {$IFDEF PAS2JS}
     if Def=0 then ;
@@ -2138,6 +2140,7 @@ Procedure InvalidDateTimeError(const AYear, AMonth, ADay, AHour, AMinute, ASecon
 Var
   Y,M,D,H,N,S,MS : Word;
   Msg : String;
+
 begin
   {$IFDEF PAS2JS}
   DecodeDateTime(ABasedate,Y,M,D,H,N,S,MS);
@@ -2189,9 +2192,9 @@ end;
   ---------------------------------------------------------------------}
 {$IFDEF PAS2JS}
 {$push}
-{$ENDIF}
 {$R-}
 {$Q-}
+{$ENDIF}
 
 Function DateTimeToJulianDate(const AValue: TDateTime): Double;
 var
@@ -2444,25 +2447,25 @@ var
 begin
   {$IFDEF PAS2JS}
   if Trim(AValue) = '' then
-  begin
+    begin
     Result:=True;
     ADateTime:=0;
-  end;
+    end;
   lY:=StrToIntDef(Copy(AValue,P[ppYear],4),-1);
   lM:=StrToIntDef(Copy(AValue,P[ppMonth],2),-1);
   lD:=StrToIntDef(Copy(AValue,P[ppDay],2),-1);
   if (Length(AValue)>=P[ppTime]) then
-  begin
+    begin
     lH:=StrToIntDef(Copy(AValue,P[ppHour],2),-1);
     lMi:=StrToIntDef(Copy(AValue,P[ppMinute],2),-1);
     lS:=StrToIntDef(Copy(AValue,P[ppSec],2),-1);
-  end
+    end
   else
-  begin
+    begin
     lH:=0;
     lMi:=0;
     lS:=0;
-  end;
+    end;
   Result:=(lY>=0) and (lM>=0) and (lD>=0) and (lH>=0) and (lMi>=0) and (ls>=0);
   if Not Result then
     ADateTime:=0
@@ -2493,6 +2496,7 @@ const
 
 { TDateTimeScanner }
 procedure TDateTimeScanner.ArrayMatchError;
+
 begin
   {$IFDEF PAS2JS}raiseexception(format(SNoArrayMatch,[FPatternPos+1,FPos])){$ENDIF}
 end;
@@ -2539,8 +2543,10 @@ begin
 end;
 
 function TDateTimeScanner.FindIMatch(const values :array of string; aTerm : string):integer;
+
 var
   l,i : integer;
+
 begin
   Result:=-1;
   l:=high(values);
@@ -2569,8 +2575,10 @@ end;
 
 
 procedure TDateTimeScanner.MatchChar(c:char);
+
 Var
   N : Char;
+
 begin
   {$IFDEF PAS2JS}
   if (FPos<=Flen) then

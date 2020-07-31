@@ -17,6 +17,7 @@
   The MatchPattern routine was taken from Brook Framework's router unit, by Silvio Clecio.
 }
 
+{$mode objfpc}
 // Define this to output some debugging output
 { $DEFINE DEBUGROUTER }
 unit webrouter;

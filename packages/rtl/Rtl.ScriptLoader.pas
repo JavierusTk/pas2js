@@ -7,24 +7,28 @@ uses types;
 Type
   TloadedCallBack = Reference to procedure(Data : TObject);
   TProc = reference to procedure;
-
-procedure loadScripts(scripts : TStringDynArray; callback : TLoadedCallback; Data : TObject);
+    
+Procedure loadScripts(scripts : TStringDynArray; callback : TLoadedCallback; Data : TObject);
 
 implementation
 
-{$IFDEF PAS2JS}uses js, web;{$ENDIF}
+uses js, web;
 
-procedure loadScripts(scripts : TStringDynArray; callback : TLoadedCallback; Data : TObject);
+Procedure loadScripts(scripts : TStringDynArray; callback : TLoadedCallback; Data : TObject);
   {$IFDEF PAS2JS}
   Procedure loader (src : String; handler : TProc);
+  
   var 
     head,script : TJSElement;
+
     Procedure DoLoaded;
+    
     begin
       script.Properties['onload']:=Nil;
       script.Properties['onreadystatechange']:=Nil;
       Handler;
     end;
+    
   begin
     script:= document.createElement('script');
     script['src'] := src;
@@ -34,7 +38,7 @@ procedure loadScripts(scripts : TStringDynArray; callback : TLoadedCallback; Dat
     if Head=Nil then
       Head:=Document.body;
     head.appendChild( script );
-  end;
+  end; 
   {$ENDIF}
     
   Procedure run;
@@ -46,6 +50,7 @@ procedure loadScripts(scripts : TStringDynArray; callback : TLoadedCallback; Dat
       callback(data);
     {$ENDIF}
   end;
+        
 begin
   Run;
 end;

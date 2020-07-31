@@ -1,4 +1,5 @@
 unit simplelinkedlist;
+
 {$IFDEF PAS2JS}
 {$mode objfpc}
 {$ENDIF}

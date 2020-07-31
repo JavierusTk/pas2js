@@ -1,7 +1,8 @@
 Unit webbluetooth;
 
-{$H+}
 {$IFDEF PAS2JS}
+{$MODE ObjFPC}
+{$H+}
 {$modeswitch externalclass}
 {$ENDIF}
 

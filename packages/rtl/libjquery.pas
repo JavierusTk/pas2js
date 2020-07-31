@@ -1,6 +1,7 @@
 unit libjquery;
 
 {$IFDEF PAS2JS}
+{$mode objfpc}
 {$modeswitch externalclass}
 {$ENDIF}
 
@@ -439,7 +440,6 @@ Type
     Property Elements[AIndex : Integer] : TJSElement read getEl; default;
   end;
 
-{$IFDEF PAS2JS}
 Function JQuery(Const aSelector :  String) : TJQuery; {$IFDEF PAS2JS}external name 'jQuery';{$ENDIF} overload;
 Function JQuery(Const aSelector :  String; Context : TJSElement) : TJQuery; {$IFDEF PAS2JS}external name 'jQuery';{$ENDIF} overload;
 Function JQuery(Const aElement : TJSElement) : TJQuery; {$IFDEF PAS2JS}external name 'jQuery';{$ENDIF} overload;
@@ -447,7 +447,6 @@ Function JQuery(Const aElement : Array of TJSElement) : TJQuery; {$IFDEF PAS2JS}
 Function JQuery(Const aElement : TJSObject) : TJQuery; {$IFDEF PAS2JS}external name 'jQuery';{$ENDIF} overload;
 Function JQuery(Const aQuery : TJQuery) : TJQuery; {$IFDEF PAS2JS}external name 'jQuery';{$ENDIF} overload;
 Function JQuery() : TJQuery; {$IFDEF PAS2JS}external name 'jQuery';{$ENDIF} overload;
-{$ENDIF}
 
 Var
   gJQuery : TJQuery; {$IFDEF PAS2JS}external name 'jQuery';{$ENDIF}
@@ -1922,6 +1921,35 @@ function TJQuery._not(const aSelector: array of TJSElement): TJQuery;
 begin
 
 end;
+
+function JQuery(Const aSelector :  String) : TJQuery;
+begin
+end;
+
+function JQuery(Const aSelector :  String; Context : TJSElement) : TJQuery;
+begin
+end;
+
+function JQuery(Const aElement : TJSElement) : TJQuery;
+begin
+end;
+
+function JQuery(Const aElement : Array of TJSElement) : TJQuery;
+begin
+end;
+
+function JQuery(Const aElement : TJSObject) : TJQuery;
+begin
+end;
+
+function JQuery(Const aQuery : TJQuery) : TJQuery;
+begin
+end;
+
+function JQuery() : TJQuery;
+begin
+end;
 {$ENDIF}
+
 end.
 

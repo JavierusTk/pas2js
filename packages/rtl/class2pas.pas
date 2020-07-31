@@ -12,7 +12,9 @@
  **********************************************************************}
 unit class2pas;
 
-{$H+}
+{$IFDEF PAS2JS}
+{$mode objfpc}{$H+}
+{$ENDIF}
 
 interface
 
@@ -110,7 +112,7 @@ begin
     if Obj<>nil then
       aDecl.Add('// next getPrototypeOf ...');
     end;
-  aDecl.Add('end;');
+ aDecl.Add('end;');
   {$ENDIF}
 end;
 

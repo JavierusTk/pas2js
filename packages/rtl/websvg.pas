@@ -1,7 +1,8 @@
 unit websvg;
 
-{$H+}
 {$IFDEF PAS2JS}
+{$MODE ObjFPC}
+{$H+}
 {$MODESWITCH externalclass}
 {$ENDIF}
 
@@ -444,7 +445,7 @@ type
     TJSSVGAnimateElement
     --------------------------------------------------------------------}
   TJSSVGAnimateElement = class {$IFDEF PAS2JS}external name 'SVGAnimateElement'{$ENDIF} (TJSSVGAnimationElement)
-  private
+    private
   public
   end;
 
@@ -452,14 +453,15 @@ type
     TJSSVGAnimateMotionElement
     --------------------------------------------------------------------}
   TJSSVGAnimateMotionElement = class {$IFDEF PAS2JS}external name 'SVGAnimateMotionElement'{$ENDIF} (TJSSVGAnimationElement)
-  private
+    private
   public
   end;
 
   { --------------------------------------------------------------------
     TJSSVGAnimateTransformElement
     --------------------------------------------------------------------}
-  TJSSVGAnimateTransformElement = class {$IFDEF PAS2JS}external name 'SVGAnimateTransformElement'{$ENDIF} (TJSSVGAnimationElement)
+  TJSSVGAnimateTransformElement = class {$IFDEF PAS2JS}external name 
+    'SVGAnimateTransformElement'{$ENDIF} (TJSSVGAnimationElement)
     private
   public
   end;
@@ -468,7 +470,7 @@ type
     TJSSVGGeometryElement
     --------------------------------------------------------------------}
   TJSSVGGeometryElement = class {$IFDEF PAS2JS}external name 'SVGGeometryElement'{$ENDIF} (TJSSVGGraphicsElement)
-  private
+    private
     FpathLength: TJSSVGAnimatedNumber; {$IFDEF PAS2JS}external name 'pathLength';{$ENDIF}
   public
     function isPointInFill(point: TJSSVGPoint): boolean;
@@ -482,7 +484,7 @@ type
     TJSSVGCircleElement
     --------------------------------------------------------------------}
   TJSSVGCircleElement = class {$IFDEF PAS2JS}external name 'SVGCircleElement'{$ENDIF} (TJSSVGGeometryElement)
-  private
+    private
     Fcx: TJSSVGAnimatedLength; {$IFDEF PAS2JS}external name 'cx';{$ENDIF}
     Fcy: TJSSVGAnimatedLength; {$IFDEF PAS2JS}external name 'cy';{$ENDIF}
     Fr: TJSSVGAnimatedLength; {$IFDEF PAS2JS}external name 'r';{$ENDIF}
@@ -495,7 +497,8 @@ type
   { --------------------------------------------------------------------
     TJSSVGClipPathElement
     --------------------------------------------------------------------}
-  TJSSVGClipPathElement = class {$IFDEF PAS2JS}external name 'SVGClipPathElement'{$ENDIF} (TJSSVGGraphicsElement)
+  TJSSVGClipPathElement = class {$IFDEF PAS2JS}external name 
+    'SVGClipPathElement'{$ENDIF} (TJSSVGGraphicsElement)
   private
     FclipPathUnits: TJSSVGAnimatedEnumeration; {$IFDEF PAS2JS}external name 'clipPathUnits';{$ENDIF}
   public
@@ -505,8 +508,9 @@ type
   { --------------------------------------------------------------------
     TJSSVGComponentTransferFunctionElement
     --------------------------------------------------------------------}
-  TJSSVGComponentTransferFunctionElement = class {$IFDEF PAS2JS}external name 'SVGComponentTransferFunctionElement'{$ENDIF} (TJSSVGElement)
-  private
+  TJSSVGComponentTransferFunctionElement = class {$IFDEF PAS2JS}external name 
+    'SVGComponentTransferFunctionElement'{$ENDIF} (TJSSVGElement)
+    private
     Ftype_: TJSSVGAnimatedEnumeration; {$IFDEF PAS2JS}external name 'type';{$ENDIF}
     FtableValues: TJSSVGAnimatedNumberList; {$IFDEF PAS2JS}external name 'tableValues';{$ENDIF}
     Fslope: TJSSVGAnimatedNumber; {$IFDEF PAS2JS}external name 'slope';{$ENDIF}
@@ -581,8 +585,9 @@ type
   { --------------------------------------------------------------------
     TJSSVGEllipseElement
     --------------------------------------------------------------------}
-  TJSSVGEllipseElement = class {$IFDEF PAS2JS}external name 'SVGEllipseElement'{$ENDIF} (TJSSVGGeometryElement)
-  private
+  TJSSVGEllipseElement = class {$IFDEF PAS2JS}external name 
+    'SVGEllipseElement'{$ENDIF} (TJSSVGGeometryElement)
+    private
     Fcx: TJSSVGAnimatedLength; {$IFDEF PAS2JS}external name 'cx';{$ENDIF}
     Fcy: TJSSVGAnimatedLength; {$IFDEF PAS2JS}external name 'cy';{$ENDIF}
     Frx: TJSSVGAnimatedLength; {$IFDEF PAS2JS}external name 'rx';{$ENDIF}
@@ -619,8 +624,9 @@ type
   { --------------------------------------------------------------------
     TJSSVGFEColorMatrixElement
     --------------------------------------------------------------------}
-  TJSSVGFEColorMatrixElement = class {$IFDEF PAS2JS}external name 'SVGFEColorMatrixElement'{$ENDIF} (TJSSVGElement)
-  private
+  TJSSVGFEColorMatrixElement = class {$IFDEF PAS2JS}external name 
+    'SVGFEColorMatrixElement'{$ENDIF} (TJSSVGElement)
+    private
     Fin1: TJSSVGAnimatedString; {$IFDEF PAS2JS}external name 'in1';{$ENDIF}
     Ftype_: TJSSVGAnimatedEnumeration; {$IFDEF PAS2JS}external name 'type';{$ENDIF}
     Fvalues: TJSSVGAnimatedNumberList; {$IFDEF PAS2JS}external name 'values';{$ENDIF}
@@ -640,7 +646,8 @@ type
   { --------------------------------------------------------------------
     TJSSVGFEComponentTransferElement
     --------------------------------------------------------------------}
-  TJSSVGFEComponentTransferElement = class {$IFDEF PAS2JS}external name 'SVGFEComponentTransferElement'{$ENDIF} (TJSSVGElement)
+  TJSSVGFEComponentTransferElement = class {$IFDEF PAS2JS}external name 
+    'SVGFEComponentTransferElement'{$ENDIF} (TJSSVGElement)
     private
     Fin1: TJSSVGAnimatedString; {$IFDEF PAS2JS}external name 'in1';{$ENDIF}
   public
@@ -650,8 +657,9 @@ type
   { --------------------------------------------------------------------
     TJSSVGFECompositeElement
     --------------------------------------------------------------------}
-  TJSSVGFECompositeElement = class {$IFDEF PAS2JS}external name 'SVGFECompositeElement'{$ENDIF} (TJSSVGElement)
-  private
+  TJSSVGFECompositeElement = class {$IFDEF PAS2JS}external name 
+    'SVGFECompositeElement'{$ENDIF} (TJSSVGElement)
+    private
     Fin2: TJSSVGAnimatedString; {$IFDEF PAS2JS}external name 'in2';{$ENDIF}
     Fin1: TJSSVGAnimatedString; {$IFDEF PAS2JS}external name 'in1';{$ENDIF}
     Foperator_: TJSSVGAnimatedEnumeration; {$IFDEF PAS2JS}external name 'operator';{$ENDIF}
@@ -681,8 +689,9 @@ type
   { --------------------------------------------------------------------
     TJSSVGFEConvolveMatrixElement
     --------------------------------------------------------------------}
-  TJSSVGFEConvolveMatrixElement = class {$IFDEF PAS2JS}external name 'SVGFEConvolveMatrixElement'{$ENDIF} (TJSSVGElement)
-  private
+  TJSSVGFEConvolveMatrixElement = class {$IFDEF PAS2JS}external name 
+    'SVGFEConvolveMatrixElement'{$ENDIF} (TJSSVGElement)
+    private
     Fin1: TJSSVGAnimatedString; {$IFDEF PAS2JS}external name 'in1';{$ENDIF}
     ForderX: TJSSVGAnimatedInteger; {$IFDEF PAS2JS}external name 'orderX';{$ENDIF}
     ForderY: TJSSVGAnimatedInteger; {$IFDEF PAS2JS}external name 'orderY';{$ENDIF}
@@ -719,8 +728,9 @@ type
   { --------------------------------------------------------------------
     TJSSVGFEDiffuseLightingElement
     --------------------------------------------------------------------}
-  TJSSVGFEDiffuseLightingElement = class {$IFDEF PAS2JS}external name 'SVGFEDiffuseLightingElement'{$ENDIF} (TJSSVGElement)
-  private
+  TJSSVGFEDiffuseLightingElement = class {$IFDEF PAS2JS}external name 
+    'SVGFEDiffuseLightingElement'{$ENDIF} (TJSSVGElement)
+    private
     Fin1: TJSSVGAnimatedString; {$IFDEF PAS2JS}external name 'in1';{$ENDIF}
     FsurfaceScale: TJSSVGAnimatedNumber; {$IFDEF PAS2JS}external name 'surfaceScale';{$ENDIF}
     FdiffuseConstant: TJSSVGAnimatedNumber; {$IFDEF PAS2JS}external name 'diffuseConstant';{$ENDIF}
@@ -737,8 +747,9 @@ type
   { --------------------------------------------------------------------
     TJSSVGFEDisplacementMapElement
     --------------------------------------------------------------------}
-  TJSSVGFEDisplacementMapElement = class {$IFDEF PAS2JS}external name 'SVGFEDisplacementMapElement'{$ENDIF} (TJSSVGElement)
-  private
+  TJSSVGFEDisplacementMapElement = class {$IFDEF PAS2JS}external name 
+    'SVGFEDisplacementMapElement'{$ENDIF} (TJSSVGElement)
+    private
     Fin1: TJSSVGAnimatedString; {$IFDEF PAS2JS}external name 'in1';{$ENDIF}
     Fin2: TJSSVGAnimatedString; {$IFDEF PAS2JS}external name 'in2';{$ENDIF}
     Fscale: TJSSVGAnimatedNumber; {$IFDEF PAS2JS}external name 'scale';{$ENDIF}
@@ -762,8 +773,9 @@ type
   { --------------------------------------------------------------------
     TJSSVGFEDistantLightElement
     --------------------------------------------------------------------}
-  TJSSVGFEDistantLightElement = class {$IFDEF PAS2JS}external name 'SVGFEDistantLightElement'{$ENDIF} (TJSSVGElement)
-  private
+  TJSSVGFEDistantLightElement = class {$IFDEF PAS2JS}external name 
+    'SVGFEDistantLightElement'{$ENDIF} (TJSSVGElement)
+    private
     Fazimuth: TJSSVGAnimatedNumber; {$IFDEF PAS2JS}external name 'azimuth';{$ENDIF}
     Felevation: TJSSVGAnimatedNumber; {$IFDEF PAS2JS}external name 'elevation';{$ENDIF}
   public
@@ -774,8 +786,9 @@ type
   { --------------------------------------------------------------------
     TJSSVGFEDropShadowElement
     --------------------------------------------------------------------}
-  TJSSVGFEDropShadowElement = class {$IFDEF PAS2JS}external name 'SVGFEDropShadowElement'{$ENDIF} (TJSSVGElement)
-  private
+  TJSSVGFEDropShadowElement = class {$IFDEF PAS2JS}external name 
+    'SVGFEDropShadowElement'{$ENDIF} (TJSSVGElement)
+    private
     Fin1: TJSSVGAnimatedString; {$IFDEF PAS2JS}external name 'in1';{$ENDIF}
     Fdx: TJSSVGAnimatedNumber; {$IFDEF PAS2JS}external name 'dx';{$ENDIF}
     Fdy: TJSSVGAnimatedNumber; {$IFDEF PAS2JS}external name 'dy';{$ENDIF}
@@ -801,40 +814,45 @@ type
   { --------------------------------------------------------------------
     TJSSVGFEFuncAElement
     --------------------------------------------------------------------}
-  TJSSVGFEFuncAElement = class {$IFDEF PAS2JS}external name 'SVGFEFuncAElement'{$ENDIF} (TJSSVGComponentTransferFunctionElement)
-  private
+  TJSSVGFEFuncAElement = class {$IFDEF PAS2JS}external name 
+    'SVGFEFuncAElement'{$ENDIF} (TJSSVGComponentTransferFunctionElement)
+    private
   public
   end;
 
   { --------------------------------------------------------------------
     TJSSVGFEFuncBElement
     --------------------------------------------------------------------}
-  TJSSVGFEFuncBElement = class {$IFDEF PAS2JS}external name 'SVGFEFuncBElement'{$ENDIF} (TJSSVGComponentTransferFunctionElement)
-  private
+  TJSSVGFEFuncBElement = class {$IFDEF PAS2JS}external name 
+    'SVGFEFuncBElement'{$ENDIF} (TJSSVGComponentTransferFunctionElement)
+    private
   public
   end;
 
   { --------------------------------------------------------------------
     TJSSVGFEFuncGElement
     --------------------------------------------------------------------}
-  TJSSVGFEFuncGElement = class {$IFDEF PAS2JS}external name 'SVGFEFuncGElement'{$ENDIF} (TJSSVGComponentTransferFunctionElement)
-  private
+  TJSSVGFEFuncGElement = class {$IFDEF PAS2JS}external name 
+    'SVGFEFuncGElement'{$ENDIF} (TJSSVGComponentTransferFunctionElement)
+    private
   public
   end;
 
   { --------------------------------------------------------------------
     TJSSVGFEFuncRElement
     --------------------------------------------------------------------}
-  TJSSVGFEFuncRElement = class {$IFDEF PAS2JS}external name 'SVGFEFuncRElement'{$ENDIF} (TJSSVGComponentTransferFunctionElement)
-  private
+  TJSSVGFEFuncRElement = class {$IFDEF PAS2JS}external name 
+    'SVGFEFuncRElement'{$ENDIF} (TJSSVGComponentTransferFunctionElement)
+    private
   public
   end;
 
   { --------------------------------------------------------------------
     TJSSVGFEGaussianBlurElement
     --------------------------------------------------------------------}
-  TJSSVGFEGaussianBlurElement = class {$IFDEF PAS2JS}external name 'SVGFEGaussianBlurElement'{$ENDIF} (TJSSVGElement)
-  private
+  TJSSVGFEGaussianBlurElement = class {$IFDEF PAS2JS}external name 
+    'SVGFEGaussianBlurElement'{$ENDIF} (TJSSVGElement)
+    private
     Fin1: TJSSVGAnimatedString; {$IFDEF PAS2JS}external name 'in1';{$ENDIF}
     FstdDeviationX: TJSSVGAnimatedNumber; {$IFDEF PAS2JS}external name 'stdDeviationX';{$ENDIF}
     FstdDeviationY: TJSSVGAnimatedNumber; {$IFDEF PAS2JS}external name 'stdDeviationY';{$ENDIF}
@@ -850,7 +868,8 @@ type
     --------------------------------------------------------------------}
   TJSSVGFEImageElement = class {$IFDEF PAS2JS}external name 'SVGFEImageElement'{$ENDIF} (TJSSVGElement)
   private
-    FpreserveAspectRatio: TJSSVGAnimatedPreserveAspectRatio; {$IFDEF PAS2JS}external name 'preserveAspectRatio';{$ENDIF}
+    FpreserveAspectRatio: TJSSVGAnimatedPreserveAspectRatio; {$IFDEF PAS2JS}external name 
+	  'preserveAspectRatio';{$ENDIF}
   public
     property preserveAspectRatio: TJSSVGAnimatedPreserveAspectRatio read
       FpreserveAspectRatio;
@@ -867,8 +886,9 @@ type
   { --------------------------------------------------------------------
     TJSSVGFEMergeNodeElement
     --------------------------------------------------------------------}
-  TJSSVGFEMergeNodeElement = class {$IFDEF PAS2JS}external name 'SVGFEMergeNodeElement'{$ENDIF} (TJSSVGElement)
-  private
+  TJSSVGFEMergeNodeElement = class {$IFDEF PAS2JS}external name 
+    'SVGFEMergeNodeElement'{$ENDIF} (TJSSVGElement)
+    private
     Fin1: TJSSVGAnimatedString; {$IFDEF PAS2JS}external name 'in1';{$ENDIF}
   public
     property in1: TJSSVGAnimatedString read Fin1;
@@ -877,8 +897,9 @@ type
   { --------------------------------------------------------------------
     TJSSVGFEMorphologyElement
     --------------------------------------------------------------------}
-  TJSSVGFEMorphologyElement = class {$IFDEF PAS2JS}external name 'SVGFEMorphologyElement'{$ENDIF} (TJSSVGElement)
-  private
+  TJSSVGFEMorphologyElement = class {$IFDEF PAS2JS}external name 
+    'SVGFEMorphologyElement'{$ENDIF} (TJSSVGElement)
+    private
     Fin1: TJSSVGAnimatedString; {$IFDEF PAS2JS}external name 'in1';{$ENDIF}
     Foperator_: TJSSVGAnimatedEnumeration; {$IFDEF PAS2JS}external name 'operator';{$ENDIF}
     FradiusX: TJSSVGAnimatedNumber; {$IFDEF PAS2JS}external name 'radiusX';{$ENDIF}
@@ -912,7 +933,8 @@ type
   { --------------------------------------------------------------------
     TJSSVGFEPointLightElement
     --------------------------------------------------------------------}
-  TJSSVGFEPointLightElement = class {$IFDEF PAS2JS}external name 'SVGFEPointLightElement'{$ENDIF} (TJSSVGElement)
+  TJSSVGFEPointLightElement = class {$IFDEF PAS2JS}external name 
+    'SVGFEPointLightElement'{$ENDIF} (TJSSVGElement)
     private
     Fx: TJSSVGAnimatedNumber; {$IFDEF PAS2JS}external name 'x';{$ENDIF}
     Fy: TJSSVGAnimatedNumber; {$IFDEF PAS2JS}external name 'y';{$ENDIF}
@@ -926,7 +948,8 @@ type
   { --------------------------------------------------------------------
     TJSSVGFESpecularLightingElement
     --------------------------------------------------------------------}
-  TJSSVGFESpecularLightingElement = class {$IFDEF PAS2JS}external name 'SVGFESpecularLightingElement'{$ENDIF} (TJSSVGElement)
+  TJSSVGFESpecularLightingElement = class {$IFDEF PAS2JS}external name 
+    'SVGFESpecularLightingElement'{$ENDIF} (TJSSVGElement)
     private
     Fin1: TJSSVGAnimatedString; {$IFDEF PAS2JS}external name 'in1';{$ENDIF}
     FsurfaceScale: TJSSVGAnimatedNumber; {$IFDEF PAS2JS}external name 'surfaceScale';{$ENDIF}
@@ -946,7 +969,8 @@ type
   { --------------------------------------------------------------------
     TJSSVGFESpotLightElement
     --------------------------------------------------------------------}
-  TJSSVGFESpotLightElement = class {$IFDEF PAS2JS}external name 'SVGFESpotLightElement'{$ENDIF} (TJSSVGElement)
+  TJSSVGFESpotLightElement = class {$IFDEF PAS2JS}external name 
+    'SVGFESpotLightElement'{$ENDIF} (TJSSVGElement)
     private
     Fx: TJSSVGAnimatedNumber; {$IFDEF PAS2JS}external name 'x';{$ENDIF}
     Fy: TJSSVGAnimatedNumber; {$IFDEF PAS2JS}external name 'y';{$ENDIF}
@@ -980,7 +1004,8 @@ type
   { --------------------------------------------------------------------
     TJSSVGFETurbulenceElement
     --------------------------------------------------------------------}
-  TJSSVGFETurbulenceElement = class {$IFDEF PAS2JS}external name 'SVGFETurbulenceElement'{$ENDIF} (TJSSVGElement)
+  TJSSVGFETurbulenceElement = class {$IFDEF PAS2JS}external name 
+    'SVGFETurbulenceElement'{$ENDIF} (TJSSVGElement)
     private
     FbaseFrequencyX: TJSSVGAnimatedNumber; {$IFDEF PAS2JS}external name 'baseFrequencyX';{$ENDIF}
     FbaseFrequencyY: TJSSVGAnimatedNumber; {$IFDEF PAS2JS}external name 'baseFrequencyY';{$ENDIF}
@@ -1028,7 +1053,8 @@ type
   { --------------------------------------------------------------------
     TJSSVGFilterPrimitiveStandardAttributes
     --------------------------------------------------------------------}
-  TJSSVGFilterPrimitiveStandardAttributes = class {$IFDEF PAS2JS}external name 'SVGFilterPrimitiveStandardAttributes'{$ENDIF}
+  TJSSVGFilterPrimitiveStandardAttributes = class {$IFDEF PAS2JS}external name 
+    'SVGFilterPrimitiveStandardAttributes'{$ENDIF}
     private
     Fx: TJSSVGAnimatedLength; {$IFDEF PAS2JS}external name 'x';{$ENDIF}
     Fy: TJSSVGAnimatedLength; {$IFDEF PAS2JS}external name 'y';{$ENDIF}
@@ -1049,7 +1075,8 @@ type
   TJSSVGFitToViewBox = class {$IFDEF PAS2JS}external name 'SVGFitToViewBox'{$ENDIF}
   private
     FviewBox: TJSSVGAnimatedRect; {$IFDEF PAS2JS}external name 'viewBox';{$ENDIF}
-    FpreserveAspectRatio: TJSSVGAnimatedPreserveAspectRatio; {$IFDEF PAS2JS}external name 'preserveAspectRatio';{$ENDIF}
+    FpreserveAspectRatio: TJSSVGAnimatedPreserveAspectRatio; {$IFDEF PAS2JS}external name 
+	  'preserveAspectRatio';{$ENDIF}
   public
     property viewBox: TJSSVGAnimatedRect read FviewBox;
     property preserveAspectRatio: TJSSVGAnimatedPreserveAspectRatio read
@@ -1059,7 +1086,8 @@ type
   { --------------------------------------------------------------------
     TJSSVGForeignObjectElement
     --------------------------------------------------------------------}
-  TJSSVGForeignObjectElement = class {$IFDEF PAS2JS}external name 'SVGForeignObjectElement' (TJSSVGGraphicsElement){$ENDIF}
+  TJSSVGForeignObjectElement = class {$IFDEF PAS2JS}external name 
+    'SVGForeignObjectElement' (TJSSVGGraphicsElement){$ENDIF}
     private
     Fx: TJSSVGAnimatedLength; {$IFDEF PAS2JS}external name 'x';{$ENDIF}
     Fy: TJSSVGAnimatedLength; {$IFDEF PAS2JS}external name 'y';{$ENDIF}
@@ -1086,7 +1114,8 @@ type
   TJSSVGGradientElement = class {$IFDEF PAS2JS}external name 'SVGGradientElement'{$ENDIF} (TJSSVGElement)
   private
     FgradientUnits: TJSSVGAnimatedEnumeration; {$IFDEF PAS2JS}external name 'gradientUnits';{$ENDIF}
-    FgradientTransform: TJSSVGAnimatedTransformList; {$IFDEF PAS2JS}external name 'gradientTransform';{$ENDIF}
+    FgradientTransform: TJSSVGAnimatedTransformList; {$IFDEF PAS2JS}external name 
+	  'gradientTransform';{$ENDIF}
     FspreadMethod: TJSSVGAnimatedEnumeration; {$IFDEF PAS2JS}external name 'spreadMethod';{$ENDIF}
   public
   const
@@ -1109,7 +1138,8 @@ type
     Fy: TJSSVGAnimatedLength; {$IFDEF PAS2JS}external name 'y';{$ENDIF}
     Fwidth: TJSSVGAnimatedLength; {$IFDEF PAS2JS}external name 'width';{$ENDIF}
     Fheight: TJSSVGAnimatedLength; {$IFDEF PAS2JS}external name 'height';{$ENDIF}
-    FpreserveAspectRatio: TJSSVGAnimatedPreserveAspectRatio; {$IFDEF PAS2JS}external name 'preserveAspectRatio';{$ENDIF}
+    FpreserveAspectRatio: TJSSVGAnimatedPreserveAspectRatio; {$IFDEF PAS2JS}external name 
+	  'preserveAspectRatio';{$ENDIF}
   public
     property x: TJSSVGAnimatedLength read Fx;
     property y: TJSSVGAnimatedLength read Fy;
@@ -1150,7 +1180,8 @@ type
   { --------------------------------------------------------------------
     TJSSVGLinearGradientElement
     --------------------------------------------------------------------}
-  TJSSVGLinearGradientElement = class {$IFDEF PAS2JS}external name 'SVGLinearGradientElement'{$ENDIF} (TJSSVGGradientElement)
+  TJSSVGLinearGradientElement = class {$IFDEF PAS2JS}external name 
+    'SVGLinearGradientElement'{$ENDIF} (TJSSVGGradientElement)
     private
     Fx1: TJSSVGAnimatedLength; {$IFDEF PAS2JS}external name 'x1';{$ENDIF}
     Fy1: TJSSVGAnimatedLength; {$IFDEF PAS2JS}external name 'y1';{$ENDIF}

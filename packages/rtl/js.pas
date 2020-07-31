@@ -13,6 +13,7 @@
 unit JS;
 
 {$IFDEF PAS2JS}
+{$mode objfpc}
 {$modeswitch externalclass}
 {$ENDIF}
 
@@ -199,12 +200,12 @@ type
     procedure setUTCMonth(const AValue: NativeInt);
     procedure setUTCSeconds(const AValue: NativeInt);
   public
-    constructor New; reintroduce;  overload;
-    constructor New(const MilliSecsSince1970: NativeInt); overload;
-    constructor New(const aDateString: String); overload;
+    constructor New; reintroduce; overload;
+    constructor New(const MilliSecsSince1970: NativeInt); overload; // milliseconds since 1 January 1970 00:00:00 UTC, with leap seconds ignored
+    constructor New(const aDateString: String); overload; // RFC 2822, ISO8601
     constructor New(aYear: NativeInt; aMonth: NativeInt; aDayOfMonth: NativeInt = 1;
-                    TheHours: NativeInt = 0; TheMinutes: NativeInt = 0;
-                    TheSeconds: NativeInt = 0; TheMilliseconds: NativeInt = 0);  overload;
+      TheHours: NativeInt = 0; TheMinutes: NativeInt = 0; TheSeconds: NativeInt = 0;
+      TheMilliseconds: NativeInt = 0); overload;
     class function now: NativeInt; // current date and time in milliseconds since 1 January 1970 00:00:00 UTC, with leap seconds ignored
     class function parse(const aDateString: string): NativeInt; // format depends on browser
     class function UTC(aYear: NativeInt; aMonth: NativeInt = 0; aDayOfMonth: NativeInt = 1;
@@ -477,6 +478,9 @@ type
   Public
     property BYTES_PER_ELEMENT : NativeInt Read FBytesPerElement;
     class var name : string;
+//    class function from(aValue : jsValue) : TJSTypedArray;
+//    class function from(aValue : jsValue; Map : TJSTypedArrayMapCallBack) : TJSTypedArray;
+//    class function from(aValue : jsValue; aMap : TJSTypedArrayMapEvent) : TJSTypedArray;
     class function _of(aValue : jsValue) : TJSTypedArray;{$IFDEF PAS2JS} varargs; external name 'of';{$ENDIF}
     function copyWithin(aTarget : NativeInt) : TJSTypedArray;overload;
     function copyWithin(aTarget, aStart : NativeInt) : TJSTypedArray;overload;
@@ -1016,8 +1020,9 @@ function new(aElements: TJSValueDynArray): TJSObject;
   {$ENDIF}
 
 Var
-  L, I : integer;
+  L,I : integer;
   S : String;
+
 begin
   L:=length(aElements);
   if (L mod 2)=1 then
@@ -1202,30 +1207,28 @@ Var
   t : string;
 
 begin
-  result:=jvtNull;
-
-  if isNull(js) then
+  if isNull(js) then   // null reported as object
     result:=jvtNull
   else
-  begin
+    begin
     t:=jsTypeOf(js);
     if (t='string') then
       Result:=jvtString
     else if (t='boolean') then
       Result:=jvtBoolean
     else if (t='object') then
-    begin
-    if IsArray(JS) then
-      Result:=jvtArray
-    else
-      Result:=jvtObject;
-    end
+      begin
+      if IsArray(JS) then
+        Result:=jvtArray
+      else
+        Result:=jvtObject;
+      end
     else if (t='number') then
       if isInteger(JS) then
         result:=jvtInteger
       else
         result:=jvtFloat
-  end;
+    end;
 end;
 
 {$IFDEF DCC}

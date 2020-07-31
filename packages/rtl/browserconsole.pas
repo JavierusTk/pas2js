@@ -21,6 +21,10 @@
 }
 unit browserconsole;
 
+{$IFDEF PAS2JS}
+{$mode objfpc}
+{$ENDIF}
+
 interface
 
 uses
@@ -74,6 +78,7 @@ Var
 
 {$IFDEF PAS2JS}
 Procedure AppendLine;
+
 Var
   CurrentCount : Integer;
   S : TJSNode;
@@ -98,6 +103,7 @@ end;
 
 
 Procedure WriteConsole(S : JSValue; NewLine : Boolean);
+
 Var
   CL: String;
 
@@ -120,6 +126,8 @@ begin
 end;
 
 Procedure ResetConsole;
+
+
 begin
   if LinesParent=Nil then exit;
   While LinesParent.firstElementChild<>Nil do
@@ -128,6 +136,7 @@ begin
 end;
 
 Procedure InitConsole;
+
 begin
   if ConsoleElement=Nil then
      exit;
@@ -144,6 +153,7 @@ begin
 end;
 
 Procedure HookConsole;
+
 begin
   ConsoleElement:=Nil;
   if (ConsoleElementID<>'') then
