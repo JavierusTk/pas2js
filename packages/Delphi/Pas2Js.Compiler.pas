@@ -30,7 +30,7 @@ uses System.SysUtils, CommonOptionStrs, DCCStrs, Process;
 function TPas2JsCompiler.BuildCommandLine(const Project: IOTAProject): String;
 begin
   var Options := Project.ProjectOptions as IOTAProjectOptionsConfigurations;
-  Result := Format('"%s" -MDelphi -JRjs %s', [FRegistry.CompilerPath, ChangeFileExt(Project.FileName, '.dpr')]);
+  Result := Format('"%s" -MDelphi -JRjs "%s"', [FRegistry.CompilerPath, ChangeFileExt(Project.FileName, '.dpr')]);
 
 {$IFDEF DEBUG}
   Result := Result + ' -vd';
