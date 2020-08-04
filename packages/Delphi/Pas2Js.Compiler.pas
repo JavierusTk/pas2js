@@ -25,6 +25,11 @@ implementation
 
 uses System.SysUtils, CommonOptionStrs, DCCStrs, Process;
 
+function ExpandMacros(Value: String): String;
+begin
+  Result := (BorlandIDEServices as IOTAServices).ExpandRootMacro(Value);
+end;
+
 { TPas2JsCompiler }
 
 function TPas2JsCompiler.BuildCommandLine(const Project: IOTAProject): String;
@@ -32,11 +37,12 @@ begin
   var Options := Project.ProjectOptions as IOTAProjectOptionsConfigurations;
   Result := Format('"%s" -MDelphi -JRjs "%s"', [FRegistry.CompilerPath, ChangeFileExt(Project.FileName, '.dpr')]);
 
-{$IFDEF DEBUG}
-  Result := Result + ' -vd';
-{$ENDIF}
+//{$IFDEF DEBUG}
+//  Result := Result + ' -vd';
+//{$ENDIF}
 
-  Result := Result + Format(' -Fu..\..\packages\rtl;"%s"', [Options.ActiveConfiguration[sUnitSearchPath]]);
+  Result := Result + Format(' -Jc -Fu..\..\packages\rtl;"%s" -FE"%s" -FU"%s"', [ExpandMacros(Options.ActiveConfiguration[sUnitSearchPath]),
+    ExpandMacros(Options.ActiveConfiguration[sExeOutput]), ExpandMacros(Options.ActiveConfiguration[sDcuOutput])]);
 end;
 
 procedure TPas2JsCompiler.Compile(const Project: IOTAProject; const Messages: IOTAMessageServices);

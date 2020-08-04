@@ -60,13 +60,16 @@ begin
     repeat
       Running := WaitForSingleObject(ProcessInformation.hProcess, 100);
 
-      ReadFile(StartUp.hStdInput, Buffer[0], BUFFER_SIZE, ReadSize, nil);
+      if Running = WAIT_TIMEOUT then
+      begin
+        ReadFile(StartUp.hStdInput, Buffer[0], BUFFER_SIZE, ReadSize, nil);
 
-      Buffer[ReadSize] := #0;
+        Buffer[ReadSize] := #0;
 
-      for var Text in String(PAnsiChar(@Buffer[0])).Split([#13#10]) do
-        if not Text.IsEmpty then
-          OutputEvent(Text);
+        for var Text in String(PAnsiChar(@Buffer[0])).Split([#13#10]) do
+          if not Text.IsEmpty then
+            OutputEvent(Text);
+      end;
     until Running <> WAIT_TIMEOUT;
   finally
     CloseHandle(ProcessInformation.hProcess);
