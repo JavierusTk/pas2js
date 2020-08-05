@@ -23,7 +23,7 @@ const
 
 implementation
 
-uses System.SysUtils, CommonOptionStrs, DCCStrs, Process;
+uses System.SysUtils, DCCStrs, Process;
 
 function ExpandMacros(Value: String): String;
 begin
@@ -51,19 +51,22 @@ var
   Process: TProcess;
 
 begin
-  Process := TProcess.Create;
+  if Project.ApplicationType = sApplication then
+  begin
+    Process := TProcess.Create;
 
-  Messages.AddTitleMessage(COMPILING_PAS2JS);
+    Messages.AddTitleMessage(COMPILING_PAS2JS);
 
-  Process.OutputEvent :=
-    procedure (Text: String)
-    begin
-      Messages.AddToolMessage(EmptyStr, Text, EmptyStr, 0, 0);
-    end;
+    Process.OutputEvent :=
+      procedure (Text: String)
+      begin
+        Messages.AddToolMessage(EmptyStr, Text, EmptyStr, 0, 0);
+      end;
 
-  Process.Execute(ExtractFilePath(Project.FileName), BuildCommandLine(Project));
+    Process.Execute(ExtractFilePath(Project.FileName), BuildCommandLine(Project));
 
-  Process.Free;
+    Process.Free;
+  end;
 end;
 
 constructor TPas2JsCompiler.Create;
