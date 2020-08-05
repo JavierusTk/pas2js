@@ -34,14 +34,15 @@ end;
 
 function TPas2JsCompiler.BuildCommandLine(const Project: IOTAProject): String;
 begin
+  var CompilerPath := ExpandMacros(FRegistry.CompilerPath);
   var Options := Project.ProjectOptions as IOTAProjectOptionsConfigurations;
-  Result := Format('"%s" -MDelphi -JRjs "%s"', [FRegistry.CompilerPath, ChangeFileExt(Project.FileName, '.dpr')]);
+  Result := Format('"%s" -MDelphi -JRjs "%s"', [CompilerPath, ChangeFileExt(Project.FileName, '.dpr')]);
 
-//{$IFDEF DEBUG}
-//  Result := Result + ' -vd';
-//{$ENDIF}
+{$IFDEF DEBUG}
+  Result := Result + ' -vd';
+{$ENDIF}
 
-  Result := Result + Format(' -Jc -Fu..\..\packages\rtl;"%s" -FE"%s" -FU"%s"', [ExpandMacros(Options.ActiveConfiguration[sUnitSearchPath]),
+  Result := Result + Format(' -Jc -Fu"%s\..\..\packages\rtl";"%s" -FE"%s" -FU"%s"', [ExtractFilePath(CompilerPath), ExpandMacros(Options.ActiveConfiguration[sUnitSearchPath]),
     ExpandMacros(Options.ActiveConfiguration[sExeOutput]), ExpandMacros(Options.ActiveConfiguration[sDcuOutput])]);
 end;
 
